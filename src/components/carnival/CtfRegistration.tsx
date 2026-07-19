@@ -299,6 +299,8 @@ export function CtfRegistration() {
                 instSuggest={instSuggest}
                 setInstSuggest={setInstSuggest}
                 pickInstitution={pickInstitution}
+                leaderName={leaderName}
+                setLeaderName={setLeaderName}
                 leaderEmail={leaderEmail}
                 setLeaderEmail={setLeaderEmail}
                 leaderPhone={leaderPhone}
