@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState, type ChangeEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type ChangeEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   IconUsers,
@@ -110,6 +110,23 @@ export function IupcRegistration() {
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
   const teamCodeRef = useRef<string>("");
+
+  // Return-from-gateway handling
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const p = new URLSearchParams(window.location.search);
+    const status = p.get("payment");
+    if (!status) return;
+    if (status === "success") {
+      teamCodeRef.current = p.get("tran_id") || "IUPC-CONFIRMED";
+      setDone(true);
+      setStep(5);
+    }
+    // clean the query so refresh doesn't repeat state
+    const url = window.location.pathname + window.location.hash;
+    window.history.replaceState(null, "", url);
+  }, []);
+
 
   const setMember = (i: number, patch: Partial<Member>) =>
     setMembers((prev) => prev.map((m, idx) => (idx === i ? { ...m, ...patch } : m)));
