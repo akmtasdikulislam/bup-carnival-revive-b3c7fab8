@@ -11,6 +11,8 @@ import {
   IconChalkboard,
 } from "@tabler/icons-react";
 import { BD_INSTITUTIONS } from "@/data/institutions";
+import { initSslczSession } from "@/lib/sslcommerz.functions";
+
 
 /* ============================================================
  * Types
@@ -183,15 +185,18 @@ export function IupcRegistration() {
     setStep((s) => Math.max(1, s - 1));
   }
 
+  const [payError, setPayError] = useState<string | null>(null);
+
   async function handlePay() {
     setSubmitting(true);
-    await new Promise((r) => setTimeout(r, 900));
-    teamCodeRef.current = "IUPC-" + Math.random().toString(36).slice(2, 8).toUpperCase();
+    setPayError(null);
+    const localCode = "IUPC-" + Math.random().toString(36).slice(2, 8).toUpperCase();
+    teamCodeRef.current = localCode;
     try {
-      const key = "bcc_registrations";
+      const key = "bcc_registrations_pending";
       const list = JSON.parse(localStorage.getItem(key) || "[]");
       list.push({
-        id: teamCodeRef.current,
+        id: localCode,
         event: "iupc",
         teamName,
         institution,
@@ -207,9 +212,24 @@ export function IupcRegistration() {
     } catch {
       /* ignore */
     }
-    setSubmitting(false);
-    setDone(true);
+    try {
+      const { gatewayUrl } = await initSslczSession({
+        data: {
+          amount: FEE,
+          teamName,
+          institution,
+          leaderEmail,
+          leaderPhone: "+880" + digits(leaderPhone),
+          event: "iupc",
+        },
+      });
+      window.location.href = gatewayUrl;
+    } catch (e) {
+      setSubmitting(false);
+      setPayError(e instanceof Error ? e.message : "Payment initiation failed");
+    }
   }
+
 
   return (
     <div className="wiz-wrap">
