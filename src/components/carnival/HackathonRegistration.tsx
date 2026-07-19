@@ -990,6 +990,7 @@ function StepProject({
  * ============================================================ */
 
 function StepReview({
+  isSolo,
   teamName,
   institution,
   leaderEmail,
@@ -1003,6 +1004,7 @@ function StepReview({
   agreeMedia,
   setAgreeMedia,
 }: {
+  isSolo: boolean;
   teamName: string;
   institution: string;
   leaderEmail: string;
@@ -1021,15 +1023,17 @@ function StepReview({
       <h3>Review &amp; confirm</h3>
       <p className="wiz-card-sub">Double-check everything before you head to payment.</p>
 
-      <div className="wiz-review-block">
-        <h5>// team</h5>
-        <dl className="wiz-review-grid">
-          <dt>Team name</dt><dd>{teamName || "—"}</dd>
-          <dt>Institution</dt><dd>{institution || "—"}</dd>
-          <dt>Leader email</dt><dd>{leaderEmail || "—"}</dd>
-          <dt>Leader phone</dt><dd>{leaderPhone ? `+880 ${leaderPhone}` : "—"}</dd>
-        </dl>
-      </div>
+      {!isSolo && (
+        <div className="wiz-review-block">
+          <h5>// team</h5>
+          <dl className="wiz-review-grid">
+            <dt>Team name</dt><dd>{teamName || "—"}</dd>
+            <dt>Institution</dt><dd>{institution || "—"}</dd>
+            <dt>Leader email</dt><dd>{leaderEmail || "—"}</dd>
+            <dt>Leader phone</dt><dd>{leaderPhone ? `+880 ${leaderPhone}` : "—"}</dd>
+          </dl>
+        </div>
+      )}
 
       {members.map((m, i) => (
         <div key={i} className="wiz-review-block">
