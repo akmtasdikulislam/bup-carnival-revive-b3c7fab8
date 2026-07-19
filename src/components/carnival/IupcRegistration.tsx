@@ -9,6 +9,8 @@ import {
   IconArrowLeft,
   IconArrowRight,
   IconChalkboard,
+  IconCheck,
+  IconReceipt2,
 } from "@tabler/icons-react";
 import { BD_INSTITUTIONS } from "@/data/institutions";
 import { initSslczSession } from "@/lib/sslcommerz.functions";
