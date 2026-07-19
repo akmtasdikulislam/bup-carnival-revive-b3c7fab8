@@ -236,13 +236,34 @@ export function HackathonRegistration() {
   const stepHasErrors = (id: StepId) => stepKeys(id).some((k) => errors[k]);
   const err = (k: string) => (touched[k] ? errors[k] : undefined);
 
+  function syncLeaderToFirstMember() {
+    setMembers((prev) => {
+      if (prev.length === 0) return prev;
+      const first = prev[0];
+      return [
+        {
+          ...first,
+          fullName: leaderName || first.fullName,
+          email: leaderEmail || first.email,
+          phone: leaderPhone || first.phone,
+          institution: institution || first.institution,
+        },
+        ...prev.slice(1),
+      ];
+    });
+  }
+
   function next() {
     if (stepHasErrors(current)) {
       touchAll(stepKeys(current));
       return;
     }
+    if (current === "team") syncLeaderToFirstMember();
     if (current === "review" && !(agreeRules && agreeInfo && agreeMedia)) return;
     setStep((s) => Math.min(flow.length - 1, s + 1));
+  }
+  function back() {
+    setStep((s) => Math.max(0, s - 1));
   }
   function back() {
     setStep((s) => Math.max(0, s - 1));
