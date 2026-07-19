@@ -113,7 +113,7 @@ export function SponsorShowcase() {
                   (e.currentTarget as HTMLImageElement).style.display = "none";
                 }}
               />
-              <span className="co-sponsor-wordmark">{s.name}</span>
+              
             </span>
             <span className="co-sponsor-meta">
               <strong>{s.name}</strong>
