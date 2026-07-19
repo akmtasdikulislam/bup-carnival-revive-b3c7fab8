@@ -1,13 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import { SiteLayout } from "@/components/carnival/SiteLayout";
+import { GALLERY_IMAGES, type GalleryImage } from "@/data/gallery";
 
-// Placeholder gallery — original site had admin-uploaded images stored in localStorage.
-const PLACEHOLDER_IMAGES = Array.from({ length: 8 }, (_, i) => ({
-  id: `p${i}`,
-  src: `https://picsum.photos/seed/bupcarnival-${i}/900/620`,
-  caption: `Moment ${i + 1}`,
-}));
+// Repeat the curated images to build a rich media wall.
+const IMAGES: GalleryImage[] = Array.from({ length: 3 })
+  .flatMap((_, r) =>
+    GALLERY_IMAGES.map((g, i) => ({
+      ...g,
+      id: `${g.id}-${r}-${i}`,
+    })),
+  );
 
 export const Route = createFileRoute("/gallery")({
   head: () => ({
@@ -22,7 +26,7 @@ export const Route = createFileRoute("/gallery")({
 });
 
 function Gallery() {
-  const [active, setActive] = useState<null | (typeof PLACEHOLDER_IMAGES)[number]>(null);
+  const [active, setActive] = useState<null | GalleryImage>(null);
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
@@ -43,16 +47,20 @@ function Gallery() {
           <p className="sec-sub">Moments from past events.</p>
         </div>
         <div id="galleryGrid" className="simple-gallery-grid">
-          {PLACEHOLDER_IMAGES.map((img, i) => (
-            <button
+          {IMAGES.map((img, i) => (
+            <motion.button
               key={img.id}
               className="simple-gallery-item"
               type="button"
               onClick={() => setActive(img)}
-              aria-label={`Open photo ${i + 1}`}
+              aria-label={img.caption}
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-40px" }}
+              transition={{ duration: 0.45, delay: (i % 8) * 0.04 }}
             >
               <img src={img.src} alt={img.caption} loading="lazy" />
-            </button>
+            </motion.button>
           ))}
         </div>
       </section>

@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import { SPONSORS, sponsorLogo } from "@/data/sponsors";
 
 export function SponsorMarquee() {
@@ -5,7 +6,12 @@ export function SponsorMarquee() {
   return (
     <section className="sponsor-marquee" aria-label="Event sponsors">
       <div className="sponsor-marquee-viewport">
-        <div className="sponsor-marquee-track" style={{ animation: "marquee 60s linear infinite" }}>
+        <motion.div
+          className="sponsor-marquee-track"
+          animate={{ x: ["0%", "-50%"] }}
+          transition={{ duration: 60, ease: "linear", repeat: Infinity }}
+          style={{ animation: "none" }}
+        >
           {loop.map((s, i) => (
             <a
               key={`${s.name}-${i}`}
@@ -26,7 +32,7 @@ export function SponsorMarquee() {
               <span>{s.name}</span>
             </a>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );
@@ -45,18 +51,29 @@ export function SponsorShowcase() {
         <p className="sec-sub">Together, we make the carnival possible.</p>
       </div>
 
-      <a
+      <motion.a
         className="title-sponsor-card"
         href={`https://${title.domain}`}
         target="_blank"
         rel="noopener noreferrer"
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-80px" }}
+        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
       >
         <span className="sponsor-tier-badge">{title.tier}</span>
         <span className="title-sponsor-logo-panel">
           <img src={sponsorLogo(title.domain, 400)} alt={`${title.name} logo`} />
           <span className="title-sponsor-wordmark">{title.name}</span>
         </span>
-      </a>
+        <span className="title-sponsor-bottom">
+          <span>
+            <strong>{title.name}</strong>
+            <small>{title.tagline}</small>
+          </span>
+          <span className="sponsor-link-arrow" aria-hidden="true">↗</span>
+        </span>
+      </motion.a>
 
       <div className="co-sponsor-heading">
         <span>Co-sponsors &amp; partners</span>
@@ -64,27 +81,36 @@ export function SponsorShowcase() {
       </div>
 
       <div className="co-sponsor-grid">
-        {rest.map((s) => (
-          <a
+        {rest.map((s, i) => (
+          <motion.a
             key={s.name}
             className="co-sponsor-card"
             href={`https://${s.domain}`}
             target="_blank"
             rel="noopener noreferrer"
             title={s.name}
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-40px" }}
+            transition={{ duration: 0.45, delay: (i % 6) * 0.05, ease: [0.22, 1, 0.36, 1] }}
           >
-            <img
-              src={sponsorLogo(s.domain)}
-              alt={`${s.name} logo`}
-              loading="lazy"
-              onError={(e) => {
-                const img = e.currentTarget as HTMLImageElement;
-                img.style.display = "none";
-                img.nextElementSibling?.classList.add("show");
-              }}
-            />
-            <span className="co-sponsor-name">{s.name}</span>
-          </a>
+            {s.tier && <span className="co-sponsor-tier">{s.tier}</span>}
+            <span className="co-sponsor-logo-panel">
+              <img
+                src={sponsorLogo(s.domain)}
+                alt={`${s.name} logo`}
+                loading="lazy"
+                onError={(e) => {
+                  (e.currentTarget as HTMLImageElement).style.display = "none";
+                }}
+              />
+              <span className="co-sponsor-wordmark">{s.name}</span>
+            </span>
+            <span className="co-sponsor-meta">
+              <strong>{s.name}</strong>
+              {s.tagline && <small>{s.tagline}</small>}
+            </span>
+          </motion.a>
         ))}
       </div>
     </section>
