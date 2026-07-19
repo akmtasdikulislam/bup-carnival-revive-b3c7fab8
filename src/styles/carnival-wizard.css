@@ -742,3 +742,29 @@
   line-height: 1.5;
   margin: 10px 0 0;
 }
+
+/* ----- Stacked aside column (fee / summary / size chart as separate boxes) ----- */
+.wiz-aside-col {
+  display: grid;
+  gap: 18px;
+  align-content: start;
+}
+@media (min-width: 960px) {
+  .wiz-aside-col {
+    position: sticky;
+    top: 100px;
+  }
+}
+.wiz-aside-col .wiz-aside {
+  position: static;
+  top: auto;
+  margin: 0;
+}
+.wiz-aside-fee .wiz-fee-box {
+  margin-bottom: 0;
+}
+.wiz-aside-size .wiz-size-chart {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+}
