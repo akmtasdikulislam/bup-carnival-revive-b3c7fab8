@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type ChangeEvent } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   IconUsers,
@@ -14,13 +14,15 @@ import {
 } from "@tabler/icons-react";
 import { BD_INSTITUTIONS } from "@/data/institutions";
 import { initSslczSession } from "@/lib/sslcommerz.functions";
+import { IdCardUploader } from "./IdCardUploader";
 
 /* ============================================================
  * Types
  * ============================================================ */
 
 type Member = {
-  photo: string;
+  idCard: string;
+  idNumber: string;
   fullName: string;
   email: string;
   phone: string;
@@ -57,7 +59,8 @@ const emailRe = /^\S+@\S+\.\S+$/;
 const digits = (v: string) => v.replace(/\D/g, "");
 
 const emptyMember = (institution = ""): Member => ({
-  photo: "",
+  idCard: "",
+  idNumber: "",
   fullName: "",
   email: "",
   phone: "",
@@ -105,6 +108,7 @@ export function HackathonRegistration() {
   // Team (used in team mode; auto-derived from member[0] in solo mode)
   const [teamName, setTeamName] = useState("");
   const [institution, setInstitution] = useState("");
+  const [leaderName, setLeaderName] = useState("");
   const [leaderEmail, setLeaderEmail] = useState("");
   const [leaderPhone, setLeaderPhone] = useState("");
   const [instSuggest, setInstSuggest] = useState<string[]>([]);
@@ -189,13 +193,15 @@ export function HackathonRegistration() {
     if (!isSolo) {
       if (!teamName.trim()) e["teamName"] = "Team name is required";
       if (!institution.trim()) e["institution"] = "Institution is required";
+      if (!leaderName.trim()) e["leaderName"] = "Leader name is required";
       if (!emailRe.test(leaderEmail)) e["leaderEmail"] = "Enter a valid email";
       if (digits(leaderPhone).length < 10) e["leaderPhone"] = "Enter a valid phone";
     }
 
     members.forEach((m, i) => {
       const p = `m${i}.`;
-      if (!m.photo) e[p + "photo"] = "Photo required";
+      if (!m.idCard) e[p + "idCard"] = "ID card photo required";
+      if (!m.idNumber.trim()) e[p + "idNumber"] = "ID number required";
       if (!m.fullName.trim()) e[p + "fullName"] = "Full name required";
       if (!emailRe.test(m.email)) e[p + "email"] = "Valid email required";
       if (digits(m.phone).length < 10) e[p + "phone"] = "Valid phone required";
@@ -212,15 +218,15 @@ export function HackathonRegistration() {
     if (!project.stack.trim()) e["p.stack"] = "List your tech stack";
 
     return e;
-  }, [isSolo, teamName, institution, leaderEmail, leaderPhone, members, project]);
+  }, [isSolo, teamName, institution, leaderName, leaderEmail, leaderPhone, members, project]);
 
   const memberKeys = (i: number) =>
-    ["photo", "fullName", "email", "phone", "institution", "department", "year", "role", "tshirt"].map(
+    ["idCard", "idNumber", "fullName", "email", "phone", "institution", "department", "year", "role", "tshirt"].map(
       (k) => `m${i}.${k}`,
     );
 
   const stepKeys = (id: StepId): string[] => {
-    if (id === "team") return ["teamName", "institution", "leaderEmail", "leaderPhone"];
+    if (id === "team") return ["teamName", "institution", "leaderName", "leaderEmail", "leaderPhone"];
     if (id === "members") return members.flatMap((_, i) => memberKeys(i));
     if (id === "solo") return memberKeys(0);
     if (id === "project") return ["p.title", "p.pitch", "p.problem", "p.stack"];
@@ -230,11 +236,29 @@ export function HackathonRegistration() {
   const stepHasErrors = (id: StepId) => stepKeys(id).some((k) => errors[k]);
   const err = (k: string) => (touched[k] ? errors[k] : undefined);
 
+  function syncLeaderToFirstMember() {
+    setMembers((prev) => {
+      if (prev.length === 0) return prev;
+      const first = prev[0];
+      return [
+        {
+          ...first,
+          fullName: leaderName || first.fullName,
+          email: leaderEmail || first.email,
+          phone: leaderPhone || first.phone,
+          institution: institution || first.institution,
+        },
+        ...prev.slice(1),
+      ];
+    });
+  }
+
   function next() {
     if (stepHasErrors(current)) {
       touchAll(stepKeys(current));
       return;
     }
+    if (current === "team") syncLeaderToFirstMember();
     if (current === "review" && !(agreeRules && agreeInfo && agreeMedia)) return;
     setStep((s) => Math.min(flow.length - 1, s + 1));
   }
@@ -314,6 +338,8 @@ export function HackathonRegistration() {
                 instSuggest={instSuggest}
                 setInstSuggest={setInstSuggest}
                 pickInstitution={pickInstitution}
+                leaderName={leaderName}
+                setLeaderName={setLeaderName}
                 leaderEmail={leaderEmail}
                 setLeaderEmail={setLeaderEmail}
                 leaderPhone={leaderPhone}
@@ -358,6 +384,7 @@ export function HackathonRegistration() {
                 isSolo={isSolo}
                 teamName={teamName}
                 institution={institution}
+                leaderName={leaderName}
                 leaderEmail={leaderEmail}
                 leaderPhone={leaderPhone}
                 members={members}
@@ -498,20 +525,31 @@ function StepSolo({
       </div>
 
       <div className="wiz-grid cols-2" style={{ marginBottom: 14 }}>
-        <PhotoUploader
-          value={member.photo}
-          onChange={(v) => setMember({ photo: v })}
-          onBlur={() => touch(p + "photo")}
-          error={err(p + "photo")}
+        <IdCardUploader
+          value={member.idCard}
+          onChange={(v) => setMember({ idCard: v })}
+          onBlur={() => touch(p + "idCard")}
+          error={err(p + "idCard")}
         />
-        <Field label="Full name" error={err(p + "fullName")}>
-          <input
-            type="text"
-            value={member.fullName}
-            onChange={(e) => setMember({ fullName: e.target.value })}
-            onBlur={() => touch(p + "fullName")}
-          />
-        </Field>
+        <div style={{ display: "grid", gap: 14 }}>
+          <Field label="Full name" error={err(p + "fullName")}>
+            <input
+              type="text"
+              value={member.fullName}
+              onChange={(e) => setMember({ fullName: e.target.value })}
+              onBlur={() => touch(p + "fullName")}
+            />
+          </Field>
+          <Field label="University ID number" error={err(p + "idNumber")}>
+            <input
+              type="text"
+              placeholder="e.g. 20221001"
+              value={member.idNumber}
+              onChange={(e) => setMember({ idNumber: e.target.value })}
+              onBlur={() => touch(p + "idNumber")}
+            />
+          </Field>
+        </div>
       </div>
 
       <div className="wiz-grid cols-2">
@@ -771,51 +809,6 @@ function PhoneInput({
   );
 }
 
-function PhotoUploader({
-  value,
-  onChange,
-  error,
-  onBlur,
-}: {
-  value: string;
-  onChange: (dataUrl: string) => void;
-  error?: string;
-  onBlur?: () => void;
-}) {
-  function handleFile(e: ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    if (file.size > 2 * 1024 * 1024) {
-      alert("Image must be under 2 MB.");
-      e.target.value = "";
-      return;
-    }
-    const reader = new FileReader();
-    reader.onload = () => onChange(reader.result as string);
-    reader.readAsDataURL(file);
-  }
-  return (
-    <div className={`wiz-field ${error ? "err" : ""}`}>
-      <span>Photo</span>
-      <div className="wiz-photo">
-        <div
-          className="wiz-photo-thumb"
-          style={value ? { backgroundImage: `url(${value})` } : undefined}
-        >
-          {!value && <IconCamera size={22} />}
-        </div>
-        <div className="wiz-photo-actions">
-          <label className="wiz-photo-btn">
-            {value ? "Change" : "Upload"}
-            <input type="file" accept="image/*" onChange={handleFile} onBlur={onBlur} />
-          </label>
-          <span className="wiz-photo-hint">JPG / PNG · square · max 2 MB · min 400×400 px</span>
-        </div>
-      </div>
-      {error && <span className="wiz-err-msg">{error}</span>}
-    </div>
-  );
-}
 
 /* ============================================================
  * Step 1 – Team
@@ -831,6 +824,8 @@ function StepTeam(props: {
   instSuggest: string[];
   setInstSuggest: (v: string[]) => void;
   pickInstitution: (v: string) => void;
+  leaderName: string;
+  setLeaderName: (v: string) => void;
   leaderEmail: string;
   setLeaderEmail: (v: string) => void;
   leaderPhone: string;
@@ -848,6 +843,8 @@ function StepTeam(props: {
     instSuggest,
     setInstSuggest,
     pickInstitution,
+    leaderName,
+    setLeaderName,
     leaderEmail,
     setLeaderEmail,
     leaderPhone,
@@ -940,6 +937,16 @@ function StepTeam(props: {
           {err("institution") && <span className="wiz-err-msg">{err("institution")}</span>}
         </div>
 
+        <Field label="Leader name" error={err("leaderName")}>
+          <input
+            type="text"
+            placeholder="Full name"
+            value={leaderName}
+            onChange={(e) => setLeaderName(e.target.value)}
+            onBlur={() => touch("leaderName")}
+          />
+        </Field>
+
         <Field label="Leader email" error={err("leaderEmail")}>
           <input
             type="email"
@@ -1009,20 +1016,31 @@ function StepMembers({
             </div>
 
             <div className="wiz-grid cols-2" style={{ marginBottom: 14 }}>
-              <PhotoUploader
-                value={m.photo}
-                onChange={(v) => setMember(i, { photo: v })}
-                onBlur={() => touch(p + "photo")}
-                error={err(p + "photo")}
+              <IdCardUploader
+                value={m.idCard}
+                onChange={(v) => setMember(i, { idCard: v })}
+                onBlur={() => touch(p + "idCard")}
+                error={err(p + "idCard")}
               />
-              <Field label="Full name" error={err(p + "fullName")}>
-                <input
-                  type="text"
-                  value={m.fullName}
-                  onChange={(e) => setMember(i, { fullName: e.target.value })}
-                  onBlur={() => touch(p + "fullName")}
-                />
-              </Field>
+              <div style={{ display: "grid", gap: 14 }}>
+                <Field label="Full name" error={err(p + "fullName")}>
+                  <input
+                    type="text"
+                    value={m.fullName}
+                    onChange={(e) => setMember(i, { fullName: e.target.value })}
+                    onBlur={() => touch(p + "fullName")}
+                  />
+                </Field>
+                <Field label="University ID number" error={err(p + "idNumber")}>
+                  <input
+                    type="text"
+                    placeholder="e.g. 20221001"
+                    value={m.idNumber}
+                    onChange={(e) => setMember(i, { idNumber: e.target.value })}
+                    onBlur={() => touch(p + "idNumber")}
+                  />
+                </Field>
+              </div>
             </div>
 
             <div className="wiz-grid cols-2">
@@ -1192,6 +1210,7 @@ function StepReview({
   isSolo,
   teamName,
   institution,
+  leaderName,
   leaderEmail,
   leaderPhone,
   members,
@@ -1206,6 +1225,7 @@ function StepReview({
   isSolo: boolean;
   teamName: string;
   institution: string;
+  leaderName: string;
   leaderEmail: string;
   leaderPhone: string;
   members: Member[];
@@ -1228,6 +1248,7 @@ function StepReview({
           <dl className="wiz-review-grid">
             <dt>Team name</dt><dd>{teamName || "—"}</dd>
             <dt>Institution</dt><dd>{institution || "—"}</dd>
+            <dt>Leader name</dt><dd>{leaderName || "—"}</dd>
             <dt>Leader email</dt><dd>{leaderEmail || "—"}</dd>
             <dt>Leader phone</dt><dd>{leaderPhone ? `+880 ${leaderPhone}` : "—"}</dd>
           </dl>
@@ -1240,13 +1261,21 @@ function StepReview({
           <div className="wiz-review-photo-row">
             <div
               className="wiz-review-photo"
-              style={m.photo ? { backgroundImage: `url(${m.photo})` } : undefined}
-              aria-label={`${m.fullName || "member"} photo`}
+              style={{
+                width: 140,
+                height: 88,
+                borderRadius: 8,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                ...(m.idCard ? { backgroundImage: `url(${m.idCard})` } : {}),
+              }}
+              aria-label={`${m.fullName || "member"} university id card`}
             >
-              {!m.photo && <IconCamera size={20} />}
+              {!m.idCard && <IconCamera size={20} />}
             </div>
             <dl className="wiz-review-grid" style={{ flex: 1 }}>
               <dt>Full name</dt><dd>{m.fullName || "—"}</dd>
+              <dt>ID number</dt><dd>{m.idNumber || "—"}</dd>
               <dt>Email</dt><dd>{m.email || "—"}</dd>
               <dt>Phone</dt><dd>{m.phone ? `+880 ${m.phone}` : "—"}</dd>
               <dt>Institution</dt><dd>{m.institution || "—"}</dd>
