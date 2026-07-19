@@ -70,13 +70,19 @@ const emptyMember = (institution = ""): Member => ({
 
 const emptyProject = (): Project => ({ title: "", pitch: "", problem: "", stack: "" });
 
-const STEPS = [
-  { id: 1, label: "Team", Icon: IconUsers },
-  { id: 2, label: "Members", Icon: IconUser },
-  { id: 3, label: "Project", Icon: IconBulb },
-  { id: 4, label: "Review", Icon: IconClipboardCheck },
-  { id: 5, label: "Payment", Icon: IconCreditCard },
-] as const;
+type StepId = "team" | "members" | "solo" | "project" | "review" | "payment";
+
+const STEP_META: Record<StepId, { label: string; Icon: typeof IconUsers }> = {
+  team: { label: "Team", Icon: IconUsers },
+  members: { label: "Members", Icon: IconUser },
+  solo: { label: "You", Icon: IconUser },
+  project: { label: "Project", Icon: IconBulb },
+  review: { label: "Review", Icon: IconClipboardCheck },
+  payment: { label: "Payment", Icon: IconCreditCard },
+};
+
+const soloFlow: StepId[] = ["solo", "project", "review", "payment"];
+const teamFlow: StepId[] = ["team", "members", "project", "review", "payment"];
 
 /* ============================================================
  * Component
@@ -84,15 +90,19 @@ const STEPS = [
 
 export function HackathonRegistration() {
   const [teamSize, setTeamSize] = useState<number | null>(null);
+  const isSolo = teamSize === 1;
+  const flow = isSolo ? soloFlow : teamFlow;
   const fee = FEE_PER_PERSON * (teamSize ?? 0);
 
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(0); // index into flow
+  const current: StepId = flow[step] ?? flow[0];
+
   const [touched, setTouched] = useState<Record<string, boolean>>({});
   const touch = (k: string) => setTouched((t) => ({ ...t, [k]: true }));
   const touchAll = (keys: string[]) =>
     setTouched((t) => keys.reduce((acc, k) => ({ ...acc, [k]: true }), t));
 
-  // Team
+  // Team (used in team mode; auto-derived from member[0] in solo mode)
   const [teamName, setTeamName] = useState("");
   const [institution, setInstitution] = useState("");
   const [leaderEmail, setLeaderEmail] = useState("");
@@ -122,7 +132,6 @@ export function HackathonRegistration() {
     if (status === "success") {
       teamCodeRef.current = p.get("tran_id") || "HACK-CONFIRMED";
       setDone(true);
-      setStep(5);
     }
     const url = window.location.pathname + window.location.hash;
     window.history.replaceState(null, "", url);
@@ -131,11 +140,23 @@ export function HackathonRegistration() {
   function chooseTeamSize(n: number) {
     setTeamSize(n);
     setMembers(Array.from({ length: n }, () => emptyMember()));
-    setStep(1);
+    setStep(0);
   }
 
   const setMember = (i: number, patch: Partial<Member>) =>
     setMembers((prev) => prev.map((m, idx) => (idx === i ? { ...m, ...patch } : m)));
+
+  // For solo mode, mirror member[0] into leader fields on every write
+  const setSoloMember = (patch: Partial<Member>) => {
+    setMembers((prev) => {
+      const next = [{ ...prev[0], ...patch }];
+      if (patch.email !== undefined) setLeaderEmail(patch.email);
+      if (patch.phone !== undefined) setLeaderPhone(patch.phone);
+      if (patch.institution !== undefined) setInstitution(patch.institution);
+      if (patch.fullName !== undefined && !teamName.trim()) setTeamName(patch.fullName);
+      return next;
+    });
+  };
 
   function onInstitutionInput(v: string) {
     const prevInst = institution;
@@ -165,10 +186,12 @@ export function HackathonRegistration() {
   const errors = useMemo(() => {
     const e: Record<string, string> = {};
 
-    if (!teamName.trim()) e["teamName"] = "Team name is required";
-    if (!institution.trim()) e["institution"] = "Institution is required";
-    if (!emailRe.test(leaderEmail)) e["leaderEmail"] = "Enter a valid email";
-    if (digits(leaderPhone).length < 10) e["leaderPhone"] = "Enter a valid phone";
+    if (!isSolo) {
+      if (!teamName.trim()) e["teamName"] = "Team name is required";
+      if (!institution.trim()) e["institution"] = "Institution is required";
+      if (!emailRe.test(leaderEmail)) e["leaderEmail"] = "Enter a valid email";
+      if (digits(leaderPhone).length < 10) e["leaderPhone"] = "Enter a valid phone";
+    }
 
     members.forEach((m, i) => {
       const p = `m${i}.`;
@@ -189,33 +212,34 @@ export function HackathonRegistration() {
     if (!project.stack.trim()) e["p.stack"] = "List your tech stack";
 
     return e;
-  }, [teamName, institution, leaderEmail, leaderPhone, members, project]);
+  }, [isSolo, teamName, institution, leaderEmail, leaderPhone, members, project]);
 
-  const stepKeys = (s: number): string[] => {
-    if (s === 1) return ["teamName", "institution", "leaderEmail", "leaderPhone"];
-    if (s === 2)
-      return members.flatMap((_, i) =>
-        ["photo", "fullName", "email", "phone", "institution", "department", "year", "role", "tshirt"].map(
-          (k) => `m${i}.${k}`,
-        ),
-      );
-    if (s === 3) return ["p.title", "p.pitch", "p.problem", "p.stack"];
+  const memberKeys = (i: number) =>
+    ["photo", "fullName", "email", "phone", "institution", "department", "year", "role", "tshirt"].map(
+      (k) => `m${i}.${k}`,
+    );
+
+  const stepKeys = (id: StepId): string[] => {
+    if (id === "team") return ["teamName", "institution", "leaderEmail", "leaderPhone"];
+    if (id === "members") return members.flatMap((_, i) => memberKeys(i));
+    if (id === "solo") return memberKeys(0);
+    if (id === "project") return ["p.title", "p.pitch", "p.problem", "p.stack"];
     return [];
   };
 
-  const stepHasErrors = (s: number) => stepKeys(s).some((k) => errors[k]);
+  const stepHasErrors = (id: StepId) => stepKeys(id).some((k) => errors[k]);
   const err = (k: string) => (touched[k] ? errors[k] : undefined);
 
   function next() {
-    if (stepHasErrors(step)) {
-      touchAll(stepKeys(step));
+    if (stepHasErrors(current)) {
+      touchAll(stepKeys(current));
       return;
     }
-    if (step === 4 && !(agreeRules && agreeInfo && agreeMedia)) return;
-    setStep((s) => Math.min(5, s + 1));
+    if (current === "review" && !(agreeRules && agreeInfo && agreeMedia)) return;
+    setStep((s) => Math.min(flow.length - 1, s + 1));
   }
   function back() {
-    setStep((s) => Math.max(1, s - 1));
+    setStep((s) => Math.max(0, s - 1));
   }
 
   const [payError, setPayError] = useState<string | null>(null);
@@ -272,15 +296,15 @@ export function HackathonRegistration() {
   return (
     <div className="wiz-wrap">
       <div>
-        <StepBar step={step} />
+        <StepBar flow={flow} step={step} />
         <div className="wiz-card">
-          <FeeBanner feePerPerson={FEE_PER_PERSON} teamSize={size} total={fee} />
+          <FeeBanner feePerPerson={FEE_PER_PERSON} teamSize={size} total={fee} isSolo={isSolo} />
           <AnimatePresence mode="wait">
             {done ? (
-              <SuccessPanel key="done" code={teamCodeRef.current} teamName={teamName} />
-            ) : step === 1 ? (
+              <SuccessPanel key="done" code={teamCodeRef.current} teamName={teamName || members[0]?.fullName || ""} />
+            ) : current === "team" ? (
               <StepTeam
-                key="s1"
+                key="team"
                 teamSize={size}
                 onChangeTeamSize={() => setTeamSize(null)}
                 teamName={teamName}
@@ -297,19 +321,41 @@ export function HackathonRegistration() {
                 err={err}
                 touch={touch}
               />
-            ) : step === 2 ? (
-              <StepMembers key="s2" members={members} setMember={setMember} err={err} touch={touch} />
-            ) : step === 3 ? (
+            ) : current === "members" ? (
+              <StepMembers key="members" members={members} setMember={setMember} err={err} touch={touch} />
+            ) : current === "solo" ? (
+              <StepSolo
+                key="solo"
+                member={members[0]}
+                setMember={setSoloMember}
+                onChangeTeamSize={() => setTeamSize(null)}
+                instSuggest={instSuggest}
+                setInstSuggest={setInstSuggest}
+                onInstitutionInput={(v: string) => {
+                  setSoloMember({ institution: v });
+                  const q = v.trim().toLowerCase();
+                  if (q.length < 2) return setInstSuggest([]);
+                  setInstSuggest(BD_INSTITUTIONS.filter((i) => i.toLowerCase().includes(q)).slice(0, 6));
+                }}
+                pickInstitution={(v: string) => {
+                  setSoloMember({ institution: v });
+                  setInstSuggest([]);
+                }}
+                err={err}
+                touch={touch}
+              />
+            ) : current === "project" ? (
               <StepProject
-                key="s3"
+                key="project"
                 project={project}
                 setProject={(patch) => setProject((p) => ({ ...p, ...patch }))}
                 err={err}
                 touch={touch}
               />
-            ) : step === 4 ? (
+            ) : current === "review" ? (
               <StepReview
-                key="s4"
+                key="review"
+                isSolo={isSolo}
                 teamName={teamName}
                 institution={institution}
                 leaderEmail={leaderEmail}
@@ -325,7 +371,7 @@ export function HackathonRegistration() {
               />
             ) : (
               <StepPayment
-                key="s5"
+                key="payment"
                 payMethod={payMethod}
                 setPayMethod={setPayMethod}
                 submitting={submitting}
@@ -341,22 +387,22 @@ export function HackathonRegistration() {
                 type="button"
                 className="wiz-btn ghost"
                 onClick={back}
-                disabled={step === 1}
+                disabled={step === 0}
               >
                 <IconArrowLeft size={14} /> Back
               </button>
-              {step < 5 && (
+              {current !== "payment" && (
                 <button
                   type="button"
                   className="wiz-btn primary"
                   onClick={next}
-                  disabled={step === 4 && !(agreeRules && agreeInfo && agreeMedia)}
+                  disabled={current === "review" && !(agreeRules && agreeInfo && agreeMedia)}
                 >
-                  {step === 4 ? "Continue to payment" : "Continue"}
+                  {current === "review" ? "Continue to payment" : "Continue"}
                   <IconArrowRight size={14} />
                 </button>
               )}
-              {step === 5 && (
+              {current === "payment" && (
                 <button
                   type="button"
                   className="wiz-btn mint"
@@ -406,31 +452,230 @@ export function HackathonRegistration() {
 }
 
 /* ============================================================
+ * Solo participant step (merged team + member)
+ * ============================================================ */
+
+function StepSolo({
+  member,
+  setMember,
+  onChangeTeamSize,
+  onInstitutionInput,
+  instSuggest,
+  setInstSuggest,
+  pickInstitution,
+  err,
+  touch,
+}: {
+  member: Member;
+  setMember: (patch: Partial<Member>) => void;
+  onChangeTeamSize: () => void;
+  onInstitutionInput: (v: string) => void;
+  instSuggest: string[];
+  setInstSuggest: (v: string[]) => void;
+  pickInstitution: (v: string) => void;
+  err: (k: string) => string | undefined;
+  touch: (k: string) => void;
+}) {
+  const p = "m0.";
+  return (
+    <motion.div {...fadeMotion()}>
+      <h3>Your details</h3>
+      <p className="wiz-card-sub">
+        You're registering solo — one form, one builder. This info doubles as your team leader
+        record.
+      </p>
+
+      <div style={{ marginBottom: 18, display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
+        <span className="wiz-badge">Solo builder</span>
+        <button
+          type="button"
+          onClick={onChangeTeamSize}
+          className="wiz-btn ghost"
+          style={{ padding: "6px 14px", fontSize: 10 }}
+        >
+          Switch to team
+        </button>
+      </div>
+
+      <div className="wiz-grid cols-2" style={{ marginBottom: 14 }}>
+        <PhotoUploader
+          value={member.photo}
+          onChange={(v) => setMember({ photo: v })}
+          onBlur={() => touch(p + "photo")}
+          error={err(p + "photo")}
+        />
+        <Field label="Full name" error={err(p + "fullName")}>
+          <input
+            type="text"
+            value={member.fullName}
+            onChange={(e) => setMember({ fullName: e.target.value })}
+            onBlur={() => touch(p + "fullName")}
+          />
+        </Field>
+      </div>
+
+      <div className="wiz-grid cols-2">
+        <Field label="Email" error={err(p + "email")}>
+          <input
+            type="email"
+            value={member.email}
+            onChange={(e) => setMember({ email: e.target.value })}
+            onBlur={() => touch(p + "email")}
+          />
+        </Field>
+        <PhoneInput
+          label="Phone"
+          value={member.phone}
+          onChange={(v) => setMember({ phone: v })}
+          onBlur={() => touch(p + "phone")}
+          error={err(p + "phone")}
+        />
+
+        <div
+          className={`wiz-field ${err(p + "institution") ? "err" : ""}`}
+          style={{ position: "relative" }}
+        >
+          <span>University / Institution</span>
+          <input
+            type="text"
+            placeholder="Start typing…"
+            autoComplete="off"
+            value={member.institution}
+            onChange={(e) => onInstitutionInput(e.target.value)}
+            onBlur={() => {
+              touch(p + "institution");
+              setTimeout(() => setInstSuggest([]), 150);
+            }}
+          />
+          {instSuggest.length > 0 && (
+            <div
+              role="listbox"
+              style={{
+                position: "absolute",
+                top: "100%",
+                left: 0,
+                right: 0,
+                zIndex: 20,
+                background: "var(--surface-2)",
+                border: "1px solid var(--border)",
+                borderRadius: 10,
+                marginTop: 4,
+                overflow: "hidden",
+              }}
+            >
+              {instSuggest.map((s) => (
+                <button
+                  key={s}
+                  type="button"
+                  onMouseDown={(e) => {
+                    e.preventDefault();
+                    pickInstitution(s);
+                  }}
+                  style={{
+                    display: "block",
+                    width: "100%",
+                    textAlign: "left",
+                    padding: "10px 14px",
+                    background: "transparent",
+                    border: 0,
+                    color: "var(--text)",
+                    fontSize: 13,
+                    cursor: "pointer",
+                    fontFamily: "var(--fm)",
+                  }}
+                >
+                  {s}
+                </button>
+              ))}
+            </div>
+          )}
+          {err(p + "institution") && <span className="wiz-err-msg">{err(p + "institution")}</span>}
+        </div>
+
+        <Field label="Department" error={err(p + "department")}>
+          <input
+            type="text"
+            placeholder="e.g. CSE"
+            value={member.department}
+            onChange={(e) => setMember({ department: e.target.value })}
+            onBlur={() => touch(p + "department")}
+          />
+        </Field>
+        <Field label="Year of study" error={err(p + "year")}>
+          <select
+            value={member.year}
+            onChange={(e) => setMember({ year: e.target.value })}
+            onBlur={() => touch(p + "year")}
+          >
+            <option value="">Select year</option>
+            {YEAR_OPTIONS.map((y) => (
+              <option key={y} value={y}>
+                {y} year
+              </option>
+            ))}
+          </select>
+        </Field>
+        <Field label="Primary role" error={err(p + "role")}>
+          <select
+            value={member.role}
+            onChange={(e) => setMember({ role: e.target.value })}
+            onBlur={() => touch(p + "role")}
+          >
+            <option value="">Select role</option>
+            {ROLE_OPTIONS.map((r) => (
+              <option key={r} value={r}>
+                {r}
+              </option>
+            ))}
+          </select>
+        </Field>
+        <Field label="T-shirt size" error={err(p + "tshirt")}>
+          <select
+            value={member.tshirt}
+            onChange={(e) => setMember({ tshirt: e.target.value })}
+            onBlur={() => touch(p + "tshirt")}
+          >
+            <option value="">Select size</option>
+            {TSHIRT_SIZES.map((s) => (
+              <option key={s} value={s}>
+                {s}
+              </option>
+            ))}
+          </select>
+        </Field>
+      </div>
+    </motion.div>
+  );
+}
+
+/* ============================================================
  * Step bar
  * ============================================================ */
 
-function StepBar({ step }: { step: number }) {
-  const total = STEPS.length;
-  const currentIdx = Math.min(step, total);
-  const progress = ((currentIdx - 1) / (total - 1)) * 100;
+
+
+function StepBar({ flow, step }: { flow: StepId[]; step: number }) {
+  const total = flow.length;
+  const progress = total > 1 ? (step / (total - 1)) * 100 : 0;
   return (
     <div className="wiz-stepbar" role="list" aria-label="Registration steps">
       <div className="wiz-stepbar-track" aria-hidden>
         <div className="wiz-stepbar-fill" style={{ width: `${progress}%` }} />
       </div>
-      {STEPS.map((s) => {
-        const state = step > s.id ? "done" : step === s.id ? "current" : "";
+      {flow.map((id, idx) => {
+        const meta = STEP_META[id];
+        const state = step > idx ? "done" : step === idx ? "current" : "";
         return (
           <div
-            key={s.id}
+            key={id}
             className={`wiz-step ${state}`}
             role="listitem"
-            aria-current={step === s.id ? "step" : undefined}
+            aria-current={step === idx ? "step" : undefined}
           >
             <span className="wiz-step-node">
-              {step > s.id ? <IconCheck size={14} strokeWidth={3} /> : <s.Icon size={14} />}
+              {step > idx ? <IconCheck size={14} strokeWidth={3} /> : <meta.Icon size={14} />}
             </span>
-            <span className="wiz-step-label">{s.label}</span>
+            <span className="wiz-step-label">{meta.label}</span>
           </div>
         );
       })}
@@ -442,10 +687,12 @@ function FeeBanner({
   feePerPerson,
   teamSize,
   total,
+  isSolo,
 }: {
   feePerPerson: number;
   teamSize: number;
   total: number;
+  isSolo: boolean;
 }) {
   return (
     <div className="wiz-fee-banner" role="note">
@@ -455,7 +702,7 @@ function FeeBanner({
       <div className="wiz-fee-banner-body">
         <span className="wiz-fee-banner-label">Registration fee</span>
         <span className="wiz-fee-banner-value">
-          ৳{feePerPerson} <em>/person</em> · Team of {teamSize} · <strong>৳{total} total</strong>
+          ৳{feePerPerson} <em>/person</em> · {isSolo ? "Solo builder" : `Team of ${teamSize}`} · <strong>৳{total} total</strong>
         </span>
       </div>
       <span className="wiz-fee-banner-hint">Paid at checkout</span>
@@ -942,6 +1189,7 @@ function StepProject({
  * ============================================================ */
 
 function StepReview({
+  isSolo,
   teamName,
   institution,
   leaderEmail,
@@ -955,6 +1203,7 @@ function StepReview({
   agreeMedia,
   setAgreeMedia,
 }: {
+  isSolo: boolean;
   teamName: string;
   institution: string;
   leaderEmail: string;
@@ -973,15 +1222,17 @@ function StepReview({
       <h3>Review &amp; confirm</h3>
       <p className="wiz-card-sub">Double-check everything before you head to payment.</p>
 
-      <div className="wiz-review-block">
-        <h5>// team</h5>
-        <dl className="wiz-review-grid">
-          <dt>Team name</dt><dd>{teamName || "—"}</dd>
-          <dt>Institution</dt><dd>{institution || "—"}</dd>
-          <dt>Leader email</dt><dd>{leaderEmail || "—"}</dd>
-          <dt>Leader phone</dt><dd>{leaderPhone ? `+880 ${leaderPhone}` : "—"}</dd>
-        </dl>
-      </div>
+      {!isSolo && (
+        <div className="wiz-review-block">
+          <h5>// team</h5>
+          <dl className="wiz-review-grid">
+            <dt>Team name</dt><dd>{teamName || "—"}</dd>
+            <dt>Institution</dt><dd>{institution || "—"}</dd>
+            <dt>Leader email</dt><dd>{leaderEmail || "—"}</dd>
+            <dt>Leader phone</dt><dd>{leaderPhone ? `+880 ${leaderPhone}` : "—"}</dd>
+          </dl>
+        </div>
+      )}
 
       {members.map((m, i) => (
         <div key={i} className="wiz-review-block">
