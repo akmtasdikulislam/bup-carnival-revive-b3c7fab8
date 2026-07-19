@@ -38,8 +38,10 @@ type Coach = {
 
 const TSHIRT_SIZES = ["S", "M", "L", "XL", "XXL"];
 const YEAR_OPTIONS = ["1st", "2nd", "3rd", "4th", "5th", "Graduate"];
-const FEE = 1500; // BDT
+const FEE_PER_PERSON = 500; // BDT
 const TEAM_SIZE = 3;
+const FEE = FEE_PER_PERSON * TEAM_SIZE;
+
 
 const emailRe = /^\S+@\S+\.\S+$/;
 const digits = (v: string) => v.replace(/\D/g, "");
