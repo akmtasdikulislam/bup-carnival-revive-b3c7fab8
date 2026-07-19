@@ -85,6 +85,9 @@ const STEPS = [
  * ============================================================ */
 
 export function HackathonRegistration() {
+  const [teamSize, setTeamSize] = useState<number | null>(null);
+  const fee = FEE_PER_PERSON * (teamSize ?? 0);
+
   const [step, setStep] = useState(1);
   const [touched, setTouched] = useState<Record<string, boolean>>({});
   const touch = (k: string) => setTouched((t) => ({ ...t, [k]: true }));
@@ -99,9 +102,7 @@ export function HackathonRegistration() {
   const [instSuggest, setInstSuggest] = useState<string[]>([]);
 
   // Members / Project
-  const [members, setMembers] = useState<Member[]>(() =>
-    Array.from({ length: TEAM_SIZE }, () => emptyMember()),
-  );
+  const [members, setMembers] = useState<Member[]>([]);
   const [project, setProject] = useState<Project>(() => emptyProject());
 
   // Agreements
@@ -129,19 +130,37 @@ export function HackathonRegistration() {
     window.history.replaceState(null, "", url);
   }, []);
 
+  function chooseTeamSize(n: number) {
+    setTeamSize(n);
+    setMembers(Array.from({ length: n }, () => emptyMember()));
+    setStep(1);
+  }
+
   const setMember = (i: number, patch: Partial<Member>) =>
     setMembers((prev) => prev.map((m, idx) => (idx === i ? { ...m, ...patch } : m)));
 
   function onInstitutionInput(v: string) {
+    const prevInst = institution;
     setInstitution(v);
     setMembers((prev) =>
       prev.map((m) =>
-        m.institution === "" || m.institution === institution ? { ...m, institution: v } : m,
+        m.institution === "" || m.institution === prevInst ? { ...m, institution: v } : m,
       ),
     );
     const q = v.trim().toLowerCase();
     if (q.length < 2) return setInstSuggest([]);
     setInstSuggest(BD_INSTITUTIONS.filter((i) => i.toLowerCase().includes(q)).slice(0, 6));
+  }
+
+  function pickInstitution(v: string) {
+    const prevInst = institution;
+    setMembers((prev) =>
+      prev.map((m) =>
+        m.institution === "" || m.institution === prevInst ? { ...m, institution: v } : m,
+      ),
+    );
+    setInstitution(v);
+    setInstSuggest([]);
   }
 
   /* --------- validation --------- */
