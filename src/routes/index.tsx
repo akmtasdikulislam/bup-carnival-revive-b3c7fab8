@@ -1,9 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
+import { IconArrowUpRight } from "@tabler/icons-react";
 import { SiteLayout } from "@/components/carnival/SiteLayout";
 import { Countdown } from "@/components/carnival/Countdown";
 import { Reveal } from "@/components/carnival/Reveal";
 import { SponsorMarquee, SponsorShowcase } from "@/components/carnival/Sponsors";
+import { ContactForm } from "@/components/carnival/ContactForm";
+import { GALLERY_IMAGES } from "@/data/gallery";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -260,7 +263,7 @@ function Home() {
       </section>
 
       {/* GALLERY TEASER */}
-      <section className="section alt">
+      <section className="section alt gallery-preview-section">
         <div className="sec-hdr">
           <span className="sec-num">// gallery --preview</span>
           <h2 className="sec-title">
@@ -268,9 +271,28 @@ function Home() {
           </h2>
           <p className="sec-sub">Photos from previous programming contests and CTF nights.</p>
         </div>
-        <div style={{ textAlign: "center" }}>
-          <Link to="/gallery" className="btn-primary">
-            Open Gallery →
+
+        <div className="gallery-preview-grid">
+          {GALLERY_IMAGES.map((img, i) => (
+            <motion.figure
+              key={img.id}
+              className={`gallery-preview-tile tile-${i}`}
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{ duration: 0.55, delay: i * 0.06, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <img src={img.src} alt={img.caption} loading="lazy" />
+              <figcaption>
+                <span className="gallery-preview-caption">{img.caption}</span>
+              </figcaption>
+            </motion.figure>
+          ))}
+        </div>
+
+        <div className="gallery-preview-cta">
+          <Link to="/gallery" className="btn-ghost">
+            Open full gallery →
           </Link>
         </div>
       </section>
@@ -278,9 +300,23 @@ function Home() {
       {/* SPONSOR SHOWCASE */}
       <SponsorShowcase />
 
+      {/* CONTACT */}
+      <ContactForm />
+
       {/* SUPPORT / CTA */}
-      <section className="cta-section" id="register">
-        <div className="cta-inner">
+      <section className="cta-section cta-section-v2" id="register">
+        <div className="cta-bg" aria-hidden="true">
+          <span className="cta-orb cta-orb-1" />
+          <span className="cta-orb cta-orb-2" />
+          <span className="cta-grid" />
+        </div>
+        <motion.div
+          className="cta-inner"
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+        >
           <span className="eyebrow center">
             <span className="ping" />
             Seats are limited
@@ -288,11 +324,24 @@ function Home() {
           <h2 className="cta-title">
             Ready to <em>push --force</em>?
           </h2>
-          <p className="cta-sub">Pick your track above and lock in a slot before registration closes.</p>
-          <Link to="/" hash="tracks" className="btn-primary big">
-            ./choose --track
-          </Link>
-        </div>
+          <p className="cta-sub">
+            Pick your track above and lock in a slot before registration closes.
+          </p>
+          <div className="cta-actions">
+            <Link to="/" hash="tracks" className="btn-primary big">
+              ./choose --track
+              <IconArrowUpRight size={18} style={{ marginLeft: 8, verticalAlign: "-3px" }} />
+            </Link>
+            <Link to="/faq" className="btn-ghost big">
+              cat faq.md
+            </Link>
+          </div>
+          <ul className="cta-meta">
+            <li><strong>3</strong><span>competition tracks</span></li>
+            <li><strong>500৳</strong><span>per participant</span></li>
+            <li><strong>48h</strong><span>reply on queries</span></li>
+          </ul>
+        </motion.div>
       </section>
     </SiteLayout>
   );
