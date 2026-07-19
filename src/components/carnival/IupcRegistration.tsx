@@ -155,12 +155,14 @@ export function IupcRegistration() {
 
     if (!teamName.trim()) e["teamName"] = "Team name is required";
     if (!institution.trim()) e["institution"] = "Institution is required";
+    if (!leaderName.trim()) e["leaderName"] = "Leader name is required";
     if (!emailRe.test(leaderEmail)) e["leaderEmail"] = "Enter a valid email";
     if (digits(leaderPhone).length < 10) e["leaderPhone"] = "Enter a valid phone";
 
     members.forEach((m, i) => {
       const p = `m${i}.`;
-      if (!m.idCard) e[p + "idCard"] = "Photo required";
+      if (!m.idCard) e[p + "idCard"] = "ID card photo required";
+      if (!m.idNumber.trim()) e[p + "idNumber"] = "ID number required";
       if (!m.fullName.trim()) e[p + "fullName"] = "Full name required";
       if (!emailRe.test(m.email)) e[p + "email"] = "Valid email required";
       if (digits(m.phone).length < 10) e[p + "phone"] = "Valid phone required";
@@ -178,13 +180,13 @@ export function IupcRegistration() {
     if (!coach.tshirt) e["c.tshirt"] = "Select size";
 
     return e;
-  }, [teamName, institution, leaderEmail, leaderPhone, members, coach]);
+  }, [teamName, institution, leaderName, leaderEmail, leaderPhone, members, coach]);
 
   const stepKeys = (s: number): string[] => {
-    if (s === 1) return ["teamName", "institution", "leaderEmail", "leaderPhone"];
+    if (s === 1) return ["teamName", "institution", "leaderName", "leaderEmail", "leaderPhone"];
     if (s === 2)
       return members.flatMap((_, i) =>
-        ["photo", "fullName", "email", "phone", "institution", "department", "year", "tshirt"].map(
+        ["idCard", "idNumber", "fullName", "email", "phone", "institution", "department", "year", "tshirt"].map(
           (k) => `m${i}.${k}`,
         ),
       );
