@@ -1022,33 +1022,40 @@ function SummaryAside({
   const filledMembers = members.filter((m) => m.fullName.trim()).length;
   const [previewSize, setPreviewSize] = useState<string>("M");
   return (
-    <aside className="wiz-aside">
-      <div className="wiz-fee-box">
-        <span className="wiz-fee-label">// registration fee</span>
-        <div className="wiz-fee-amount">
-          ৳{feePerPerson}<span>/person</span>
+    <div className="wiz-aside-col">
+      <aside className="wiz-aside wiz-aside-fee">
+        <div className="wiz-fee-box">
+          <span className="wiz-fee-label">// registration fee</span>
+          <div className="wiz-fee-amount">
+            ৳{feePerPerson}<span>/person</span>
+          </div>
+          <span className="wiz-fee-sub">
+            Team of {TEAM_SIZE} · ৳{fee} total · paid at checkout
+          </span>
         </div>
-        <span className="wiz-fee-sub">
-          Team of {TEAM_SIZE} · ৳{fee} total · paid at checkout
-        </span>
-      </div>
+      </aside>
 
-      <h4>// order summary</h4>
-      <div className="wiz-aside-row"><span>Event</span><span>IUPC 2026</span></div>
-      <div className="wiz-aside-row"><span>Team</span><span>{teamName || "—"}</span></div>
-      <div className="wiz-aside-row"><span>Institution</span><span style={{ textAlign: "right", maxWidth: 180 }}>{institution || "—"}</span></div>
-      <div className="wiz-aside-row"><span>Members</span><span>{filledMembers}/{TEAM_SIZE}</span></div>
-      <div className="wiz-aside-row"><span>Coach</span><span>{coach.fullName ? "✓" : "—"}</span></div>
-      <div className="wiz-aside-row"><span>Format</span><span>ACM-ICPC</span></div>
-      <div className="wiz-aside-total">
-        <span>Total</span>
-        <strong>৳{fee}</strong>
-      </div>
+      <aside className="wiz-aside">
+        <h4>// order summary</h4>
+        <div className="wiz-aside-row"><span>Event</span><span>IUPC 2026</span></div>
+        <div className="wiz-aside-row"><span>Team</span><span>{teamName || "—"}</span></div>
+        <div className="wiz-aside-row"><span>Institution</span><span style={{ textAlign: "right", maxWidth: 180 }}>{institution || "—"}</span></div>
+        <div className="wiz-aside-row"><span>Members</span><span>{filledMembers}/{TEAM_SIZE}</span></div>
+        <div className="wiz-aside-row"><span>Coach</span><span>{coach.fullName ? "✓" : "—"}</span></div>
+        <div className="wiz-aside-row"><span>Format</span><span>ACM-ICPC</span></div>
+        <div className="wiz-aside-total">
+          <span>Total</span>
+          <strong>৳{fee}</strong>
+        </div>
+      </aside>
 
-      <SizeChart size={previewSize} onSize={setPreviewSize} />
-    </aside>
+      <aside className="wiz-aside wiz-aside-size">
+        <SizeChart size={previewSize} onSize={setPreviewSize} />
+      </aside>
+    </div>
   );
 }
+
 
 /* ============================================================
  * Size chart (interactive preview)
@@ -1071,13 +1078,28 @@ function SizeChart({ size, onSize }: { size: string; onSize: (s: string) => void
         <span className="wiz-size-tag">UNISEX · FLAT</span>
       </div>
       <div className="wiz-size-preview" aria-hidden>
-        <svg viewBox="0 0 180 160" width="100%" height="120" fill="none">
+        <svg viewBox="0 0 220 180" width="100%" height="150" fill="none">
           <path
-            d="M60 20 L45 30 L20 45 L30 65 L50 55 L50 140 L130 140 L130 55 L150 65 L160 45 L135 30 L120 20 C115 32 105 38 90 38 C75 38 65 32 60 20 Z"
+            d="M70 22 L52 34 L22 52 L34 76 L58 64 L58 158 L162 158 L162 64 L186 76 L198 52 L168 34 L150 22 C144 36 132 44 110 44 C88 44 76 36 70 22 Z"
             stroke="var(--gold)"
-            strokeWidth="1.5"
+            strokeWidth="1.6"
             fill="rgba(242,183,5,0.05)"
+            strokeLinejoin="round"
           />
+          {/* chest guide */}
+          <line x1="58" y1="88" x2="162" y2="88" stroke="var(--mint)" strokeWidth="1" strokeDasharray="3 3" opacity="0.7" />
+          <text x="110" y="83" textAnchor="middle" fill="var(--mint)" fontSize="9" fontFamily="var(--fm)" fontWeight="700">
+            chest {spec.chest}
+          </text>
+          {/* length guide */}
+          <line x1="172" y1="64" x2="172" y2="158" stroke="var(--mint)" strokeWidth="1" strokeDasharray="3 3" opacity="0.7" />
+          <text x="178" y="115" fill="var(--mint)" fontSize="9" fontFamily="var(--fm)" fontWeight="700" transform="rotate(90 178 115)" textAnchor="middle">
+            len {spec.length}
+          </text>
+          {/* current size badge */}
+          <text x="110" y="115" textAnchor="middle" fill="var(--gold)" fontSize="28" fontFamily="var(--fm)" fontWeight="800" opacity="0.85">
+            {size}
+          </text>
         </svg>
       </div>
       <div className="wiz-size-pills" role="radiogroup" aria-label="Preview t-shirt size">
@@ -1104,3 +1126,4 @@ function SizeChart({ size, onSize }: { size: string; onSize: (s: string) => void
     </div>
   );
 }
+
