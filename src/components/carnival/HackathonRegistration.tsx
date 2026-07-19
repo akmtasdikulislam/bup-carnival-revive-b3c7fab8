@@ -713,8 +713,18 @@ function StepTeam(props: {
         />
       </div>
 
-      <div style={{ marginTop: 18 }}>
-        <span className="wiz-badge">Fixed team size · {teamSize} students</span>
+      <div style={{ marginTop: 18, display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
+        <span className="wiz-badge">
+          {isSolo ? "Solo builder" : `Team of ${teamSize}`}
+        </span>
+        <button
+          type="button"
+          onClick={onChangeTeamSize}
+          className="wiz-btn ghost"
+          style={{ padding: "6px 14px", fontSize: 10 }}
+        >
+          Change
+        </button>
       </div>
     </motion.div>
   );
