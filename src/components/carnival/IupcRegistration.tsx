@@ -255,6 +255,7 @@ export function IupcRegistration() {
       <div>
         <StepBar step={step} />
         <div className="wiz-card">
+          <FeeBanner feePerPerson={FEE_PER_PERSON} teamSize={TEAM_SIZE} total={FEE} />
           <AnimatePresence mode="wait">
             {done ? (
               <SuccessPanel key="done" code={teamCodeRef.current} teamName={teamName} />
