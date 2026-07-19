@@ -8457,24 +8457,52 @@ body.gallery-lightbox-open {
   box-shadow     : 0 10px 40px -14px rgba(0, 0, 0, 0.55);
 }
 
-/* Marquee logo — fixed compact size */
+/* Marquee logo — fixed compact size, transparent */
 .sponsor-marquee-item img {
   width       : 40px;
   height      : 40px;
   object-fit  : contain;
-  border-radius: 8px;
-  background  : #fff;
-  padding     : 4px;
+  background  : transparent;
+  padding     : 0;
+  filter      : brightness(0) invert(1);
+  opacity     : .85;
 }
 
-/* Title sponsor logo — larger fixed size */
+/* Event label between sponsor loops */
+.sponsor-marquee-group {
+  display    : inline-flex;
+  align-items: center;
+  gap        : 32px;
+}
+.sponsor-marquee-event {
+  display       : inline-flex;
+  align-items   : center;
+  gap           : 10px;
+  padding       : 0 28px;
+  color         : var(--gold, #f2b705);
+  font-family   : var(--fd);
+  font-size     : 14px;
+  font-weight   : 800;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  white-space   : nowrap;
+}
+
+/* Title sponsor logo — larger fixed size, no white bg */
+.title-sponsor-logo-panel {
+  background: transparent !important;
+}
 .title-sponsor-logo-panel img {
-  width       : 160px;
-  height      : 160px;
+  width       : 200px;
+  height      : 200px;
   object-fit  : contain;
 }
 
-/* Co-sponsor logo — uniform fixed size */
+/* Co-sponsor logo — uniform fixed size, no cream bg */
+.co-sponsor-logo-panel {
+  background: transparent !important;
+  border-bottom: 1px solid rgba(255,255,255,.06) !important;
+}
 .co-sponsor-card img {
   display     : block;
   width       : 120px;
