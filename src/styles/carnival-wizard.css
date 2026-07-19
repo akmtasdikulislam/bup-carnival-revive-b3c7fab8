@@ -173,11 +173,13 @@
 
 /* ----- Card ----- */
 .wiz-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 20px;
+  background: color-mix(in oklab, var(--surface) 92%, transparent);
+  border: 1px solid var(--border-strong);
+  border-radius: 24px;
   padding: 32px;
-  box-shadow: 0 30px 70px -50px rgba(0, 0, 0, 0.8);
+  box-shadow:
+    0 30px 70px -50px rgba(0, 0, 0, 0.8),
+    inset 0 1px 0 rgba(146, 178, 255, 0.05);
 }
 
 .wiz-card h3 {
@@ -209,10 +211,11 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+  font-family: var(--fm);
   font-size: 11px;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--muted);
+  letter-spacing: 0.14em;
+  color: var(--primary-pale);
   font-weight: 600;
 }
 
@@ -221,23 +224,30 @@
 .wiz-field textarea {
   font-family: var(--fm);
   font-size: 14px;
-  padding: 12px 14px;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  background: var(--accent-bg);
+  padding: 13px 16px;
+  border: 1px solid var(--border-strong);
+  border-radius: 12px;
+  background: color-mix(in oklab, var(--accent-bg) 70%, transparent);
   color: var(--text);
   text-transform: none;
   letter-spacing: normal;
   font-weight: 400;
   width: 100%;
+  transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+}
+
+.wiz-field input::placeholder,
+.wiz-field textarea::placeholder {
+  color: rgba(146, 178, 255, 0.35);
+  font-family: var(--fm);
 }
 
 .wiz-field input:focus,
 .wiz-field select:focus,
 .wiz-field textarea:focus {
-  outline: 2px solid var(--cyan);
-  outline-offset: 1px;
+  outline: none;
   border-color: var(--cyan);
+  box-shadow: 0 0 0 3px rgba(53, 208, 224, 0.18);
 }
 
 .wiz-field.err input,
@@ -257,18 +267,23 @@
 .wiz-phone {
   display: flex;
   align-items: stretch;
-  border: 1px solid var(--border);
-  border-radius: 10px;
+  border: 1px solid var(--border-strong);
+  border-radius: 12px;
   overflow: hidden;
-  background: var(--accent-bg);
+  background: color-mix(in oklab, var(--accent-bg) 70%, transparent);
+}
+.wiz-field:focus-within .wiz-phone {
+  border-color: var(--cyan);
+  box-shadow: 0 0 0 3px rgba(53, 208, 224, 0.18);
 }
 
 .wiz-phone .wiz-phone-prefix {
-  padding: 12px 12px;
-  background: var(--surface-2);
-  color: var(--gold);
+  padding: 12px 14px;
+  background: rgba(53, 208, 224, 0.12);
+  color: var(--cyan);
   font-size: 13px;
   font-weight: 700;
+  border-right: 1px solid var(--border-strong);
 }
 
 .wiz-phone input {
@@ -276,6 +291,7 @@
   border-radius: 0;
   background: transparent;
 }
+.wiz-phone input:focus { box-shadow: none; }
 
 /* ----- Photo uploader ----- */
 .wiz-photo {
@@ -338,9 +354,9 @@
 
 /* ----- Member card ----- */
 .wiz-member-card {
-  background: var(--accent-bg);
-  border: 1px solid var(--border);
-  border-radius: 16px;
+  background: color-mix(in oklab, var(--accent-bg) 60%, transparent);
+  border: 1px solid var(--border-strong);
+  border-radius: 18px;
   padding: 22px;
   margin-bottom: 18px;
 }
@@ -355,7 +371,7 @@
 .wiz-member-head strong {
   font-family: var(--fm);
   font-size: 12px;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--gold);
 }
@@ -384,15 +400,15 @@
   gap: 12px;
   margin-top: 28px;
   padding-top: 20px;
-  border-top: 1px solid var(--border);
+  border-top: 1px solid var(--border-strong);
 }
 
 .wiz-btn {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 12px 22px;
-  border-radius: 100px;
+  padding: 13px 24px;
+  border-radius: 12px;
   font-family: var(--fm);
   font-size: 12px;
   letter-spacing: 0.14em;
@@ -400,13 +416,13 @@
   font-weight: 700;
   cursor: pointer;
   border: 1px solid transparent;
-  transition: transform 0.15s, background 0.15s, color 0.15s;
+  transition: transform 0.15s, background 0.15s, color 0.15s, box-shadow 0.15s;
 }
 
 .wiz-btn.ghost {
   background: transparent;
-  color: var(--text);
-  border-color: var(--border);
+  color: var(--primary-pale);
+  border-color: var(--border-strong);
 }
 
 .wiz-btn.ghost:hover:not(:disabled) {
@@ -418,17 +434,20 @@
   background: var(--gold);
   color: var(--primary-dark);
   border-color: var(--gold);
+  box-shadow: 0 0 24px rgba(242, 183, 5, 0.35);
 }
 
 .wiz-btn.primary:hover:not(:disabled) {
   background: #ffcb2b;
   transform: translateY(-1px);
+  box-shadow: 0 0 32px rgba(242, 183, 5, 0.5);
 }
 
 .wiz-btn.mint {
   background: var(--mint);
   color: var(--primary-dark);
   border-color: var(--mint);
+  box-shadow: 0 0 24px rgba(47, 230, 166, 0.3);
 }
 
 .wiz-btn.mint:hover:not(:disabled) {
@@ -444,8 +463,8 @@
 .wiz-aside {
   position: sticky;
   top: 100px;
-  background: var(--surface);
-  border: 1px solid var(--border);
+  background: color-mix(in oklab, var(--surface) 92%, transparent);
+  border: 1px solid var(--border-strong);
   border-radius: 20px;
   padding: 24px;
   box-shadow: 0 30px 70px -50px rgba(0, 0, 0, 0.8);
