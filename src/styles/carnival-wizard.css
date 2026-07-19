@@ -354,9 +354,9 @@
 
 /* ----- Member card ----- */
 .wiz-member-card {
-  background: var(--accent-bg);
-  border: 1px solid var(--border);
-  border-radius: 16px;
+  background: color-mix(in oklab, var(--accent-bg) 60%, transparent);
+  border: 1px solid var(--border-strong);
+  border-radius: 18px;
   padding: 22px;
   margin-bottom: 18px;
 }
@@ -371,7 +371,7 @@
 .wiz-member-head strong {
   font-family: var(--fm);
   font-size: 12px;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--gold);
 }
@@ -400,15 +400,15 @@
   gap: 12px;
   margin-top: 28px;
   padding-top: 20px;
-  border-top: 1px solid var(--border);
+  border-top: 1px solid var(--border-strong);
 }
 
 .wiz-btn {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 12px 22px;
-  border-radius: 100px;
+  padding: 13px 24px;
+  border-radius: 12px;
   font-family: var(--fm);
   font-size: 12px;
   letter-spacing: 0.14em;
@@ -416,13 +416,13 @@
   font-weight: 700;
   cursor: pointer;
   border: 1px solid transparent;
-  transition: transform 0.15s, background 0.15s, color 0.15s;
+  transition: transform 0.15s, background 0.15s, color 0.15s, box-shadow 0.15s;
 }
 
 .wiz-btn.ghost {
   background: transparent;
-  color: var(--text);
-  border-color: var(--border);
+  color: var(--primary-pale);
+  border-color: var(--border-strong);
 }
 
 .wiz-btn.ghost:hover:not(:disabled) {
@@ -434,17 +434,20 @@
   background: var(--gold);
   color: var(--primary-dark);
   border-color: var(--gold);
+  box-shadow: 0 0 24px rgba(242, 183, 5, 0.35);
 }
 
 .wiz-btn.primary:hover:not(:disabled) {
   background: #ffcb2b;
   transform: translateY(-1px);
+  box-shadow: 0 0 32px rgba(242, 183, 5, 0.5);
 }
 
 .wiz-btn.mint {
   background: var(--mint);
   color: var(--primary-dark);
   border-color: var(--mint);
+  box-shadow: 0 0 24px rgba(47, 230, 166, 0.3);
 }
 
 .wiz-btn.mint:hover:not(:disabled) {
@@ -460,8 +463,8 @@
 .wiz-aside {
   position: sticky;
   top: 100px;
-  background: var(--surface);
-  border: 1px solid var(--border);
+  background: color-mix(in oklab, var(--surface) 92%, transparent);
+  border: 1px solid var(--border-strong);
   border-radius: 20px;
   padding: 24px;
   box-shadow: 0 30px 70px -50px rgba(0, 0, 0, 0.8);
