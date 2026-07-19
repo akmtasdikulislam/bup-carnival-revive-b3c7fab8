@@ -545,3 +545,200 @@
   letter-spacing: 0.12em;
   margin: 12px 0;
 }
+
+/* ----- Side notes (secure/help) under card ----- */
+.wiz-side-notes {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 1fr;
+  margin-top: 18px;
+}
+@media (min-width: 640px) {
+  .wiz-side-notes { grid-template-columns: 1fr 1fr; }
+}
+.wiz-note-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px 16px;
+}
+.wiz-note-box h6 {
+  font-family: var(--fm);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin: 0 0 6px;
+  font-weight: 700;
+}
+.wiz-note-box p {
+  font-size: 12.5px;
+  color: var(--muted);
+  margin: 0;
+  line-height: 1.55;
+}
+.wiz-note-box a { color: var(--cyan); text-decoration: underline; }
+
+/* ----- Fee box in aside ----- */
+.wiz-fee-box {
+  background: var(--accent-bg);
+  border: 1px solid rgba(242, 183, 5, 0.35);
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin-bottom: 18px;
+}
+.wiz-fee-label {
+  font-family: var(--fm);
+  font-size: 10.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: block;
+  margin-bottom: 4px;
+}
+.wiz-fee-amount {
+  font-family: var(--fm);
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--gold);
+  line-height: 1.1;
+}
+.wiz-fee-amount span {
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  margin-left: 4px;
+}
+.wiz-fee-sub {
+  display: block;
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 4px;
+  letter-spacing: 0.04em;
+}
+
+/* ----- Review member photo row ----- */
+.wiz-review-photo-row {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+.wiz-review-photo {
+  width: 72px;
+  height: 72px;
+  border-radius: 12px;
+  background: var(--surface-2) center/cover no-repeat;
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted);
+  flex: 0 0 auto;
+}
+
+/* ----- Agreements ----- */
+.wiz-agreements {
+  margin-top: 20px;
+  padding: 16px 18px;
+  border: 1px dashed var(--border-strong);
+  border-radius: 14px;
+  background: var(--accent-bg);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.wiz-agreements .wiz-agree { line-height: 1.5; }
+.wiz-agreements .wiz-agree strong { color: var(--gold); }
+
+/* ----- Interactive size chart ----- */
+.wiz-size-chart {
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+}
+.wiz-size-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.wiz-size-head span:first-child {
+  font-family: var(--fm);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 700;
+}
+.wiz-size-tag {
+  font-family: var(--fm);
+  font-size: 10px;
+  color: var(--cyan);
+  letter-spacing: 0.12em;
+}
+.wiz-size-preview {
+  background: var(--accent-bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 8px;
+  display: flex;
+  justify-content: center;
+}
+.wiz-size-pills {
+  display: flex;
+  gap: 6px;
+  margin: 12px 0 10px;
+}
+.wiz-size-pill {
+  flex: 1;
+  padding: 7px 4px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: var(--fm);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.wiz-size-pill:hover { border-color: var(--cyan); color: var(--cyan); }
+.wiz-size-pill.active {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--primary-dark);
+}
+.wiz-size-specs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--accent-bg);
+}
+.wiz-size-specs > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.wiz-size-specs span {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  font-family: var(--fm);
+}
+.wiz-size-specs strong {
+  font-size: 12.5px;
+  color: var(--text);
+  font-weight: 600;
+}
+.wiz-size-hint {
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin: 10px 0 0;
+}
