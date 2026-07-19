@@ -394,21 +394,40 @@ export function IupcRegistration() {
  * ============================================================ */
 
 function StepBar({ step }: { step: number }) {
+  const total = STEPS.length;
+  const currentIdx = Math.min(step, total);
+  const progress = ((currentIdx - 1) / (total - 1)) * 100;
   return (
     <div className="wiz-stepbar" role="list" aria-label="Registration steps">
-      {STEPS.map((s, i) => {
+      <div className="wiz-stepbar-track" aria-hidden>
+        <div className="wiz-stepbar-fill" style={{ width: `${progress}%` }} />
+      </div>
+      {STEPS.map((s) => {
         const state = step > s.id ? "done" : step === s.id ? "current" : "";
         return (
-          <div key={s.id} className="wiz-step-wrap" style={{ display: "inline-flex", alignItems: "center", gap: 10 }}>
-            <span className={`wiz-step ${state}`} role="listitem" aria-current={step === s.id ? "step" : undefined}>
-              <span className="wiz-step-idx">{s.id}</span>
-              <s.Icon size={13} />
-              {s.label}
+          <div key={s.id} className={`wiz-step ${state}`} role="listitem" aria-current={step === s.id ? "step" : undefined}>
+            <span className="wiz-step-node">
+              {step > s.id ? <IconCheck size={14} strokeWidth={3} /> : <s.Icon size={14} />}
             </span>
-            {i < STEPS.length - 1 && <span className="wiz-step-sep" aria-hidden />}
+            <span className="wiz-step-label">{s.label}</span>
           </div>
         );
       })}
+    </div>
+  );
+}
+
+function FeeBanner({ feePerPerson, teamSize, total }: { feePerPerson: number; teamSize: number; total: number }) {
+  return (
+    <div className="wiz-fee-banner" role="note">
+      <span className="wiz-fee-banner-icon" aria-hidden><IconReceipt2 size={18} /></span>
+      <div className="wiz-fee-banner-body">
+        <span className="wiz-fee-banner-label">Registration fee</span>
+        <span className="wiz-fee-banner-value">
+          ৳{feePerPerson} <em>/person</em> · Team of {teamSize} · <strong>৳{total} total</strong>
+        </span>
+      </div>
+      <span className="wiz-fee-banner-hint">Paid at checkout</span>
     </div>
   );
 }
