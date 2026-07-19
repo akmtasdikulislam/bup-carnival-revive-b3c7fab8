@@ -95,6 +95,7 @@ export function IupcRegistration() {
   // Team
   const [teamName, setTeamName] = useState("");
   const [institution, setInstitution] = useState("");
+  const [leaderName, setLeaderName] = useState("");
   const [leaderEmail, setLeaderEmail] = useState("");
   const [leaderPhone, setLeaderPhone] = useState("");
   const [instSuggest, setInstSuggest] = useState<string[]>([]);
