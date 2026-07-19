@@ -8434,3 +8434,42 @@ body.gallery-lightbox-open {
     border-radius: 10px
   }
 }
+/* ============================================================
+   Overrides: glass nav on scroll + fixed sponsor logo sizes
+   ============================================================ */
+.nav.nav-glass {
+  top            : 12px;
+  width          : min(1180px, 94%);
+  padding        : 12px 24px;
+  border-radius  : 100px;
+  background     : rgba(8, 21, 54, 0.45);
+  backdrop-filter: blur(18px) saturate(160%);
+  border         : 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow     : 0 10px 40px -14px rgba(0, 0, 0, 0.55);
+}
+
+/* Marquee logo — fixed compact size */
+.sponsor-marquee-item img {
+  width       : 40px;
+  height      : 40px;
+  object-fit  : contain;
+  border-radius: 8px;
+  background  : #fff;
+  padding     : 4px;
+}
+
+/* Title sponsor logo — larger fixed size */
+.title-sponsor-logo-panel img {
+  width       : 160px;
+  height      : 160px;
+  object-fit  : contain;
+}
+
+/* Co-sponsor logo — uniform fixed size */
+.co-sponsor-card img {
+  display     : block;
+  width       : 120px;
+  height      : 90px;
+  object-fit  : contain;
+  margin      : 28px auto 12px;
+}
