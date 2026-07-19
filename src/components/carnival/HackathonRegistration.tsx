@@ -338,6 +338,8 @@ export function HackathonRegistration() {
                 instSuggest={instSuggest}
                 setInstSuggest={setInstSuggest}
                 pickInstitution={pickInstitution}
+                leaderName={leaderName}
+                setLeaderName={setLeaderName}
                 leaderEmail={leaderEmail}
                 setLeaderEmail={setLeaderEmail}
                 leaderPhone={leaderPhone}
