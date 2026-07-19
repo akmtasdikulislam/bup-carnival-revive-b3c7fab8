@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type ChangeEvent } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   IconUsers,
@@ -13,6 +13,7 @@ import {
 } from "@tabler/icons-react";
 import { BD_INSTITUTIONS } from "@/data/institutions";
 import { initSslczSession } from "@/lib/sslcommerz.functions";
+import { IdCardUploader } from "./IdCardUploader";
 
 /* ============================================================
  * Types
