@@ -745,6 +745,8 @@ function StepTeam(props: {
   instSuggest: string[];
   setInstSuggest: (v: string[]) => void;
   pickInstitution: (v: string) => void;
+  leaderName: string;
+  setLeaderName: (v: string) => void;
   leaderEmail: string;
   setLeaderEmail: (v: string) => void;
   leaderPhone: string;
@@ -762,6 +764,8 @@ function StepTeam(props: {
     instSuggest,
     setInstSuggest,
     pickInstitution,
+    leaderName,
+    setLeaderName,
     leaderEmail,
     setLeaderEmail,
     leaderPhone,
