@@ -163,12 +163,14 @@ export function CtfRegistration() {
     if (!isSolo) {
       if (!teamName.trim()) e["teamName"] = "Team name is required";
       if (!institution.trim()) e["institution"] = "Institution is required";
+      if (!leaderName.trim()) e["leaderName"] = "Leader name is required";
       if (!emailRe.test(leaderEmail)) e["leaderEmail"] = "Enter a valid email";
       if (digits(leaderPhone).length < 10) e["leaderPhone"] = "Enter a valid phone";
     }
     members.forEach((m, i) => {
       const p = `m${i}.`;
-      if (!m.idCard) e[p + "idCard"] = "Photo required";
+      if (!m.idCard) e[p + "idCard"] = "ID card photo required";
+      if (!m.idNumber.trim()) e[p + "idNumber"] = "ID number required";
       if (!m.fullName.trim()) e[p + "fullName"] = "Full name required";
       if (!emailRe.test(m.email)) e[p + "email"] = "Valid email required";
       if (digits(m.phone).length < 10) e[p + "phone"] = "Valid phone required";
@@ -179,15 +181,15 @@ export function CtfRegistration() {
       if (!m.tshirt) e[p + "tshirt"] = "Select size";
     });
     return e;
-  }, [isSolo, teamName, institution, leaderEmail, leaderPhone, members]);
+  }, [isSolo, teamName, institution, leaderName, leaderEmail, leaderPhone, members]);
 
   const memberKeys = (i: number) =>
-    ["photo", "fullName", "email", "phone", "institution", "department", "year", "discord", "tshirt"].map(
+    ["idCard", "idNumber", "fullName", "email", "phone", "institution", "department", "year", "discord", "tshirt"].map(
       (k) => `m${i}.${k}`,
     );
 
   const stepKeys = (id: StepId): string[] => {
-    if (id === "team") return ["teamName", "institution", "leaderEmail", "leaderPhone"];
+    if (id === "team") return ["teamName", "institution", "leaderName", "leaderEmail", "leaderPhone"];
     if (id === "members") return members.flatMap((_, i) => memberKeys(i));
     if (id === "solo") return memberKeys(0);
     return [];
@@ -196,11 +198,29 @@ export function CtfRegistration() {
   const stepHasErrors = (id: StepId) => stepKeys(id).some((k) => errors[k]);
   const err = (k: string) => (touched[k] ? errors[k] : undefined);
 
+  function syncLeaderToFirstMember() {
+    setMembers((prev) => {
+      if (prev.length === 0) return prev;
+      const first = prev[0];
+      return [
+        {
+          ...first,
+          fullName: leaderName || first.fullName,
+          email: leaderEmail || first.email,
+          phone: leaderPhone || first.phone,
+          institution: institution || first.institution,
+        },
+        ...prev.slice(1),
+      ];
+    });
+  }
+
   function next() {
     if (stepHasErrors(current)) {
       touchAll(stepKeys(current));
       return;
     }
+    if (current === "team") syncLeaderToFirstMember();
     if (current === "review" && !(agreeRules && agreeInfo && agreeMedia)) return;
     setStep((s) => Math.min(flow.length - 1, s + 1));
   }
