@@ -240,7 +240,7 @@ export function HackathonRegistration() {
         members,
         project,
         payMethod,
-        fee: FEE,
+        fee: fee,
         createdAt: Date.now(),
       });
       localStorage.setItem(key, JSON.stringify(list));
@@ -250,7 +250,7 @@ export function HackathonRegistration() {
     try {
       const { gatewayUrl } = await initSslczSession({
         data: {
-          amount: FEE,
+          amount: fee,
           teamName,
           institution,
           leaderEmail,
@@ -270,7 +270,7 @@ export function HackathonRegistration() {
       <div>
         <StepBar step={step} />
         <div className="wiz-card">
-          <FeeBanner feePerPerson={FEE_PER_PERSON} teamSize={TEAM_SIZE} total={FEE} />
+          <FeeBanner feePerPerson={FEE_PER_PERSON} teamSize={teamSize} total={fee} />
           <AnimatePresence mode="wait">
             {done ? (
               <SuccessPanel key="done" code={teamCodeRef.current} teamName={teamName} />
@@ -362,7 +362,7 @@ export function HackathonRegistration() {
                   onClick={handlePay}
                   disabled={submitting}
                 >
-                  {submitting ? "Processing…" : `Pay ৳${FEE}`}
+                  {submitting ? "Processing…" : `Pay ৳${fee}`}
                   <IconCreditCard size={14} />
                 </button>
               )}
@@ -398,7 +398,7 @@ export function HackathonRegistration() {
         institution={institution}
         members={members}
         project={project}
-        fee={FEE}
+        fee={fee}
       />
     </div>
   );
@@ -608,7 +608,7 @@ function StepTeam(props: {
     <motion.div {...fadeMotion()}>
       <h3>Team details</h3>
       <p className="wiz-card-sub">
-        Register your hackathon squad — a fixed team of {TEAM_SIZE} students.
+        Register your hackathon squad — a fixed team of {teamSize} students.
       </p>
 
       <div className="wiz-grid cols-2">
@@ -703,7 +703,7 @@ function StepTeam(props: {
       </div>
 
       <div style={{ marginTop: 18 }}>
-        <span className="wiz-badge">Fixed team size · {TEAM_SIZE} students</span>
+        <span className="wiz-badge">Fixed team size · {teamSize} students</span>
       </div>
     </motion.div>
   );
@@ -727,7 +727,7 @@ function StepMembers({
   return (
     <motion.div {...fadeMotion()}>
       <h3>Team members</h3>
-      <p className="wiz-card-sub">Fill in details for all {TEAM_SIZE} builders.</p>
+      <p className="wiz-card-sub">Fill in details for all {teamSize} builders.</p>
 
       {members.map((m, i) => {
         const p = `m${i}.`;
@@ -1081,9 +1081,9 @@ function StepPayment({
       <div className="wiz-review-block" style={{ marginTop: 20 }}>
         <h5>// summary</h5>
         <dl className="wiz-review-grid">
-          <dt>Registration fee</dt><dd>৳{FEE}</dd>
+          <dt>Registration fee</dt><dd>৳{fee}</dd>
           <dt>Method</dt><dd style={{ textTransform: "capitalize" }}>{payMethod}</dd>
-          <dt>Total due</dt><dd style={{ color: "var(--gold)", fontWeight: 700 }}>৳{FEE}</dd>
+          <dt>Total due</dt><dd style={{ color: "var(--gold)", fontWeight: 700 }}>৳{fee}</dd>
         </dl>
       </div>
 
@@ -1144,7 +1144,7 @@ function SummaryAside({
           <span>Institution</span>
           <span style={{ textAlign: "right", maxWidth: 180 }}>{institution || "—"}</span>
         </div>
-        <div className="wiz-aside-row"><span>Members</span><span>{filledMembers}/{TEAM_SIZE}</span></div>
+        <div className="wiz-aside-row"><span>Members</span><span>{filledMembers}/{teamSize}</span></div>
         <div className="wiz-aside-row">
           <span>Project</span>
           <span style={{ textAlign: "right", maxWidth: 180 }}>
