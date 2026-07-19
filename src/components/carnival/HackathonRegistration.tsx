@@ -488,10 +488,12 @@ function FeeBanner({
   feePerPerson,
   teamSize,
   total,
+  isSolo,
 }: {
   feePerPerson: number;
   teamSize: number;
   total: number;
+  isSolo: boolean;
 }) {
   return (
     <div className="wiz-fee-banner" role="note">
@@ -501,7 +503,7 @@ function FeeBanner({
       <div className="wiz-fee-banner-body">
         <span className="wiz-fee-banner-label">Registration fee</span>
         <span className="wiz-fee-banner-value">
-          ৳{feePerPerson} <em>/person</em> · Team of {teamSize} · <strong>৳{total} total</strong>
+          ৳{feePerPerson} <em>/person</em> · {isSolo ? "Solo builder" : `Team of ${teamSize}`} · <strong>৳{total} total</strong>
         </span>
       </div>
       <span className="wiz-fee-banner-hint">Paid at checkout</span>
