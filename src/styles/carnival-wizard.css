@@ -211,10 +211,11 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+  font-family: var(--fm);
   font-size: 11px;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--muted);
+  letter-spacing: 0.14em;
+  color: var(--primary-pale);
   font-weight: 600;
 }
 
@@ -223,23 +224,30 @@
 .wiz-field textarea {
   font-family: var(--fm);
   font-size: 14px;
-  padding: 12px 14px;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  background: var(--accent-bg);
+  padding: 13px 16px;
+  border: 1px solid var(--border-strong);
+  border-radius: 12px;
+  background: color-mix(in oklab, var(--accent-bg) 70%, transparent);
   color: var(--text);
   text-transform: none;
   letter-spacing: normal;
   font-weight: 400;
   width: 100%;
+  transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+}
+
+.wiz-field input::placeholder,
+.wiz-field textarea::placeholder {
+  color: rgba(146, 178, 255, 0.35);
+  font-family: var(--fm);
 }
 
 .wiz-field input:focus,
 .wiz-field select:focus,
 .wiz-field textarea:focus {
-  outline: 2px solid var(--cyan);
-  outline-offset: 1px;
+  outline: none;
   border-color: var(--cyan);
+  box-shadow: 0 0 0 3px rgba(53, 208, 224, 0.18);
 }
 
 .wiz-field.err input,
@@ -259,18 +267,23 @@
 .wiz-phone {
   display: flex;
   align-items: stretch;
-  border: 1px solid var(--border);
-  border-radius: 10px;
+  border: 1px solid var(--border-strong);
+  border-radius: 12px;
   overflow: hidden;
-  background: var(--accent-bg);
+  background: color-mix(in oklab, var(--accent-bg) 70%, transparent);
+}
+.wiz-field:focus-within .wiz-phone {
+  border-color: var(--cyan);
+  box-shadow: 0 0 0 3px rgba(53, 208, 224, 0.18);
 }
 
 .wiz-phone .wiz-phone-prefix {
-  padding: 12px 12px;
-  background: var(--surface-2);
-  color: var(--gold);
+  padding: 12px 14px;
+  background: rgba(53, 208, 224, 0.12);
+  color: var(--cyan);
   font-size: 13px;
   font-weight: 700;
+  border-right: 1px solid var(--border-strong);
 }
 
 .wiz-phone input {
@@ -278,6 +291,7 @@
   border-radius: 0;
   background: transparent;
 }
+.wiz-phone input:focus { box-shadow: none; }
 
 /* ----- Photo uploader ----- */
 .wiz-photo {
