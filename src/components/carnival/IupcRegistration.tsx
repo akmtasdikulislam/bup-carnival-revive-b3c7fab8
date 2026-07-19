@@ -269,10 +269,21 @@ export function IupcRegistration() {
                 instSuggest={instSuggest}
                 setInstSuggest={setInstSuggest}
                 pickInstitution={(v) => {
+                  const prevInst = institution;
+                  setMembers((prev) =>
+                    prev.map((m) =>
+                      m.institution === "" || m.institution === prevInst
+                        ? { ...m, institution: v }
+                        : m,
+                    ),
+                  );
+                  setCoach((c) =>
+                    c.institution === "" || c.institution === prevInst
+                      ? { ...c, institution: v }
+                      : c,
+                  );
                   setInstitution(v);
                   setInstSuggest([]);
-                  setMembers((prev) => prev.map((m) => ({ ...m, institution: m.institution || v })));
-                  setCoach((c) => ({ ...c, institution: c.institution || v }));
                 }}
                 leaderEmail={leaderEmail}
                 setLeaderEmail={setLeaderEmail}
