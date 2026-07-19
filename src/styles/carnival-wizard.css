@@ -1,0 +1,547 @@
+/* ============================================================
+ * Multi-step registration wizard — matches carnival dark theme
+ * ============================================================ */
+
+.wiz-wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  gap: 28px;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 960px) {
+  .wiz-wrap {
+    grid-template-columns: 1fr 320px;
+    align-items: start;
+  }
+}
+
+/* ----- Step bar ----- */
+.wiz-stepbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 14px 18px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  margin-bottom: 22px;
+}
+
+.wiz-step {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 100px;
+  font-family: var(--fm);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: transparent;
+  border: 1px solid var(--border);
+  cursor: default;
+}
+
+.wiz-step .wiz-step-idx {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--accent-bg);
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.wiz-step.done {
+  color: var(--mint);
+  border-color: rgba(47, 230, 166, 0.35);
+  background: rgba(47, 230, 166, 0.08);
+}
+
+.wiz-step.done .wiz-step-idx {
+  background: var(--mint);
+  color: var(--primary-dark);
+}
+
+.wiz-step.current {
+  color: var(--primary-dark);
+  background: var(--gold);
+  border-color: var(--gold);
+}
+
+.wiz-step.current .wiz-step-idx {
+  background: var(--primary-dark);
+  color: var(--gold);
+}
+
+.wiz-step-sep {
+  flex: 0 0 auto;
+  height: 1px;
+  width: 18px;
+  background: var(--border);
+}
+
+/* ----- Card ----- */
+.wiz-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 32px;
+  box-shadow: 0 30px 70px -50px rgba(0, 0, 0, 0.8);
+}
+
+.wiz-card h3 {
+  font-size: 22px;
+  margin: 0 0 4px;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+
+.wiz-card .wiz-card-sub {
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 22px;
+}
+
+/* ----- Fields ----- */
+.wiz-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 640px) {
+  .wiz-grid.cols-2 { grid-template-columns: 1fr 1fr; }
+  .wiz-grid.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+}
+
+.wiz-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.wiz-field input,
+.wiz-field select,
+.wiz-field textarea {
+  font-family: var(--fm);
+  font-size: 14px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--accent-bg);
+  color: var(--text);
+  text-transform: none;
+  letter-spacing: normal;
+  font-weight: 400;
+  width: 100%;
+}
+
+.wiz-field input:focus,
+.wiz-field select:focus,
+.wiz-field textarea:focus {
+  outline: 2px solid var(--cyan);
+  outline-offset: 1px;
+  border-color: var(--cyan);
+}
+
+.wiz-field.err input,
+.wiz-field.err select,
+.wiz-field.err textarea {
+  border-color: var(--coral);
+}
+
+.wiz-err-msg {
+  color: var(--coral);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+.wiz-phone {
+  display: flex;
+  align-items: stretch;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--accent-bg);
+}
+
+.wiz-phone .wiz-phone-prefix {
+  padding: 12px 12px;
+  background: var(--surface-2);
+  color: var(--gold);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.wiz-phone input {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+/* ----- Photo uploader ----- */
+.wiz-photo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.wiz-photo-thumb {
+  width: 72px;
+  height: 72px;
+  border-radius: 12px;
+  border: 1px dashed var(--border-strong);
+  background: var(--accent-bg) center/cover no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted);
+  flex: 0 0 auto;
+  overflow: hidden;
+}
+
+.wiz-photo-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.wiz-photo label.wiz-photo-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  background: var(--accent-bg);
+  color: var(--text);
+  font-family: var(--fm);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  font-weight: 600;
+  width: max-content;
+}
+
+.wiz-photo label.wiz-photo-btn:hover {
+  border-color: var(--cyan);
+  color: var(--cyan);
+}
+
+.wiz-photo input[type="file"] { display: none; }
+
+.wiz-photo-hint {
+  font-size: 11px;
+  color: var(--muted);
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+/* ----- Member card ----- */
+.wiz-member-card {
+  background: var(--accent-bg);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 22px;
+  margin-bottom: 18px;
+}
+
+.wiz-member-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.wiz-member-head strong {
+  font-family: var(--fm);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.wiz-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 100px;
+  background: rgba(53, 208, 224, 0.1);
+  border: 1px solid rgba(53, 208, 224, 0.35);
+  color: var(--cyan);
+  font-size: 10.5px;
+  font-family: var(--fm);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+/* ----- Nav buttons ----- */
+.wiz-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+
+.wiz-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 22px;
+  border-radius: 100px;
+  font-family: var(--fm);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: transform 0.15s, background 0.15s, color 0.15s;
+}
+
+.wiz-btn.ghost {
+  background: transparent;
+  color: var(--text);
+  border-color: var(--border);
+}
+
+.wiz-btn.ghost:hover:not(:disabled) {
+  border-color: var(--cyan);
+  color: var(--cyan);
+}
+
+.wiz-btn.primary {
+  background: var(--gold);
+  color: var(--primary-dark);
+  border-color: var(--gold);
+}
+
+.wiz-btn.primary:hover:not(:disabled) {
+  background: #ffcb2b;
+  transform: translateY(-1px);
+}
+
+.wiz-btn.mint {
+  background: var(--mint);
+  color: var(--primary-dark);
+  border-color: var(--mint);
+}
+
+.wiz-btn.mint:hover:not(:disabled) {
+  background: #5cf0c0;
+}
+
+.wiz-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* ----- Aside summary ----- */
+.wiz-aside {
+  position: sticky;
+  top: 100px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 30px 70px -50px rgba(0, 0, 0, 0.8);
+}
+
+.wiz-aside h4 {
+  font-family: var(--fm);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0 0 14px;
+  font-weight: 700;
+}
+
+.wiz-aside .wiz-aside-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px dashed var(--border);
+  font-size: 13px;
+  color: var(--text);
+}
+
+.wiz-aside .wiz-aside-row span:first-child {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.wiz-aside .wiz-aside-total {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.wiz-aside .wiz-aside-total span:first-child {
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-family: var(--fm);
+}
+
+.wiz-aside .wiz-aside-total strong {
+  font-size: 28px;
+  color: var(--gold);
+  font-weight: 700;
+}
+
+/* ----- Review ----- */
+.wiz-review-block {
+  background: var(--accent-bg);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 18px 20px;
+  margin-bottom: 14px;
+}
+
+.wiz-review-block h5 {
+  font-family: var(--fm);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin: 0 0 12px;
+}
+
+.wiz-review-grid {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 6px 18px;
+  font-size: 13px;
+}
+
+.wiz-review-grid dt {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.wiz-review-grid dd {
+  margin: 0;
+  color: var(--text);
+  word-break: break-word;
+}
+
+.wiz-agree {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--text);
+  padding: 10px 0;
+  cursor: pointer;
+}
+
+.wiz-agree input[type="checkbox"] {
+  margin-top: 2px;
+  accent-color: var(--gold);
+  width: 16px;
+  height: 16px;
+}
+
+/* ----- Payment ----- */
+.wiz-pay-methods {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 560px) {
+  .wiz-pay-methods { grid-template-columns: 1fr 1fr 1fr; }
+}
+
+.wiz-pay-method {
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--accent-bg);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: var(--text);
+  text-align: left;
+  transition: border-color 0.15s;
+}
+
+.wiz-pay-method strong {
+  font-size: 14px;
+}
+
+.wiz-pay-method span {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.wiz-pay-method.active {
+  border-color: var(--gold);
+  background: rgba(242, 183, 5, 0.08);
+}
+
+.wiz-success {
+  text-align: center;
+  padding: 20px 10px;
+}
+
+.wiz-success .wiz-tick {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: var(--mint);
+  color: var(--primary-dark);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 14px;
+  font-size: 28px;
+  font-weight: 800;
+}
+
+.wiz-success h3 {
+  color: var(--mint);
+  margin-bottom: 8px;
+}
+
+.wiz-success p {
+  color: var(--muted);
+  font-size: 14px;
+  margin: 6px 0;
+}
+
+.wiz-success .wiz-team-code {
+  font-family: var(--fm);
+  font-size: 20px;
+  color: var(--gold);
+  letter-spacing: 0.12em;
+  margin: 12px 0;
+}
