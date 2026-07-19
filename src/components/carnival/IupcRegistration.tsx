@@ -677,6 +677,16 @@ function StepTeam(props: {
           {err("institution") && <span className="wiz-err-msg">{err("institution")}</span>}
         </div>
 
+        <Field label="Leader name" error={err("leaderName")}>
+          <input
+            type="text"
+            placeholder="Full name"
+            value={leaderName}
+            onChange={(e) => setLeaderName(e.target.value)}
+            onBlur={() => touch("leaderName")}
+          />
+        </Field>
+
         <Field label="Leader email" error={err("leaderEmail")}>
           <input
             type="email"
