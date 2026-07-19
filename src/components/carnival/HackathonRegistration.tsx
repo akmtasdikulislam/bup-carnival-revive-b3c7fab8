@@ -460,28 +460,28 @@ export function HackathonRegistration() {
  * Step bar
  * ============================================================ */
 
-function StepBar({ step }: { step: number }) {
-  const total = STEPS.length;
-  const currentIdx = Math.min(step, total);
-  const progress = ((currentIdx - 1) / (total - 1)) * 100;
+function StepBar({ flow, step }: { flow: StepId[]; step: number }) {
+  const total = flow.length;
+  const progress = total > 1 ? (step / (total - 1)) * 100 : 0;
   return (
     <div className="wiz-stepbar" role="list" aria-label="Registration steps">
       <div className="wiz-stepbar-track" aria-hidden>
         <div className="wiz-stepbar-fill" style={{ width: `${progress}%` }} />
       </div>
-      {STEPS.map((s) => {
-        const state = step > s.id ? "done" : step === s.id ? "current" : "";
+      {flow.map((id, idx) => {
+        const meta = STEP_META[id];
+        const state = step > idx ? "done" : step === idx ? "current" : "";
         return (
           <div
-            key={s.id}
+            key={id}
             className={`wiz-step ${state}`}
             role="listitem"
-            aria-current={step === s.id ? "step" : undefined}
+            aria-current={step === idx ? "step" : undefined}
           >
             <span className="wiz-step-node">
-              {step > s.id ? <IconCheck size={14} strokeWidth={3} /> : <s.Icon size={14} />}
+              {step > idx ? <IconCheck size={14} strokeWidth={3} /> : <meta.Icon size={14} />}
             </span>
-            <span className="wiz-step-label">{s.label}</span>
+            <span className="wiz-step-label">{meta.label}</span>
           </div>
         );
       })}
