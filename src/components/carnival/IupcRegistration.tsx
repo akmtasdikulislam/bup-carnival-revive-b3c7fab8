@@ -383,7 +383,6 @@ export function IupcRegistration() {
         members={members}
         coach={coach}
         fee={FEE}
-        feePerPerson={FEE_PER_PERSON}
       />
     </div>
   );
