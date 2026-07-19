@@ -1258,3 +1258,66 @@ function SizeChart({ size, onSize }: { size: string; onSize: (s: string) => void
     </div>
   );
 }
+
+/* ============================================================
+ * Team size chooser (gate step)
+ * ============================================================ */
+
+function TeamSizeChooser({ onPick }: { onPick: (n: number) => void }) {
+  const options = [
+    { n: 1, title: "Solo builder", desc: "Ship it alone — one hacker, one machine.", tag: "Just me" },
+    { n: 2, title: "Duo", desc: "Two-person team. Pair-programming energy.", tag: "2 members" },
+    { n: 3, title: "Trio", desc: "Balanced squad for full-stack builds.", tag: "3 members" },
+    { n: 4, title: "Full squad", desc: "Maximum team size — go all in.", tag: "4 members" },
+  ];
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+      className="wiz-card"
+      style={{ maxWidth: 780, margin: "0 auto" }}
+    >
+      <h3>How are you joining?</h3>
+      <p className="wiz-card-sub">
+        Hackathon teams can be 1 to 4 builders. Pick your setup — you can change this later.
+      </p>
+      <div
+        style={{
+          display: "grid",
+          gap: 12,
+          gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+          marginTop: 8,
+        }}
+      >
+        {options.map((o) => (
+          <button
+            key={o.n}
+            type="button"
+            onClick={() => onPick(o.n)}
+            className="wiz-pay-method"
+            style={{ alignItems: "flex-start" }}
+          >
+            <span className="wiz-badge" style={{ marginBottom: 8 }}>{o.tag}</span>
+            <strong style={{ fontSize: 16 }}>{o.title}</strong>
+            <span style={{ marginTop: 4 }}>{o.desc}</span>
+            <span
+              style={{
+                marginTop: 10,
+                fontFamily: "var(--fm)",
+                color: "var(--gold)",
+                fontSize: 12,
+                fontWeight: 700,
+              }}
+            >
+              ৳{FEE_PER_PERSON * o.n} total
+            </span>
+          </button>
+        ))}
+      </div>
+      <p className="wiz-card-sub" style={{ marginTop: 18, marginBottom: 0, fontSize: 12 }}>
+        Registration fee is ৳{FEE_PER_PERSON} per person, paid at checkout.
+      </p>
+    </motion.div>
+  );
+}
