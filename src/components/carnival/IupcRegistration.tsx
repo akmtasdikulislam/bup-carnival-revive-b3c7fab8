@@ -313,6 +313,22 @@ export function IupcRegistration() {
             </div>
           )}
         </div>
+        <div className="wiz-side-notes">
+          <div className="wiz-note-box">
+            <h6>Secure checkout</h6>
+            <p>
+              Payment gateway integrates on submit — bKash, Nagad, cards. No card data ever
+              touches our servers.
+            </p>
+          </div>
+          <div className="wiz-note-box">
+            <h6>Need help?</h6>
+            <p>
+              Email <a href="mailto:iupc@bupcsecarnival.dev">iupc@bupcsecarnival.dev</a> or reach
+              the ops desk on the segment page.
+            </p>
+          </div>
+        </div>
       </div>
 
       <SummaryAside
@@ -321,6 +337,7 @@ export function IupcRegistration() {
         members={members}
         coach={coach}
         fee={FEE}
+        feePerPerson={FEE_PER_PERSON}
       />
     </div>
   );
