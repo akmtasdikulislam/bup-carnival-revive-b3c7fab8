@@ -1010,16 +1010,29 @@ function SummaryAside({
   members,
   coach,
   fee,
+  feePerPerson,
 }: {
   teamName: string;
   institution: string;
   members: Member[];
   coach: Coach;
   fee: number;
+  feePerPerson: number;
 }) {
   const filledMembers = members.filter((m) => m.fullName.trim()).length;
+  const [previewSize, setPreviewSize] = useState<string>("M");
   return (
     <aside className="wiz-aside">
+      <div className="wiz-fee-box">
+        <span className="wiz-fee-label">// registration fee</span>
+        <div className="wiz-fee-amount">
+          ৳{feePerPerson}<span>/person</span>
+        </div>
+        <span className="wiz-fee-sub">
+          Team of {TEAM_SIZE} · ৳{fee} total · paid at checkout
+        </span>
+      </div>
+
       <h4>// order summary</h4>
       <div className="wiz-aside-row"><span>Event</span><span>IUPC 2026</span></div>
       <div className="wiz-aside-row"><span>Team</span><span>{teamName || "—"}</span></div>
@@ -1031,6 +1044,63 @@ function SummaryAside({
         <span>Total</span>
         <strong>৳{fee}</strong>
       </div>
+
+      <SizeChart size={previewSize} onSize={setPreviewSize} />
     </aside>
+  );
+}
+
+/* ============================================================
+ * Size chart (interactive preview)
+ * ============================================================ */
+
+const SIZE_SPECS: Record<string, { chest: string; length: string }> = {
+  S:   { chest: '38" / 96 cm',  length: '27" / 68 cm' },
+  M:   { chest: '40" / 102 cm', length: '28" / 71 cm' },
+  L:   { chest: '42" / 107 cm', length: '29" / 74 cm' },
+  XL:  { chest: '44" / 112 cm', length: '30" / 76 cm' },
+  XXL: { chest: '46" / 117 cm', length: '31" / 79 cm' },
+};
+
+function SizeChart({ size, onSize }: { size: string; onSize: (s: string) => void }) {
+  const spec = SIZE_SPECS[size] ?? SIZE_SPECS.M;
+  return (
+    <div className="wiz-size-chart">
+      <div className="wiz-size-head">
+        <span>// size chart</span>
+        <span className="wiz-size-tag">UNISEX · FLAT</span>
+      </div>
+      <div className="wiz-size-preview" aria-hidden>
+        <svg viewBox="0 0 180 160" width="100%" height="120" fill="none">
+          <path
+            d="M60 20 L45 30 L20 45 L30 65 L50 55 L50 140 L130 140 L130 55 L150 65 L160 45 L135 30 L120 20 C115 32 105 38 90 38 C75 38 65 32 60 20 Z"
+            stroke="var(--gold)"
+            strokeWidth="1.5"
+            fill="rgba(242,183,5,0.05)"
+          />
+        </svg>
+      </div>
+      <div className="wiz-size-pills" role="radiogroup" aria-label="Preview t-shirt size">
+        {TSHIRT_SIZES.map((s) => (
+          <button
+            key={s}
+            type="button"
+            role="radio"
+            aria-checked={size === s}
+            className={`wiz-size-pill ${size === s ? "active" : ""}`}
+            onClick={() => onSize(s)}
+          >
+            {s}
+          </button>
+        ))}
+      </div>
+      <div className="wiz-size-specs">
+        <div><span>Chest</span><strong>{spec.chest}</strong></div>
+        <div><span>Length</span><strong>{spec.length}</strong></div>
+      </div>
+      <p className="wiz-size-hint">
+        Tap a size to preview. Between two? Pick the larger for a relaxed fit. 180 GSM combed cotton.
+      </p>
+    </div>
   );
 }
