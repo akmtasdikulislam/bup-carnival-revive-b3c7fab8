@@ -384,6 +384,7 @@ export function HackathonRegistration() {
                 isSolo={isSolo}
                 teamName={teamName}
                 institution={institution}
+                leaderName={leaderName}
                 leaderEmail={leaderEmail}
                 leaderPhone={leaderPhone}
                 members={members}
