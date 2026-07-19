@@ -331,13 +331,13 @@ export function HackathonRegistration() {
                 onChangeTeamSize={() => setTeamSize(null)}
                 instSuggest={instSuggest}
                 setInstSuggest={setInstSuggest}
-                onInstitutionInput={(v) => {
+                onInstitutionInput={(v: string) => {
                   setSoloMember({ institution: v });
                   const q = v.trim().toLowerCase();
                   if (q.length < 2) return setInstSuggest([]);
                   setInstSuggest(BD_INSTITUTIONS.filter((i) => i.toLowerCase().includes(q)).slice(0, 6));
                 }}
-                pickInstitution={(v) => {
+                pickInstitution={(v: string) => {
                   setSoloMember({ institution: v });
                   setInstSuggest([]);
                 }}
