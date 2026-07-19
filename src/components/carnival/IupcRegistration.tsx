@@ -781,6 +781,12 @@ function StepReview({
   leaderPhone,
   members,
   coach,
+  agreeRules,
+  setAgreeRules,
+  agreeInfo,
+  setAgreeInfo,
+  agreeMedia,
+  setAgreeMedia,
 }: {
   teamName: string;
   institution: string;
@@ -788,6 +794,12 @@ function StepReview({
   leaderPhone: string;
   members: Member[];
   coach: Coach;
+  agreeRules: boolean;
+  setAgreeRules: (v: boolean) => void;
+  agreeInfo: boolean;
+  setAgreeInfo: (v: boolean) => void;
+  agreeMedia: boolean;
+  setAgreeMedia: (v: boolean) => void;
 }) {
   return (
     <motion.div {...fadeMotion()}>
@@ -807,27 +819,81 @@ function StepReview({
       {members.map((m, i) => (
         <div key={i} className="wiz-review-block">
           <h5>// member {i + 1}{i === 0 ? " · leader" : ""}</h5>
-          <dl className="wiz-review-grid">
-            <dt>Full name</dt><dd>{m.fullName || "—"}</dd>
-            <dt>Email</dt><dd>{m.email || "—"}</dd>
-            <dt>Phone</dt><dd>{m.phone ? `+880 ${m.phone}` : "—"}</dd>
-            <dt>Institution</dt><dd>{m.institution || "—"}</dd>
-            <dt>Department</dt><dd>{m.department || "—"}</dd>
-            <dt>Year</dt><dd>{m.year || "—"}</dd>
-            <dt>T-shirt</dt><dd>{m.tshirt || "—"}</dd>
-          </dl>
+          <div className="wiz-review-photo-row">
+            <div
+              className="wiz-review-photo"
+              style={m.photo ? { backgroundImage: `url(${m.photo})` } : undefined}
+              aria-label={`${m.fullName || "member"} photo`}
+            >
+              {!m.photo && <IconCamera size={20} />}
+            </div>
+            <dl className="wiz-review-grid" style={{ flex: 1 }}>
+              <dt>Full name</dt><dd>{m.fullName || "—"}</dd>
+              <dt>Email</dt><dd>{m.email || "—"}</dd>
+              <dt>Phone</dt><dd>{m.phone ? `+880 ${m.phone}` : "—"}</dd>
+              <dt>Institution</dt><dd>{m.institution || "—"}</dd>
+              <dt>Department</dt><dd>{m.department || "—"}</dd>
+              <dt>Year</dt><dd>{m.year || "—"}</dd>
+              <dt>T-shirt</dt><dd>{m.tshirt || "—"}</dd>
+            </dl>
+          </div>
         </div>
       ))}
 
       <div className="wiz-review-block">
         <h5>// coach</h5>
-        <dl className="wiz-review-grid">
-          <dt>Full name</dt><dd>{coach.fullName || "—"}</dd>
-          <dt>Designation</dt><dd>{coach.designation || "—"}</dd>
-          <dt>Institution</dt><dd>{coach.institution || "—"}</dd>
-          <dt>Department</dt><dd>{coach.department || "—"}</dd>
-          <dt>T-shirt</dt><dd>{coach.tshirt || "—"}</dd>
-        </dl>
+        <div className="wiz-review-photo-row">
+          <div
+            className="wiz-review-photo"
+            style={coach.photo ? { backgroundImage: `url(${coach.photo})` } : undefined}
+            aria-label="coach photo"
+          >
+            {!coach.photo && <IconCamera size={20} />}
+          </div>
+          <dl className="wiz-review-grid" style={{ flex: 1 }}>
+            <dt>Full name</dt><dd>{coach.fullName || "—"}</dd>
+            <dt>Designation</dt><dd>{coach.designation || "—"}</dd>
+            <dt>Institution</dt><dd>{coach.institution || "—"}</dd>
+            <dt>Department</dt><dd>{coach.department || "—"}</dd>
+            <dt>T-shirt</dt><dd>{coach.tshirt || "—"}</dd>
+          </dl>
+        </div>
+      </div>
+
+      <div className="wiz-agreements">
+        <label className="wiz-agree">
+          <input
+            type="checkbox"
+            checked={agreeRules}
+            onChange={(e) => setAgreeRules(e.target.checked)}
+          />
+          <span>
+            I confirm all team members agree to the <strong>contest rules &amp; code of conduct</strong>,
+            including ACM-ICPC fair-play policies and organizer decisions being final.
+          </span>
+        </label>
+        <label className="wiz-agree">
+          <input
+            type="checkbox"
+            checked={agreeInfo}
+            onChange={(e) => setAgreeInfo(e.target.checked)}
+          />
+          <span>
+            All information provided is accurate. I understand false details may lead to
+            <strong> disqualification</strong> without refund.
+          </span>
+        </label>
+        <label className="wiz-agree">
+          <input
+            type="checkbox"
+            checked={agreeMedia}
+            onChange={(e) => setAgreeMedia(e.target.checked)}
+          />
+          <span>
+            I consent to photos/videos captured during the event being used for
+            <strong> promotional purposes</strong> by BUP CSE Society.
+          </span>
+        </label>
       </div>
     </motion.div>
   );
