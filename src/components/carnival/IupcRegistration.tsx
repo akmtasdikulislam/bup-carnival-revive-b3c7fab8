@@ -333,6 +333,7 @@ export function IupcRegistration() {
                 key="s4"
                 teamName={teamName}
                 institution={institution}
+                leaderName={leaderName}
                 leaderEmail={leaderEmail}
                 leaderPhone={leaderPhone}
                 members={members}
