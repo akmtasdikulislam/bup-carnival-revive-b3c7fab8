@@ -1,42 +1,57 @@
 /* ============================================================
- * Multi-step registration wizard — matches carnival dark theme
+ * Multi-step registration wizard — relaxed refresh
+ * Airy layout, soft surfaces, hairline dividers, gentle glow.
+ * Class names preserved for zero JS churn.
  * ============================================================ */
 
 .wiz-wrap {
-  max-width: 1100px;
+  --wiz-radius: 22px;
+  --wiz-radius-sm: 14px;
+  --wiz-hair: color-mix(in oklab, var(--border) 55%, transparent);
+  --wiz-hair-strong: color-mix(in oklab, var(--border) 90%, transparent);
+  --wiz-surface: color-mix(in oklab, var(--surface) 88%, transparent);
+  --wiz-surface-soft: color-mix(in oklab, var(--surface) 55%, transparent);
+  --wiz-input: color-mix(in oklab, var(--bg, #0b0d12) 72%, transparent);
+  --wiz-gold-soft: color-mix(in oklab, var(--gold) 12%, transparent);
+  --wiz-mint-soft: color-mix(in oklab, var(--mint) 12%, transparent);
+  --wiz-cyan-soft: color-mix(in oklab, var(--cyan) 12%, transparent);
+
+  max-width: 1160px;
   margin: 0 auto;
   display: grid;
-  gap: 28px;
+  gap: 36px;
   grid-template-columns: 1fr;
+  padding: 4px;
 }
 
-@media (min-width: 960px) {
+@media (min-width: 980px) {
   .wiz-wrap {
-    grid-template-columns: 1fr 320px;
+    grid-template-columns: minmax(0, 1fr) 340px;
     align-items: start;
+    gap: 40px;
   }
 }
 
-/* ----- Step bar (transparent, progress rail + circles) ----- */
+/* ----- Step bar: minimal rail with breathing room ----- */
 .wiz-stepbar {
   position: relative;
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   gap: 8px;
-  padding: 4px 6px 22px;
-  margin-bottom: 26px;
+  padding: 8px 8px 30px;
+  margin: 0 0 36px;
   background: transparent;
   border: 0;
 }
 
 .wiz-stepbar-track {
   position: absolute;
-  top: 20px;
-  left: 28px;
-  right: 28px;
-  height: 2px;
-  background: var(--border);
+  top: 22px;
+  left: 32px;
+  right: 32px;
+  height: 1px;
+  background: var(--wiz-hair);
   border-radius: 2px;
   overflow: hidden;
   z-index: 0;
@@ -45,7 +60,7 @@
 .wiz-stepbar-fill {
   height: 100%;
   background: linear-gradient(90deg, var(--mint), var(--gold));
-  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .wiz-step {
@@ -54,7 +69,7 @@
   display: inline-flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   flex: 1 1 0;
   min-width: 0;
   background: transparent;
@@ -67,48 +82,51 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
-  background: var(--bg, #0b0d12);
-  color: var(--muted);
-  border: 2px solid var(--border);
-  transition: all 0.25s ease;
+  background: color-mix(in oklab, var(--bg, #0b0d12) 88%, transparent);
+  color: color-mix(in oklab, var(--muted) 85%, transparent);
+  border: 1px solid var(--wiz-hair-strong);
+  transition: all 0.28s ease;
+  font-weight: 600;
 }
 
 .wiz-step-label {
   font-family: var(--fm);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--muted);
+  color: color-mix(in oklab, var(--muted) 85%, transparent);
   transition: color 0.2s;
 }
 
 .wiz-step.done .wiz-step-node {
-  background: var(--mint);
+  background: color-mix(in oklab, var(--mint) 92%, transparent);
   border-color: var(--mint);
   color: var(--primary-dark);
 }
-.wiz-step.done .wiz-step-label { color: var(--mint); }
+.wiz-step.done .wiz-step-label { color: color-mix(in oklab, var(--mint) 90%, transparent); }
 
 .wiz-step.current .wiz-step-node {
   background: var(--gold);
   border-color: var(--gold);
   color: var(--primary-dark);
-  box-shadow: 0 0 0 6px rgba(242, 183, 5, 0.15);
+  box-shadow:
+    0 0 0 6px color-mix(in oklab, var(--gold) 14%, transparent),
+    0 12px 32px -18px color-mix(in oklab, var(--gold) 65%, transparent);
 }
 .wiz-step.current .wiz-step-label { color: var(--text); }
 
-/* ----- Inline fee banner (transparent, above form) ----- */
+/* ----- Inline fee banner: hairline, no chrome ----- */
 .wiz-fee-banner {
   display: flex;
   align-items: center;
   gap: 14px;
-  padding: 12px 0 20px;
-  margin: 0 0 20px;
-  border-bottom: 1px dashed var(--border);
+  padding: 4px 2px 22px;
+  margin: 0 0 26px;
+  border-bottom: 1px solid var(--wiz-hair);
   background: transparent;
 }
 
@@ -116,10 +134,10 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: rgba(242, 183, 5, 0.1);
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: var(--wiz-gold-soft);
   color: var(--gold);
   flex: 0 0 auto;
 }
@@ -127,7 +145,7 @@
 .wiz-fee-banner-body {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
   flex: 1;
   min-width: 0;
 }
@@ -135,20 +153,22 @@
 .wiz-fee-banner-label {
   font-family: var(--fm);
   font-size: 10px;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--muted);
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .wiz-fee-banner-value {
   font-size: 14px;
   color: var(--text);
+  font-weight: 500;
 }
 .wiz-fee-banner-value em {
   font-style: normal;
   color: var(--muted);
-  font-size: 12px;
+  font-size: 12.5px;
+  margin: 0 4px;
 }
 .wiz-fee-banner-value strong {
   color: var(--gold);
@@ -158,7 +178,7 @@
 .wiz-fee-banner-hint {
   font-family: var(--fm);
   font-size: 10px;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--muted);
   flex: 0 0 auto;
@@ -166,53 +186,66 @@
 
 @media (max-width: 560px) {
   .wiz-fee-banner-hint { display: none; }
-  .wiz-step-label { font-size: 10px; letter-spacing: 0.08em; }
-  .wiz-step-node { width: 34px; height: 34px; }
-  .wiz-stepbar-track { top: 17px; left: 22px; right: 22px; }
+  .wiz-step-label { font-size: 9.5px; letter-spacing: 0.12em; }
+  .wiz-step-node { width: 36px; height: 36px; }
+  .wiz-stepbar-track { top: 18px; left: 24px; right: 24px; }
 }
 
-/* ----- Card ----- */
+/* ----- Main card: soft gradient surface, generous padding ----- */
 .wiz-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  padding: 32px;
-  box-shadow: 0 30px 70px -50px rgba(0, 0, 0, 0.8);
+  position: relative;
+  background:
+    radial-gradient(120% 60% at 100% 0%, color-mix(in oklab, var(--gold) 6%, transparent), transparent 55%),
+    radial-gradient(90% 60% at 0% 100%, color-mix(in oklab, var(--mint) 5%, transparent), transparent 55%),
+    var(--wiz-surface);
+  border: 1px solid var(--wiz-hair);
+  border-radius: var(--wiz-radius);
+  padding: 40px;
+  box-shadow: 0 40px 80px -60px rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(6px);
+}
+
+@media (max-width: 640px) {
+  .wiz-card { padding: 26px 22px; border-radius: 18px; }
 }
 
 .wiz-card h3 {
-  font-size: 22px;
-  margin: 0 0 4px;
+  font-size: 26px;
+  margin: 0 0 6px;
   color: var(--text);
-  letter-spacing: -0.01em;
+  letter-spacing: -0.015em;
+  font-weight: 500;
+  line-height: 1.2;
 }
 
 .wiz-card .wiz-card-sub {
-  font-size: 13px;
-  color: var(--muted);
-  margin-bottom: 22px;
+  font-size: 14px;
+  color: color-mix(in oklab, var(--text) 62%, transparent);
+  margin-bottom: 30px;
+  line-height: 1.6;
+  max-width: 62ch;
 }
 
-/* ----- Fields ----- */
+/* ----- Fields: relaxed, floating hierarchy ----- */
 .wiz-grid {
   display: grid;
-  gap: 16px;
+  gap: 22px;
   grid-template-columns: 1fr;
 }
 
 @media (min-width: 640px) {
-  .wiz-grid.cols-2 { grid-template-columns: 1fr 1fr; }
-  .wiz-grid.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .wiz-grid.cols-2 { grid-template-columns: 1fr 1fr; gap: 20px 22px; }
+  .wiz-grid.cols-3 { grid-template-columns: 1fr 1fr 1fr; gap: 20px 22px; }
 }
 
 .wiz-field {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
   font-size: 11px;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--muted);
+  letter-spacing: 0.14em;
+  color: color-mix(in oklab, var(--text) 55%, transparent);
   font-weight: 600;
 }
 
@@ -221,34 +254,48 @@
 .wiz-field textarea {
   font-family: var(--fm);
   font-size: 14px;
-  padding: 12px 14px;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  background: var(--accent-bg);
+  padding: 14px 16px;
+  border: 1px solid var(--wiz-hair-strong);
+  border-radius: 12px;
+  background: var(--wiz-input);
   color: var(--text);
   text-transform: none;
   letter-spacing: normal;
   font-weight: 400;
   width: 100%;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.wiz-field input::placeholder,
+.wiz-field textarea::placeholder {
+  color: color-mix(in oklab, var(--muted) 75%, transparent);
+}
+
+.wiz-field input:hover,
+.wiz-field select:hover,
+.wiz-field textarea:hover {
+  border-color: color-mix(in oklab, var(--cyan) 40%, var(--wiz-hair-strong));
 }
 
 .wiz-field input:focus,
 .wiz-field select:focus,
 .wiz-field textarea:focus {
-  outline: 2px solid var(--cyan);
-  outline-offset: 1px;
-  border-color: var(--cyan);
+  outline: none;
+  border-color: color-mix(in oklab, var(--cyan) 65%, transparent);
+  box-shadow: 0 0 0 4px var(--wiz-cyan-soft);
+  background: color-mix(in oklab, var(--bg, #0b0d12) 60%, transparent);
 }
 
 .wiz-field.err input,
 .wiz-field.err select,
 .wiz-field.err textarea {
-  border-color: var(--coral);
+  border-color: color-mix(in oklab, var(--coral) 70%, transparent);
+  box-shadow: 0 0 0 4px color-mix(in oklab, var(--coral) 12%, transparent);
 }
 
 .wiz-err-msg {
   color: var(--coral);
-  font-size: 11px;
+  font-size: 11.5px;
   font-weight: 500;
   letter-spacing: normal;
   text-transform: none;
@@ -257,18 +304,27 @@
 .wiz-phone {
   display: flex;
   align-items: stretch;
-  border: 1px solid var(--border);
-  border-radius: 10px;
+  border: 1px solid var(--wiz-hair-strong);
+  border-radius: 12px;
   overflow: hidden;
-  background: var(--accent-bg);
+  background: var(--wiz-input);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.wiz-phone:focus-within {
+  border-color: color-mix(in oklab, var(--cyan) 65%, transparent);
+  box-shadow: 0 0 0 4px var(--wiz-cyan-soft);
 }
 
 .wiz-phone .wiz-phone-prefix {
-  padding: 12px 12px;
-  background: var(--surface-2);
+  padding: 14px 14px;
+  background: color-mix(in oklab, var(--surface-2, var(--surface)) 70%, transparent);
   color: var(--gold);
   font-size: 13px;
   font-weight: 700;
+  border-right: 1px solid var(--wiz-hair);
+  display: inline-flex;
+  align-items: center;
 }
 
 .wiz-phone input {
@@ -276,86 +332,109 @@
   border-radius: 0;
   background: transparent;
 }
+.wiz-phone input:focus { box-shadow: none; }
 
 /* ----- Photo uploader ----- */
 .wiz-photo {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 16px;
 }
 
 .wiz-photo-thumb {
-  width: 72px;
-  height: 72px;
-  border-radius: 12px;
-  border: 1px dashed var(--border-strong);
-  background: var(--accent-bg) center/cover no-repeat;
+  width: 80px;
+  height: 80px;
+  border-radius: 16px;
+  border: 1px dashed color-mix(in oklab, var(--border-strong) 60%, transparent);
+  background: var(--wiz-input) center/cover no-repeat;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--muted);
+  color: color-mix(in oklab, var(--muted) 85%, transparent);
   flex: 0 0 auto;
   overflow: hidden;
+  transition: border-color 0.2s;
 }
+
+.wiz-photo-thumb:hover { border-color: color-mix(in oklab, var(--cyan) 55%, transparent); }
 
 .wiz-photo-actions {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
 }
 
 .wiz-photo label.wiz-photo-btn {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 8px 12px;
-  border: 1px solid var(--border);
+  gap: 8px;
+  padding: 9px 14px;
+  border: 1px solid var(--wiz-hair-strong);
   border-radius: 100px;
-  background: var(--accent-bg);
+  background: transparent;
   color: var(--text);
   font-family: var(--fm);
   font-size: 11px;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   cursor: pointer;
   font-weight: 600;
   width: max-content;
+  transition: all 0.18s;
 }
 
 .wiz-photo label.wiz-photo-btn:hover {
   border-color: var(--cyan);
   color: var(--cyan);
+  background: var(--wiz-cyan-soft);
 }
 
 .wiz-photo input[type="file"] { display: none; }
 
 .wiz-photo-hint {
-  font-size: 11px;
+  font-size: 11.5px;
   color: var(--muted);
   text-transform: none;
   letter-spacing: normal;
+  line-height: 1.5;
 }
 
-/* ----- Member card ----- */
+/* ----- Member card: quiet frame with a soft accent seam ----- */
 .wiz-member-card {
-  background: var(--accent-bg);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 22px;
-  margin-bottom: 18px;
+  position: relative;
+  background: color-mix(in oklab, var(--bg, #0b0d12) 45%, transparent);
+  border: 1px solid var(--wiz-hair);
+  border-radius: 18px;
+  padding: 26px;
+  margin-bottom: 20px;
+  transition: border-color 0.2s;
 }
+
+.wiz-member-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 3px;
+  border-radius: 18px 0 0 18px;
+  background: linear-gradient(180deg, var(--gold), transparent 70%);
+  opacity: 0.55;
+}
+
+.wiz-member-card:hover { border-color: var(--wiz-hair-strong); }
 
 .wiz-member-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
 .wiz-member-head strong {
   font-family: var(--fm);
   font-size: 12px;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--gold);
 }
@@ -364,14 +443,14 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 4px 10px;
+  padding: 5px 12px;
   border-radius: 100px;
-  background: rgba(53, 208, 224, 0.1);
-  border: 1px solid rgba(53, 208, 224, 0.35);
+  background: var(--wiz-cyan-soft);
+  border: 1px solid color-mix(in oklab, var(--cyan) 32%, transparent);
   color: var(--cyan);
   font-size: 10.5px;
   font-family: var(--fm);
-  letter-spacing: 0.1em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   font-weight: 600;
 }
@@ -382,94 +461,104 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  margin-top: 28px;
-  padding-top: 20px;
-  border-top: 1px solid var(--border);
+  margin-top: 36px;
+  padding-top: 26px;
+  border-top: 1px solid var(--wiz-hair);
 }
 
 .wiz-btn {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 12px 22px;
+  gap: 10px;
+  padding: 13px 26px;
   border-radius: 100px;
   font-family: var(--fm);
   font-size: 12px;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   font-weight: 700;
   cursor: pointer;
   border: 1px solid transparent;
-  transition: transform 0.15s, background 0.15s, color 0.15s;
+  transition: transform 0.18s ease, background 0.18s ease, color 0.18s ease,
+    border-color 0.18s ease, box-shadow 0.18s ease;
 }
 
 .wiz-btn.ghost {
   background: transparent;
-  color: var(--text);
-  border-color: var(--border);
+  color: color-mix(in oklab, var(--text) 78%, transparent);
+  border-color: var(--wiz-hair-strong);
 }
 
 .wiz-btn.ghost:hover:not(:disabled) {
   border-color: var(--cyan);
   color: var(--cyan);
+  background: var(--wiz-cyan-soft);
 }
 
 .wiz-btn.primary {
   background: var(--gold);
   color: var(--primary-dark);
   border-color: var(--gold);
+  box-shadow: 0 14px 32px -18px color-mix(in oklab, var(--gold) 75%, transparent);
 }
 
 .wiz-btn.primary:hover:not(:disabled) {
   background: #ffcb2b;
   transform: translateY(-1px);
+  box-shadow: 0 18px 40px -18px color-mix(in oklab, var(--gold) 85%, transparent);
 }
 
 .wiz-btn.mint {
   background: var(--mint);
   color: var(--primary-dark);
   border-color: var(--mint);
+  box-shadow: 0 14px 32px -18px color-mix(in oklab, var(--mint) 75%, transparent);
 }
 
 .wiz-btn.mint:hover:not(:disabled) {
   background: #5cf0c0;
+  transform: translateY(-1px);
 }
 
 .wiz-btn:disabled {
-  opacity: 0.45;
+  opacity: 0.4;
   cursor: not-allowed;
+  box-shadow: none;
 }
 
-/* ----- Aside summary ----- */
+/* ----- Aside summary: quieter panels ----- */
 .wiz-aside {
   position: sticky;
-  top: 100px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  padding: 24px;
-  box-shadow: 0 30px 70px -50px rgba(0, 0, 0, 0.8);
+  top: 108px;
+  background: var(--wiz-surface);
+  border: 1px solid var(--wiz-hair);
+  border-radius: var(--wiz-radius);
+  padding: 26px;
+  box-shadow: 0 30px 60px -55px rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(6px);
 }
 
 .wiz-aside h4 {
   font-family: var(--fm);
-  font-size: 11px;
-  letter-spacing: 0.16em;
+  font-size: 10.5px;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--muted);
-  margin: 0 0 14px;
-  font-weight: 700;
+  margin: 0 0 18px;
+  font-weight: 600;
 }
 
 .wiz-aside .wiz-aside-row {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  padding: 10px 0;
-  border-bottom: 1px dashed var(--border);
-  font-size: 13px;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px dashed var(--wiz-hair);
+  font-size: 13.5px;
   color: var(--text);
 }
+.wiz-aside .wiz-aside-row:last-of-type { border-bottom: 0; }
 
 .wiz-aside .wiz-aside-row span:first-child {
   color: var(--muted);
@@ -477,51 +566,54 @@
 }
 
 .wiz-aside .wiz-aside-total {
-  margin-top: 14px;
-  padding-top: 14px;
-  border-top: 1px solid var(--border);
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid var(--wiz-hair-strong);
   display: flex;
   justify-content: space-between;
   align-items: baseline;
 }
 
 .wiz-aside .wiz-aside-total span:first-child {
-  font-size: 12px;
-  letter-spacing: 0.12em;
+  font-size: 11px;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--muted);
   font-family: var(--fm);
 }
 
 .wiz-aside .wiz-aside-total strong {
-  font-size: 28px;
+  font-size: 30px;
   color: var(--gold);
   font-weight: 700;
+  font-family: var(--fm);
+  letter-spacing: -0.01em;
 }
 
 /* ----- Review ----- */
 .wiz-review-block {
-  background: var(--accent-bg);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 18px 20px;
-  margin-bottom: 14px;
+  background: color-mix(in oklab, var(--bg, #0b0d12) 40%, transparent);
+  border: 1px solid var(--wiz-hair);
+  border-radius: 16px;
+  padding: 22px 24px;
+  margin-bottom: 16px;
 }
 
 .wiz-review-block h5 {
   font-family: var(--fm);
-  font-size: 11px;
-  letter-spacing: 0.16em;
+  font-size: 10.5px;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--gold);
-  margin: 0 0 12px;
+  margin: 0 0 16px;
+  font-weight: 600;
 }
 
 .wiz-review-grid {
   display: grid;
   grid-template-columns: 140px 1fr;
-  gap: 6px 18px;
-  font-size: 13px;
+  gap: 10px 22px;
+  font-size: 13.5px;
 }
 
 .wiz-review-grid dt {
@@ -538,15 +630,16 @@
 .wiz-agree {
   display: flex;
   align-items: flex-start;
-  gap: 10px;
-  font-size: 13px;
-  color: var(--text);
+  gap: 12px;
+  font-size: 13.5px;
+  color: color-mix(in oklab, var(--text) 90%, transparent);
   padding: 10px 0;
   cursor: pointer;
+  line-height: 1.55;
 }
 
 .wiz-agree input[type="checkbox"] {
-  margin-top: 2px;
+  margin-top: 3px;
   accent-color: var(--gold);
   width: 16px;
   height: 16px;
@@ -555,7 +648,7 @@
 /* ----- Payment ----- */
 .wiz-pay-methods {
   display: grid;
-  gap: 12px;
+  gap: 14px;
   grid-template-columns: 1fr;
 }
 
@@ -564,17 +657,22 @@
 }
 
 .wiz-pay-method {
-  padding: 16px;
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  background: var(--accent-bg);
+  padding: 18px;
+  border: 1px solid var(--wiz-hair-strong);
+  border-radius: 16px;
+  background: color-mix(in oklab, var(--bg, #0b0d12) 45%, transparent);
   cursor: pointer;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
   color: var(--text);
   text-align: left;
-  transition: border-color 0.15s;
+  transition: all 0.2s;
+}
+
+.wiz-pay-method:hover {
+  border-color: color-mix(in oklab, var(--gold) 45%, transparent);
+  transform: translateY(-1px);
 }
 
 .wiz-pay-method strong {
@@ -582,137 +680,148 @@
 }
 
 .wiz-pay-method span {
-  font-size: 11px;
+  font-size: 11.5px;
   color: var(--muted);
 }
 
 .wiz-pay-method.active {
   border-color: var(--gold);
-  background: rgba(242, 183, 5, 0.08);
+  background: var(--wiz-gold-soft);
+  box-shadow: 0 0 0 4px color-mix(in oklab, var(--gold) 10%, transparent);
 }
 
 .wiz-success {
   text-align: center;
-  padding: 20px 10px;
+  padding: 30px 10px;
 }
 
 .wiz-success .wiz-tick {
-  width: 60px;
-  height: 60px;
+  width: 68px;
+  height: 68px;
   border-radius: 50%;
   background: var(--mint);
   color: var(--primary-dark);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 14px;
-  font-size: 28px;
+  margin-bottom: 18px;
+  font-size: 30px;
   font-weight: 800;
+  box-shadow: 0 0 0 8px color-mix(in oklab, var(--mint) 12%, transparent);
 }
 
 .wiz-success h3 {
   color: var(--mint);
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
 .wiz-success p {
   color: var(--muted);
   font-size: 14px;
   margin: 6px 0;
+  line-height: 1.6;
 }
 
 .wiz-success .wiz-team-code {
   font-family: var(--fm);
-  font-size: 20px;
+  font-size: 22px;
   color: var(--gold);
-  letter-spacing: 0.12em;
-  margin: 12px 0;
+  letter-spacing: 0.14em;
+  margin: 16px 0;
 }
 
-/* ----- Side notes (secure/help) under card ----- */
+/* ----- Side notes (secure / help) ----- */
 .wiz-side-notes {
   display: grid;
-  gap: 12px;
+  gap: 14px;
   grid-template-columns: 1fr;
-  margin-top: 18px;
+  margin-top: 22px;
 }
 @media (min-width: 640px) {
   .wiz-side-notes { grid-template-columns: 1fr 1fr; }
 }
 .wiz-note-box {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 14px 16px;
+  background: var(--wiz-surface-soft);
+  border: 1px solid var(--wiz-hair);
+  border-radius: 16px;
+  padding: 18px 20px;
+  transition: border-color 0.2s;
 }
+.wiz-note-box:hover { border-color: var(--wiz-hair-strong); }
+
 .wiz-note-box h6 {
   font-family: var(--fm);
-  font-size: 11px;
-  letter-spacing: 0.14em;
+  font-size: 10.5px;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--gold);
-  margin: 0 0 6px;
-  font-weight: 700;
+  margin: 0 0 8px;
+  font-weight: 600;
 }
 .wiz-note-box p {
   font-size: 12.5px;
-  color: var(--muted);
+  color: color-mix(in oklab, var(--text) 68%, transparent);
   margin: 0;
-  line-height: 1.55;
+  line-height: 1.65;
 }
-.wiz-note-box a { color: var(--cyan); text-decoration: underline; }
+.wiz-note-box a { color: var(--cyan); text-decoration: none; border-bottom: 1px dashed color-mix(in oklab, var(--cyan) 55%, transparent); }
+.wiz-note-box a:hover { border-bottom-style: solid; }
 
 /* ----- Fee box in aside ----- */
 .wiz-fee-box {
-  background: var(--accent-bg);
-  border: 1px solid rgba(242, 183, 5, 0.35);
-  border-radius: 14px;
-  padding: 14px 16px;
-  margin-bottom: 18px;
+  background:
+    radial-gradient(120% 100% at 100% 0%, color-mix(in oklab, var(--gold) 10%, transparent), transparent 60%),
+    color-mix(in oklab, var(--bg, #0b0d12) 40%, transparent);
+  border: 1px solid color-mix(in oklab, var(--gold) 28%, transparent);
+  border-radius: 16px;
+  padding: 18px 20px;
+  margin-bottom: 20px;
 }
 .wiz-fee-label {
   font-family: var(--fm);
   font-size: 10.5px;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--muted);
   display: block;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
+  font-weight: 600;
 }
 .wiz-fee-amount {
   font-family: var(--fm);
-  font-size: 26px;
-  font-weight: 800;
+  font-size: 28px;
+  font-weight: 700;
   color: var(--gold);
   line-height: 1.1;
+  letter-spacing: -0.01em;
 }
 .wiz-fee-amount span {
   font-size: 12px;
   color: var(--muted);
   font-weight: 500;
   letter-spacing: 0.06em;
-  margin-left: 4px;
+  margin-left: 6px;
 }
 .wiz-fee-sub {
   display: block;
-  font-size: 11px;
+  font-size: 11.5px;
   color: var(--muted);
-  margin-top: 4px;
+  margin-top: 6px;
   letter-spacing: 0.04em;
 }
 
 /* ----- Review member photo row ----- */
 .wiz-review-photo-row {
   display: flex;
-  gap: 14px;
+  gap: 18px;
   align-items: flex-start;
 }
 .wiz-review-photo {
-  width: 72px;
-  height: 72px;
-  border-radius: 12px;
-  background: var(--surface-2) center/cover no-repeat;
-  border: 1px solid var(--border);
+  width: 78px;
+  height: 78px;
+  border-radius: 14px;
+  background: color-mix(in oklab, var(--surface-2, var(--surface)) 70%, transparent) center/cover no-repeat;
+  border: 1px solid var(--wiz-hair-strong);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -720,122 +829,128 @@
   flex: 0 0 auto;
 }
 
-/* ----- Agreements ----- */
+/* ----- Agreements: quiet card, no dashed noise ----- */
 .wiz-agreements {
-  margin-top: 20px;
-  padding: 16px 18px;
-  border: 1px dashed var(--border-strong);
-  border-radius: 14px;
-  background: var(--accent-bg);
+  margin-top: 26px;
+  padding: 20px 22px;
+  border: 1px solid var(--wiz-hair);
+  border-radius: 16px;
+  background: color-mix(in oklab, var(--bg, #0b0d12) 35%, transparent);
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
-.wiz-agreements .wiz-agree { line-height: 1.5; }
-.wiz-agreements .wiz-agree strong { color: var(--gold); }
+.wiz-agreements .wiz-agree { line-height: 1.6; }
+.wiz-agreements .wiz-agree strong { color: var(--gold); font-weight: 600; }
 
 /* ----- Interactive size chart ----- */
 .wiz-size-chart {
   margin-top: 22px;
-  padding-top: 18px;
-  border-top: 1px solid var(--border);
+  padding-top: 20px;
+  border-top: 1px solid var(--wiz-hair);
 }
 .wiz-size-head {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 .wiz-size-head span:first-child {
   font-family: var(--fm);
-  font-size: 11px;
-  letter-spacing: 0.16em;
+  font-size: 10.5px;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--muted);
-  font-weight: 700;
+  font-weight: 600;
 }
 .wiz-size-tag {
   font-family: var(--fm);
   font-size: 10px;
   color: var(--cyan);
-  letter-spacing: 0.12em;
+  letter-spacing: 0.14em;
 }
 .wiz-size-preview {
-  background: var(--accent-bg);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 8px;
+  background: color-mix(in oklab, var(--bg, #0b0d12) 40%, transparent);
+  border: 1px solid var(--wiz-hair);
+  border-radius: 14px;
+  padding: 12px;
   display: flex;
   justify-content: center;
 }
 .wiz-size-pills {
   display: flex;
-  gap: 6px;
-  margin: 12px 0 10px;
+  gap: 8px;
+  margin: 14px 0 12px;
 }
 .wiz-size-pill {
   flex: 1;
-  padding: 7px 4px;
+  padding: 9px 4px;
   background: transparent;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  color: var(--text);
+  border: 1px solid var(--wiz-hair-strong);
+  border-radius: 10px;
+  color: color-mix(in oklab, var(--text) 82%, transparent);
   font-family: var(--fm);
   font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   cursor: pointer;
-  transition: all 0.15s;
+  transition: all 0.18s;
 }
-.wiz-size-pill:hover { border-color: var(--cyan); color: var(--cyan); }
+.wiz-size-pill:hover {
+  border-color: var(--cyan);
+  color: var(--cyan);
+  background: var(--wiz-cyan-soft);
+}
 .wiz-size-pill.active {
   background: var(--gold);
   border-color: var(--gold);
   color: var(--primary-dark);
+  box-shadow: 0 8px 20px -12px color-mix(in oklab, var(--gold) 70%, transparent);
 }
 .wiz-size-specs {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  padding: 10px 12px;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  background: var(--accent-bg);
+  gap: 10px;
+  padding: 12px 14px;
+  border: 1px solid var(--wiz-hair);
+  border-radius: 12px;
+  background: color-mix(in oklab, var(--bg, #0b0d12) 40%, transparent);
 }
 .wiz-size-specs > div {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
 }
 .wiz-size-specs span {
   font-size: 10px;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.14em;
   color: var(--muted);
   font-family: var(--fm);
+  font-weight: 600;
 }
 .wiz-size-specs strong {
-  font-size: 12.5px;
+  font-size: 13px;
   color: var(--text);
   font-weight: 600;
 }
 .wiz-size-hint {
-  font-size: 11px;
+  font-size: 11.5px;
   color: var(--muted);
-  line-height: 1.5;
-  margin: 10px 0 0;
+  line-height: 1.6;
+  margin: 12px 0 0;
 }
 
-/* ----- Stacked aside column (fee / summary / size chart as separate boxes) ----- */
+/* ----- Stacked aside column ----- */
 .wiz-aside-col {
   display: grid;
-  gap: 18px;
+  gap: 20px;
   align-content: start;
 }
-@media (min-width: 960px) {
+@media (min-width: 980px) {
   .wiz-aside-col {
     position: sticky;
-    top: 100px;
+    top: 108px;
   }
 }
 .wiz-aside-col .wiz-aside {
