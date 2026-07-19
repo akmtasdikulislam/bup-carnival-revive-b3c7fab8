@@ -587,6 +587,8 @@ function StepTeam(props: {
   instSuggest: string[];
   setInstSuggest: (v: string[]) => void;
   pickInstitution: (v: string) => void;
+  leaderName: string;
+  setLeaderName: (v: string) => void;
   leaderEmail: string;
   setLeaderEmail: (v: string) => void;
   leaderPhone: string;
@@ -596,7 +598,7 @@ function StepTeam(props: {
 }) {
   const {
     teamName, setTeamName, institution, onInstitutionInput, instSuggest, setInstSuggest,
-    pickInstitution, leaderEmail, setLeaderEmail, leaderPhone, setLeaderPhone, err, touch,
+    pickInstitution, leaderName, setLeaderName, leaderEmail, setLeaderEmail, leaderPhone, setLeaderPhone, err, touch,
   } = props;
 
   return (
