@@ -576,6 +576,8 @@ function PhotoUploader({
  * ============================================================ */
 
 function StepTeam(props: {
+  teamSize: number;
+  onChangeTeamSize: () => void;
   teamName: string;
   setTeamName: (v: string) => void;
   institution: string;
@@ -591,6 +593,8 @@ function StepTeam(props: {
   touch: (k: string) => void;
 }) {
   const {
+    teamSize,
+    onChangeTeamSize,
     teamName,
     setTeamName,
     institution,
@@ -606,12 +610,17 @@ function StepTeam(props: {
     touch,
   } = props;
 
+  const isSolo = teamSize === 1;
+
   return (
     <motion.div {...fadeMotion()}>
-      <h3>Team details</h3>
+      <h3>{isSolo ? "Solo builder details" : "Team details"}</h3>
       <p className="wiz-card-sub">
-        Register your hackathon squad — a fixed team of {teamSize} students.
+        {isSolo
+          ? "Register as a solo hackathon builder."
+          : `Register your hackathon squad — a team of ${teamSize} builders.`}
       </p>
+
 
       <div className="wiz-grid cols-2">
         <Field label="Team name" error={err("teamName")}>
