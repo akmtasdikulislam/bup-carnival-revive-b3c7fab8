@@ -108,6 +108,7 @@ export function HackathonRegistration() {
   // Team (used in team mode; auto-derived from member[0] in solo mode)
   const [teamName, setTeamName] = useState("");
   const [institution, setInstitution] = useState("");
+  const [leaderName, setLeaderName] = useState("");
   const [leaderEmail, setLeaderEmail] = useState("");
   const [leaderPhone, setLeaderPhone] = useState("");
   const [instSuggest, setInstSuggest] = useState<string[]>([]);
