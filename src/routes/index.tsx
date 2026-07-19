@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { motion } from "framer-motion";
 import { SiteLayout } from "@/components/carnival/SiteLayout";
 import { Countdown } from "@/components/carnival/Countdown";
+import { Reveal } from "@/components/carnival/Reveal";
 import { SponsorMarquee, SponsorShowcase } from "@/components/carnival/Sponsors";
 
 export const Route = createFileRoute("/")({
@@ -42,22 +44,39 @@ function Home() {
               <span className="prompt">&gt;</span> booting BUP_CSE_TECH_CARNIVAL.exe ...
               <span className="cursor">▍</span>
             </p>
-            <div className="hero-title-wrap">
-              <p className="eyebrow">
-                <span className="ping" />
-                Bangladesh University of Professionals — Dept. of CSE
-              </p>
-              <h1 className="title">
-                <span className="line1">BUP CSE</span>
-                <span className="line2" data-text="TECH CARNIVAL">
-                  TECH CARNIVAL
-                </span>
-                <span className="line3">2.0</span>
-              </h1>
-              <p className="tagline">
-                Three tracks. One weekend. <em>Compile your ambition.</em>
-              </p>
-            </div>
+            <motion.div
+              className="hero-title-wrap"
+              initial="hidden"
+              animate="visible"
+              variants={{ visible: { transition: { staggerChildren: 0.12, delayChildren: 0.2 } } }}
+            >
+              {[
+                <p key="eb" className="eyebrow">
+                  <span className="ping" />
+                  Bangladesh University of Professionals — Dept. of CSE
+                </p>,
+                <h1 key="t" className="title">
+                  <span className="line1">BUP CSE</span>
+                  <span className="line2" data-text="TECH CARNIVAL">
+                    TECH CARNIVAL
+                  </span>
+                  <span className="line3">2.0</span>
+                </h1>,
+                <p key="tg" className="tagline">
+                  Three tracks. One weekend. <em>Compile your ambition.</em>
+                </p>,
+              ].map((child, i) => (
+                <motion.div
+                  key={i}
+                  variants={{
+                    hidden: { opacity: 0, y: 24 },
+                    visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] } },
+                  }}
+                >
+                  {child}
+                </motion.div>
+              ))}
+            </motion.div>
             <div className="hero-bottom">
               <Countdown />
               <div className="hero-actions">
@@ -86,84 +105,90 @@ function Home() {
           <p className="sec-sub">Three independent competitions, each with its own registration.</p>
         </div>
 
-        <div
-          className="track-card"
-          style={{ ["--tc-bg" as any]: "#123a8c", ["--tc-fg" as any]: "#eef2ff" }}
-        >
-          <div className="track-info">
-            <div className="track-tag">
-              <span className="tc-num">01</span>
-              <span className="tc-status">Registration Opens Soon</span>
+        <Reveal>
+          <div
+            className="track-card"
+            style={{ ["--tc-bg" as any]: "#123a8c", ["--tc-fg" as any]: "#eef2ff" }}
+          >
+            <div className="track-info">
+              <div className="track-tag">
+                <span className="tc-num">01</span>
+                <span className="tc-status">Registration Opens Soon</span>
+              </div>
+              <h3 className="track-title">IUPC</h3>
+              <p className="track-desc">
+                Inter-University Programming Contest — a 5-hour ICPC-style algorithmic battle. Teams of
+                three take on ranked problem sets under ACM rules.
+              </p>
+              <ul className="track-meta">
+                <li>Team size: 3</li>
+                <li>Duration: 5 hrs</li>
+                <li>Format: ACM-ICPC</li>
+              </ul>
+              <Link to="/iupc" className="track-link">
+                Explore &amp; register →
+              </Link>
             </div>
-            <h3 className="track-title">IUPC</h3>
-            <p className="track-desc">
-              Inter-University Programming Contest — a 5-hour ICPC-style algorithmic battle. Teams of
-              three take on ranked problem sets under ACM rules.
-            </p>
-            <ul className="track-meta">
-              <li>Team size: 3</li>
-              <li>Duration: 5 hrs</li>
-              <li>Format: ACM-ICPC</li>
-            </ul>
-            <Link to="/iupc" className="track-link">
-              Explore &amp; register →
-            </Link>
           </div>
-        </div>
+        </Reveal>
 
-        <div
-          className="track-card"
-          style={{ ["--tc-bg" as any]: "#f2b705", ["--tc-fg" as any]: "#092763" }}
-        >
-          <div className="track-info">
-            <div className="track-tag">
-              <span className="tc-num">02</span>
-              <span className="tc-status">Registration Opens Soon</span>
+        <Reveal delay={0.1}>
+          <div
+            className="track-card"
+            style={{ ["--tc-bg" as any]: "#f2b705", ["--tc-fg" as any]: "#092763" }}
+          >
+            <div className="track-info">
+              <div className="track-tag">
+                <span className="tc-num">02</span>
+                <span className="tc-status">Registration Opens Soon</span>
+              </div>
+              <h3 className="track-title">
+                CTF
+                <br />
+                Championship
+              </h3>
+              <p className="track-desc">
+                Capture the Flag across pwn, crypto, web, reversing and forensics. Break it, decode it,
+                prove it — every flag is a proof of exploit.
+              </p>
+              <ul className="track-meta">
+                <li>Team size: 1–4</li>
+                <li>Duration: 8 hrs</li>
+                <li>Format: Jeopardy-style</li>
+              </ul>
+              <Link to="/ctf" className="track-link">
+                Explore &amp; register →
+              </Link>
             </div>
-            <h3 className="track-title">
-              CTF
-              <br />
-              Championship
-            </h3>
-            <p className="track-desc">
-              Capture the Flag across pwn, crypto, web, reversing and forensics. Break it, decode it,
-              prove it — every flag is a proof of exploit.
-            </p>
-            <ul className="track-meta">
-              <li>Team size: 1–4</li>
-              <li>Duration: 8 hrs</li>
-              <li>Format: Jeopardy-style</li>
-            </ul>
-            <Link to="/ctf" className="track-link">
-              Explore &amp; register →
-            </Link>
           </div>
-        </div>
+        </Reveal>
 
-        <div
-          className="track-card"
-          style={{ ["--tc-bg" as any]: "#073a46", ["--tc-fg" as any]: "#eef2ff" }}
-        >
-          <div className="track-info">
-            <div className="track-tag">
-              <span className="tc-num">03</span>
-              <span className="tc-status">Registration Opens Soon</span>
+        <Reveal delay={0.2}>
+          <div
+            className="track-card"
+            style={{ ["--tc-bg" as any]: "#073a46", ["--tc-fg" as any]: "#eef2ff" }}
+          >
+            <div className="track-info">
+              <div className="track-tag">
+                <span className="tc-num">03</span>
+                <span className="tc-status">Registration Opens Soon</span>
+              </div>
+              <h3 className="track-title">Hackathon</h3>
+              <p className="track-desc">
+                24 hours to design, build and pitch something real. Teams of up to four ship a working
+                prototype and defend it in front of industry judges.
+              </p>
+              <ul className="track-meta">
+                <li>Team size: up to 4</li>
+                <li>Duration: 24 hrs</li>
+                <li>Format: Build &amp; pitch</li>
+              </ul>
+              <Link to="/hackathon" className="track-link">
+                Explore &amp; register →
+              </Link>
             </div>
-            <h3 className="track-title">Hackathon</h3>
-            <p className="track-desc">
-              24 hours to design, build and pitch something real. Teams of up to four ship a working
-              prototype and defend it in front of industry judges.
-            </p>
-            <ul className="track-meta">
-              <li>Team size: up to 4</li>
-              <li>Duration: 24 hrs</li>
-              <li>Format: Build &amp; pitch</li>
-            </ul>
-            <Link to="/hackathon" className="track-link">
-              Explore &amp; register →
-            </Link>
           </div>
-        </div>
+        </Reveal>
       </section>
 
       {/* EVENT TIMELINE */}
@@ -182,13 +207,15 @@ function Home() {
             ["T-minus 1w", "Eligible List Published", "Selected teams announced on each event page."],
             ["Day 01", "Opening Ceremony + Contest Day 1", "IUPC & CTF begin."],
             ["Day 02", "Hackathon Finale + Closing", "Demos, judging, prize distribution."],
-          ].map(([t, title, desc]) => (
-            <div className="log-row" key={t}>
-              <span className="log-time">{t}</span>
-              <span className="log-dash" />
-              <span className="log-title">{title}</span>
-              <span className="log-desc">{desc}</span>
-            </div>
+          ].map(([t, title, desc], i) => (
+            <Reveal key={t} delay={i * 0.08} y={16}>
+              <div className="log-row">
+                <span className="log-time">{t}</span>
+                <span className="log-dash" />
+                <span className="log-title">{title}</span>
+                <span className="log-desc">{desc}</span>
+              </div>
+            </Reveal>
           ))}
         </div>
       </section>
