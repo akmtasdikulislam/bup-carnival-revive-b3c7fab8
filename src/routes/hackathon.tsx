@@ -77,7 +77,7 @@ function Hackathon() {
           </h2>
           <p className="sec-sub">At least 1 member required — add up to 4.</p>
         </div>
-        <RegistrationForm event="hackathon" minMembers={1} maxMembers={4} />
+        <HackathonRegistration />
       </section>
     </SiteLayout>
   );
