@@ -1171,7 +1171,7 @@ function SummaryAside({
           <span>Institution</span>
           <span style={{ textAlign: "right", maxWidth: 180 }}>{institution || "—"}</span>
         </div>
-        <div className="wiz-aside-row"><span>Members</span><span>{filledMembers}/{teamSize}</span></div>
+        <div className="wiz-aside-row"><span>Members</span><span>{filledMembers}/{members.length}</span></div>
         <div className="wiz-aside-row">
           <span>Project</span>
           <span style={{ textAlign: "right", maxWidth: 180 }}>
