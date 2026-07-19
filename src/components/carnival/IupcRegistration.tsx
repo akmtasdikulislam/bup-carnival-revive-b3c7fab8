@@ -289,7 +289,12 @@ export function IupcRegistration() {
                 <IconArrowLeft size={14} /> Back
               </button>
               {step < 5 && (
-                <button type="button" className="wiz-btn primary" onClick={next}>
+                <button
+                  type="button"
+                  className="wiz-btn primary"
+                  onClick={next}
+                  disabled={step === 4 && !(agreeRules && agreeInfo && agreeMedia)}
+                >
                   {step === 4 ? "Continue to payment" : "Continue"}
                   <IconArrowRight size={14} />
                 </button>
