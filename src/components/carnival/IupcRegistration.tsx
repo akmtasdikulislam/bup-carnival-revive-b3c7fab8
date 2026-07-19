@@ -53,7 +53,8 @@ const emailRe = /^\S+@\S+\.\S+$/;
 const digits = (v: string) => v.replace(/\D/g, "");
 
 const emptyMember = (institution = ""): Member => ({
-  photo: "",
+  idCard: "",
+  idNumber: "",
   fullName: "",
   email: "",
   phone: "",
