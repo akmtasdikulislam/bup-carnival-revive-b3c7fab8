@@ -452,8 +452,207 @@ export function HackathonRegistration() {
 }
 
 /* ============================================================
+ * Solo participant step (merged team + member)
+ * ============================================================ */
+
+function StepSolo({
+  member,
+  setMember,
+  onChangeTeamSize,
+  onInstitutionInput,
+  instSuggest,
+  setInstSuggest,
+  pickInstitution,
+  err,
+  touch,
+}: {
+  member: Member;
+  setMember: (patch: Partial<Member>) => void;
+  onChangeTeamSize: () => void;
+  onInstitutionInput: (v: string) => void;
+  instSuggest: string[];
+  setInstSuggest: (v: string[]) => void;
+  pickInstitution: (v: string) => void;
+  err: (k: string) => string | undefined;
+  touch: (k: string) => void;
+}) {
+  const p = "m0.";
+  return (
+    <motion.div {...fadeMotion()}>
+      <h3>Your details</h3>
+      <p className="wiz-card-sub">
+        You're registering solo — one form, one builder. This info doubles as your team leader
+        record.
+      </p>
+
+      <div style={{ marginBottom: 18, display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
+        <span className="wiz-badge">Solo builder</span>
+        <button
+          type="button"
+          onClick={onChangeTeamSize}
+          className="wiz-btn ghost"
+          style={{ padding: "6px 14px", fontSize: 10 }}
+        >
+          Switch to team
+        </button>
+      </div>
+
+      <div className="wiz-grid cols-2" style={{ marginBottom: 14 }}>
+        <PhotoUploader
+          value={member.photo}
+          onChange={(v) => setMember({ photo: v })}
+          onBlur={() => touch(p + "photo")}
+          error={err(p + "photo")}
+        />
+        <Field label="Full name" error={err(p + "fullName")}>
+          <input
+            type="text"
+            value={member.fullName}
+            onChange={(e) => setMember({ fullName: e.target.value })}
+            onBlur={() => touch(p + "fullName")}
+          />
+        </Field>
+      </div>
+
+      <div className="wiz-grid cols-2">
+        <Field label="Email" error={err(p + "email")}>
+          <input
+            type="email"
+            value={member.email}
+            onChange={(e) => setMember({ email: e.target.value })}
+            onBlur={() => touch(p + "email")}
+          />
+        </Field>
+        <PhoneInput
+          label="Phone"
+          value={member.phone}
+          onChange={(v) => setMember({ phone: v })}
+          onBlur={() => touch(p + "phone")}
+          error={err(p + "phone")}
+        />
+
+        <div
+          className={`wiz-field ${err(p + "institution") ? "err" : ""}`}
+          style={{ position: "relative" }}
+        >
+          <span>University / Institution</span>
+          <input
+            type="text"
+            placeholder="Start typing…"
+            autoComplete="off"
+            value={member.institution}
+            onChange={(e) => onInstitutionInput(e.target.value)}
+            onBlur={() => {
+              touch(p + "institution");
+              setTimeout(() => setInstSuggest([]), 150);
+            }}
+          />
+          {instSuggest.length > 0 && (
+            <div
+              role="listbox"
+              style={{
+                position: "absolute",
+                top: "100%",
+                left: 0,
+                right: 0,
+                zIndex: 20,
+                background: "var(--surface-2)",
+                border: "1px solid var(--border)",
+                borderRadius: 10,
+                marginTop: 4,
+                overflow: "hidden",
+              }}
+            >
+              {instSuggest.map((s) => (
+                <button
+                  key={s}
+                  type="button"
+                  onMouseDown={(e) => {
+                    e.preventDefault();
+                    pickInstitution(s);
+                  }}
+                  style={{
+                    display: "block",
+                    width: "100%",
+                    textAlign: "left",
+                    padding: "10px 14px",
+                    background: "transparent",
+                    border: 0,
+                    color: "var(--text)",
+                    fontSize: 13,
+                    cursor: "pointer",
+                    fontFamily: "var(--fm)",
+                  }}
+                >
+                  {s}
+                </button>
+              ))}
+            </div>
+          )}
+          {err(p + "institution") && <span className="wiz-err-msg">{err(p + "institution")}</span>}
+        </div>
+
+        <Field label="Department" error={err(p + "department")}>
+          <input
+            type="text"
+            placeholder="e.g. CSE"
+            value={member.department}
+            onChange={(e) => setMember({ department: e.target.value })}
+            onBlur={() => touch(p + "department")}
+          />
+        </Field>
+        <Field label="Year of study" error={err(p + "year")}>
+          <select
+            value={member.year}
+            onChange={(e) => setMember({ year: e.target.value })}
+            onBlur={() => touch(p + "year")}
+          >
+            <option value="">Select year</option>
+            {YEAR_OPTIONS.map((y) => (
+              <option key={y} value={y}>
+                {y} year
+              </option>
+            ))}
+          </select>
+        </Field>
+        <Field label="Primary role" error={err(p + "role")}>
+          <select
+            value={member.role}
+            onChange={(e) => setMember({ role: e.target.value })}
+            onBlur={() => touch(p + "role")}
+          >
+            <option value="">Select role</option>
+            {ROLE_OPTIONS.map((r) => (
+              <option key={r} value={r}>
+                {r}
+              </option>
+            ))}
+          </select>
+        </Field>
+        <Field label="T-shirt size" error={err(p + "tshirt")}>
+          <select
+            value={member.tshirt}
+            onChange={(e) => setMember({ tshirt: e.target.value })}
+            onBlur={() => touch(p + "tshirt")}
+          >
+            <option value="">Select size</option>
+            {TSHIRT_SIZES.map((s) => (
+              <option key={s} value={s}>
+                {s}
+              </option>
+            ))}
+          </select>
+        </Field>
+      </div>
+    </motion.div>
+  );
+}
+
+/* ============================================================
  * Step bar
  * ============================================================ */
+
+
 
 function StepBar({ flow, step }: { flow: StepId[]; step: number }) {
   const total = flow.length;
