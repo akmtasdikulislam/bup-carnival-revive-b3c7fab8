@@ -52,8 +52,6 @@ const ROLE_OPTIONS = [
   "Other",
 ];
 const FEE_PER_PERSON = 500;
-const TEAM_SIZE = 3;
-const FEE = FEE_PER_PERSON * TEAM_SIZE;
 
 const emailRe = /^\S+@\S+\.\S+$/;
 const digits = (v: string) => v.replace(/\D/g, "");
@@ -85,6 +83,9 @@ const STEPS = [
  * ============================================================ */
 
 export function HackathonRegistration() {
+  const [teamSize, setTeamSize] = useState<number | null>(null);
+  const fee = FEE_PER_PERSON * (teamSize ?? 0);
+
   const [step, setStep] = useState(1);
   const [touched, setTouched] = useState<Record<string, boolean>>({});
   const touch = (k: string) => setTouched((t) => ({ ...t, [k]: true }));
@@ -99,9 +100,7 @@ export function HackathonRegistration() {
   const [instSuggest, setInstSuggest] = useState<string[]>([]);
 
   // Members / Project
-  const [members, setMembers] = useState<Member[]>(() =>
-    Array.from({ length: TEAM_SIZE }, () => emptyMember()),
-  );
+  const [members, setMembers] = useState<Member[]>([]);
   const [project, setProject] = useState<Project>(() => emptyProject());
 
   // Agreements
@@ -129,19 +128,37 @@ export function HackathonRegistration() {
     window.history.replaceState(null, "", url);
   }, []);
 
+  function chooseTeamSize(n: number) {
+    setTeamSize(n);
+    setMembers(Array.from({ length: n }, () => emptyMember()));
+    setStep(1);
+  }
+
   const setMember = (i: number, patch: Partial<Member>) =>
     setMembers((prev) => prev.map((m, idx) => (idx === i ? { ...m, ...patch } : m)));
 
   function onInstitutionInput(v: string) {
+    const prevInst = institution;
     setInstitution(v);
     setMembers((prev) =>
       prev.map((m) =>
-        m.institution === "" || m.institution === institution ? { ...m, institution: v } : m,
+        m.institution === "" || m.institution === prevInst ? { ...m, institution: v } : m,
       ),
     );
     const q = v.trim().toLowerCase();
     if (q.length < 2) return setInstSuggest([]);
     setInstSuggest(BD_INSTITUTIONS.filter((i) => i.toLowerCase().includes(q)).slice(0, 6));
+  }
+
+  function pickInstitution(v: string) {
+    const prevInst = institution;
+    setMembers((prev) =>
+      prev.map((m) =>
+        m.institution === "" || m.institution === prevInst ? { ...m, institution: v } : m,
+      ),
+    );
+    setInstitution(v);
+    setInstSuggest([]);
   }
 
   /* --------- validation --------- */
@@ -221,7 +238,7 @@ export function HackathonRegistration() {
         members,
         project,
         payMethod,
-        fee: FEE,
+        fee: fee,
         createdAt: Date.now(),
       });
       localStorage.setItem(key, JSON.stringify(list));
@@ -231,7 +248,7 @@ export function HackathonRegistration() {
     try {
       const { gatewayUrl } = await initSslczSession({
         data: {
-          amount: FEE,
+          amount: fee,
           teamName,
           institution,
           leaderEmail,
@@ -246,31 +263,33 @@ export function HackathonRegistration() {
     }
   }
 
+  if (teamSize === null && !done) {
+    return <TeamSizeChooser onPick={chooseTeamSize} />;
+  }
+
+  const size = teamSize ?? 1;
+
   return (
     <div className="wiz-wrap">
       <div>
         <StepBar step={step} />
         <div className="wiz-card">
-          <FeeBanner feePerPerson={FEE_PER_PERSON} teamSize={TEAM_SIZE} total={FEE} />
+          <FeeBanner feePerPerson={FEE_PER_PERSON} teamSize={size} total={fee} />
           <AnimatePresence mode="wait">
             {done ? (
               <SuccessPanel key="done" code={teamCodeRef.current} teamName={teamName} />
             ) : step === 1 ? (
               <StepTeam
                 key="s1"
+                teamSize={size}
+                onChangeTeamSize={() => setTeamSize(null)}
                 teamName={teamName}
                 setTeamName={setTeamName}
                 institution={institution}
                 onInstitutionInput={onInstitutionInput}
                 instSuggest={instSuggest}
                 setInstSuggest={setInstSuggest}
-                pickInstitution={(v) => {
-                  setInstitution(v);
-                  setInstSuggest([]);
-                  setMembers((prev) =>
-                    prev.map((m) => ({ ...m, institution: m.institution || v })),
-                  );
-                }}
+                pickInstitution={pickInstitution}
                 leaderEmail={leaderEmail}
                 setLeaderEmail={setLeaderEmail}
                 leaderPhone={leaderPhone}
@@ -311,6 +330,7 @@ export function HackathonRegistration() {
                 setPayMethod={setPayMethod}
                 submitting={submitting}
                 onPay={handlePay}
+                fee={fee}
               />
             )}
           </AnimatePresence>
@@ -343,7 +363,7 @@ export function HackathonRegistration() {
                   onClick={handlePay}
                   disabled={submitting}
                 >
-                  {submitting ? "Processing…" : `Pay ৳${FEE}`}
+                  {submitting ? "Processing…" : `Pay ৳${fee}`}
                   <IconCreditCard size={14} />
                 </button>
               )}
@@ -379,7 +399,7 @@ export function HackathonRegistration() {
         institution={institution}
         members={members}
         project={project}
-        fee={FEE}
+        fee={fee}
       />
     </div>
   );
@@ -555,6 +575,8 @@ function PhotoUploader({
  * ============================================================ */
 
 function StepTeam(props: {
+  teamSize: number;
+  onChangeTeamSize: () => void;
   teamName: string;
   setTeamName: (v: string) => void;
   institution: string;
@@ -570,6 +592,8 @@ function StepTeam(props: {
   touch: (k: string) => void;
 }) {
   const {
+    teamSize,
+    onChangeTeamSize,
     teamName,
     setTeamName,
     institution,
@@ -585,12 +609,17 @@ function StepTeam(props: {
     touch,
   } = props;
 
+  const isSolo = teamSize === 1;
+
   return (
     <motion.div {...fadeMotion()}>
-      <h3>Team details</h3>
+      <h3>{isSolo ? "Solo builder details" : "Team details"}</h3>
       <p className="wiz-card-sub">
-        Register your hackathon squad — a fixed team of {TEAM_SIZE} students.
+        {isSolo
+          ? "Register as a solo hackathon builder."
+          : `Register your hackathon squad — a team of ${teamSize} builders.`}
       </p>
+
 
       <div className="wiz-grid cols-2">
         <Field label="Team name" error={err("teamName")}>
@@ -683,8 +712,18 @@ function StepTeam(props: {
         />
       </div>
 
-      <div style={{ marginTop: 18 }}>
-        <span className="wiz-badge">Fixed team size · {TEAM_SIZE} students</span>
+      <div style={{ marginTop: 18, display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
+        <span className="wiz-badge">
+          {isSolo ? "Solo builder" : `Team of ${teamSize}`}
+        </span>
+        <button
+          type="button"
+          onClick={onChangeTeamSize}
+          className="wiz-btn ghost"
+          style={{ padding: "6px 14px", fontSize: 10 }}
+        >
+          Change
+        </button>
       </div>
     </motion.div>
   );
@@ -705,10 +744,13 @@ function StepMembers({
   err: (k: string) => string | undefined;
   touch: (k: string) => void;
 }) {
+  const count = members.length;
   return (
     <motion.div {...fadeMotion()}>
-      <h3>Team members</h3>
-      <p className="wiz-card-sub">Fill in details for all {TEAM_SIZE} builders.</p>
+      <h3>{count === 1 ? "Your details" : "Team members"}</h3>
+      <p className="wiz-card-sub">
+        {count === 1 ? "Fill in your builder profile." : `Fill in details for all ${count} builders.`}
+      </p>
 
       {members.map((m, i) => {
         const p = `m${i}.`;
@@ -1024,11 +1066,13 @@ function StepPayment({
   setPayMethod,
   submitting,
   onPay,
+  fee,
 }: {
   payMethod: "bkash" | "nagad" | "card";
   setPayMethod: (v: "bkash" | "nagad" | "card") => void;
   submitting: boolean;
   onPay: () => void;
+  fee: number;
 }) {
   return (
     <motion.div {...fadeMotion()}>
@@ -1062,9 +1106,9 @@ function StepPayment({
       <div className="wiz-review-block" style={{ marginTop: 20 }}>
         <h5>// summary</h5>
         <dl className="wiz-review-grid">
-          <dt>Registration fee</dt><dd>৳{FEE}</dd>
+          <dt>Registration fee</dt><dd>৳{fee}</dd>
           <dt>Method</dt><dd style={{ textTransform: "capitalize" }}>{payMethod}</dd>
-          <dt>Total due</dt><dd style={{ color: "var(--gold)", fontWeight: 700 }}>৳{FEE}</dd>
+          <dt>Total due</dt><dd style={{ color: "var(--gold)", fontWeight: 700 }}>৳{fee}</dd>
         </dl>
       </div>
 
@@ -1125,7 +1169,7 @@ function SummaryAside({
           <span>Institution</span>
           <span style={{ textAlign: "right", maxWidth: 180 }}>{institution || "—"}</span>
         </div>
-        <div className="wiz-aside-row"><span>Members</span><span>{filledMembers}/{TEAM_SIZE}</span></div>
+        <div className="wiz-aside-row"><span>Members</span><span>{filledMembers}/{members.length}</span></div>
         <div className="wiz-aside-row">
           <span>Project</span>
           <span style={{ textAlign: "right", maxWidth: 180 }}>
@@ -1210,5 +1254,68 @@ function SizeChart({ size, onSize }: { size: string; onSize: (s: string) => void
         Tap a size to preview. Between two? Pick the larger for a relaxed fit. 180 GSM combed cotton.
       </p>
     </div>
+  );
+}
+
+/* ============================================================
+ * Team size chooser (gate step)
+ * ============================================================ */
+
+function TeamSizeChooser({ onPick }: { onPick: (n: number) => void }) {
+  const options = [
+    { n: 1, title: "Solo builder", desc: "Ship it alone — one hacker, one machine.", tag: "Just me" },
+    { n: 2, title: "Duo", desc: "Two-person team. Pair-programming energy.", tag: "2 members" },
+    { n: 3, title: "Trio", desc: "Balanced squad for full-stack builds.", tag: "3 members" },
+    { n: 4, title: "Full squad", desc: "Maximum team size — go all in.", tag: "4 members" },
+  ];
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+      className="wiz-card"
+      style={{ maxWidth: 780, margin: "0 auto" }}
+    >
+      <h3>How are you joining?</h3>
+      <p className="wiz-card-sub">
+        Hackathon teams can be 1 to 4 builders. Pick your setup — you can change this later.
+      </p>
+      <div
+        style={{
+          display: "grid",
+          gap: 12,
+          gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+          marginTop: 8,
+        }}
+      >
+        {options.map((o) => (
+          <button
+            key={o.n}
+            type="button"
+            onClick={() => onPick(o.n)}
+            className="wiz-pay-method"
+            style={{ alignItems: "flex-start" }}
+          >
+            <span className="wiz-badge" style={{ marginBottom: 8 }}>{o.tag}</span>
+            <strong style={{ fontSize: 16 }}>{o.title}</strong>
+            <span style={{ marginTop: 4 }}>{o.desc}</span>
+            <span
+              style={{
+                marginTop: 10,
+                fontFamily: "var(--fm)",
+                color: "var(--gold)",
+                fontSize: 12,
+                fontWeight: 700,
+              }}
+            >
+              ৳{FEE_PER_PERSON * o.n} total
+            </span>
+          </button>
+        ))}
+      </div>
+      <p className="wiz-card-sub" style={{ marginTop: 18, marginBottom: 0, fontSize: 12 }}>
+        Registration fee is ৳{FEE_PER_PERSON} per person, paid at checkout.
+      </p>
+    </motion.div>
   );
 }
