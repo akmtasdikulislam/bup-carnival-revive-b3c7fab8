@@ -17,75 +17,158 @@
   }
 }
 
-/* ----- Step bar ----- */
+/* ----- Step bar (transparent, progress rail + circles) ----- */
 .wiz-stepbar {
+  position: relative;
   display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-  padding: 14px 18px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  margin-bottom: 22px;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 4px 6px 22px;
+  margin-bottom: 26px;
+  background: transparent;
+  border: 0;
+}
+
+.wiz-stepbar-track {
+  position: absolute;
+  top: 20px;
+  left: 28px;
+  right: 28px;
+  height: 2px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.wiz-stepbar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--mint), var(--gold));
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .wiz-step {
+  position: relative;
+  z-index: 1;
   display: inline-flex;
+  flex-direction: column;
   align-items: center;
   gap: 8px;
-  padding: 8px 14px;
-  border-radius: 100px;
-  font-family: var(--fm);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--muted);
+  flex: 1 1 0;
+  min-width: 0;
   background: transparent;
-  border: 1px solid var(--border);
+  border: 0;
+  padding: 0;
   cursor: default;
 }
 
-.wiz-step .wiz-step-idx {
+.wiz-step-node {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 18px;
-  height: 18px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
-  background: var(--accent-bg);
+  background: var(--bg, #0b0d12);
   color: var(--muted);
-  font-size: 10px;
+  border: 2px solid var(--border);
+  transition: all 0.25s ease;
 }
 
-.wiz-step.done {
-  color: var(--mint);
-  border-color: rgba(47, 230, 166, 0.35);
-  background: rgba(47, 230, 166, 0.08);
+.wiz-step-label {
+  font-family: var(--fm);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  transition: color 0.2s;
 }
 
-.wiz-step.done .wiz-step-idx {
+.wiz-step.done .wiz-step-node {
   background: var(--mint);
+  border-color: var(--mint);
   color: var(--primary-dark);
 }
+.wiz-step.done .wiz-step-label { color: var(--mint); }
 
-.wiz-step.current {
-  color: var(--primary-dark);
+.wiz-step.current .wiz-step-node {
   background: var(--gold);
   border-color: var(--gold);
+  color: var(--primary-dark);
+  box-shadow: 0 0 0 6px rgba(242, 183, 5, 0.15);
+}
+.wiz-step.current .wiz-step-label { color: var(--text); }
+
+/* ----- Inline fee banner (transparent, above form) ----- */
+.wiz-fee-banner {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 0 20px;
+  margin: 0 0 20px;
+  border-bottom: 1px dashed var(--border);
+  background: transparent;
 }
 
-.wiz-step.current .wiz-step-idx {
-  background: var(--primary-dark);
+.wiz-fee-banner-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(242, 183, 5, 0.1);
   color: var(--gold);
+  flex: 0 0 auto;
 }
 
-.wiz-step-sep {
+.wiz-fee-banner-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.wiz-fee-banner-label {
+  font-family: var(--fm);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.wiz-fee-banner-value {
+  font-size: 14px;
+  color: var(--text);
+}
+.wiz-fee-banner-value em {
+  font-style: normal;
+  color: var(--muted);
+  font-size: 12px;
+}
+.wiz-fee-banner-value strong {
+  color: var(--gold);
+  font-weight: 700;
+}
+
+.wiz-fee-banner-hint {
+  font-family: var(--fm);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
   flex: 0 0 auto;
-  height: 1px;
-  width: 18px;
-  background: var(--border);
+}
+
+@media (max-width: 560px) {
+  .wiz-fee-banner-hint { display: none; }
+  .wiz-step-label { font-size: 10px; letter-spacing: 0.08em; }
+  .wiz-step-node { width: 34px; height: 34px; }
+  .wiz-stepbar-track { top: 17px; left: 22px; right: 22px; }
 }
 
 /* ----- Card ----- */
