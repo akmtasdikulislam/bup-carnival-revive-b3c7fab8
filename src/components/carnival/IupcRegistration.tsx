@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState, type ChangeEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type ChangeEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   IconUsers,
@@ -11,6 +11,8 @@ import {
   IconChalkboard,
 } from "@tabler/icons-react";
 import { BD_INSTITUTIONS } from "@/data/institutions";
+import { initSslczSession } from "@/lib/sslcommerz.functions";
+
 
 /* ============================================================
  * Types
@@ -109,6 +111,23 @@ export function IupcRegistration() {
   const [done, setDone] = useState(false);
   const teamCodeRef = useRef<string>("");
 
+  // Return-from-gateway handling
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const p = new URLSearchParams(window.location.search);
+    const status = p.get("payment");
+    if (!status) return;
+    if (status === "success") {
+      teamCodeRef.current = p.get("tran_id") || "IUPC-CONFIRMED";
+      setDone(true);
+      setStep(5);
+    }
+    // clean the query so refresh doesn't repeat state
+    const url = window.location.pathname + window.location.hash;
+    window.history.replaceState(null, "", url);
+  }, []);
+
+
   const setMember = (i: number, patch: Partial<Member>) =>
     setMembers((prev) => prev.map((m, idx) => (idx === i ? { ...m, ...patch } : m)));
 
@@ -183,15 +202,18 @@ export function IupcRegistration() {
     setStep((s) => Math.max(1, s - 1));
   }
 
+  const [payError, setPayError] = useState<string | null>(null);
+
   async function handlePay() {
     setSubmitting(true);
-    await new Promise((r) => setTimeout(r, 900));
-    teamCodeRef.current = "IUPC-" + Math.random().toString(36).slice(2, 8).toUpperCase();
+    setPayError(null);
+    const localCode = "IUPC-" + Math.random().toString(36).slice(2, 8).toUpperCase();
+    teamCodeRef.current = localCode;
     try {
-      const key = "bcc_registrations";
+      const key = "bcc_registrations_pending";
       const list = JSON.parse(localStorage.getItem(key) || "[]");
       list.push({
-        id: teamCodeRef.current,
+        id: localCode,
         event: "iupc",
         teamName,
         institution,
@@ -207,9 +229,24 @@ export function IupcRegistration() {
     } catch {
       /* ignore */
     }
-    setSubmitting(false);
-    setDone(true);
+    try {
+      const { gatewayUrl } = await initSslczSession({
+        data: {
+          amount: FEE,
+          teamName,
+          institution,
+          leaderEmail,
+          leaderPhone: "+880" + digits(leaderPhone),
+          event: "iupc",
+        },
+      });
+      window.location.href = gatewayUrl;
+    } catch (e) {
+      setSubmitting(false);
+      setPayError(e instanceof Error ? e.message : "Payment initiation failed");
+    }
   }
+
 
   return (
     <div className="wiz-wrap">
@@ -312,7 +349,13 @@ export function IupcRegistration() {
               )}
             </div>
           )}
+          {payError && (
+            <p style={{ color: "var(--coral)", fontSize: 13, marginTop: 12 }}>
+              Payment error: {payError}
+            </p>
+          )}
         </div>
+
         <div className="wiz-side-notes">
           <div className="wiz-note-box">
             <h6>Secure checkout</h6>
