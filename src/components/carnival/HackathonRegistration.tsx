@@ -301,15 +301,15 @@ export function HackathonRegistration() {
   return (
     <div className="wiz-wrap">
       <div>
-        <StepBar step={step} />
+        <StepBar flow={flow} step={step} />
         <div className="wiz-card">
-          <FeeBanner feePerPerson={FEE_PER_PERSON} teamSize={size} total={fee} />
+          <FeeBanner feePerPerson={FEE_PER_PERSON} teamSize={size} total={fee} isSolo={isSolo} />
           <AnimatePresence mode="wait">
             {done ? (
-              <SuccessPanel key="done" code={teamCodeRef.current} teamName={teamName} />
-            ) : step === 1 ? (
+              <SuccessPanel key="done" code={teamCodeRef.current} teamName={teamName || members[0]?.fullName || ""} />
+            ) : current === "team" ? (
               <StepTeam
-                key="s1"
+                key="team"
                 teamSize={size}
                 onChangeTeamSize={() => setTeamSize(null)}
                 teamName={teamName}
@@ -326,19 +326,41 @@ export function HackathonRegistration() {
                 err={err}
                 touch={touch}
               />
-            ) : step === 2 ? (
-              <StepMembers key="s2" members={members} setMember={setMember} err={err} touch={touch} />
-            ) : step === 3 ? (
+            ) : current === "members" ? (
+              <StepMembers key="members" members={members} setMember={setMember} err={err} touch={touch} />
+            ) : current === "solo" ? (
+              <StepSolo
+                key="solo"
+                member={members[0]}
+                setMember={setSoloMember}
+                onChangeTeamSize={() => setTeamSize(null)}
+                instSuggest={instSuggest}
+                setInstSuggest={setInstSuggest}
+                onInstitutionInput={(v) => {
+                  setSoloMember({ institution: v });
+                  const q = v.trim().toLowerCase();
+                  if (q.length < 2) return setInstSuggest([]);
+                  setInstSuggest(BD_INSTITUTIONS.filter((i) => i.toLowerCase().includes(q)).slice(0, 6));
+                }}
+                pickInstitution={(v) => {
+                  setSoloMember({ institution: v });
+                  setInstSuggest([]);
+                }}
+                err={err}
+                touch={touch}
+              />
+            ) : current === "project" ? (
               <StepProject
-                key="s3"
+                key="project"
                 project={project}
                 setProject={(patch) => setProject((p) => ({ ...p, ...patch }))}
                 err={err}
                 touch={touch}
               />
-            ) : step === 4 ? (
+            ) : current === "review" ? (
               <StepReview
-                key="s4"
+                key="review"
+                isSolo={isSolo}
                 teamName={teamName}
                 institution={institution}
                 leaderEmail={leaderEmail}
@@ -354,7 +376,7 @@ export function HackathonRegistration() {
               />
             ) : (
               <StepPayment
-                key="s5"
+                key="payment"
                 payMethod={payMethod}
                 setPayMethod={setPayMethod}
                 submitting={submitting}
@@ -370,22 +392,22 @@ export function HackathonRegistration() {
                 type="button"
                 className="wiz-btn ghost"
                 onClick={back}
-                disabled={step === 1}
+                disabled={step === 0}
               >
                 <IconArrowLeft size={14} /> Back
               </button>
-              {step < 5 && (
+              {current !== "payment" && (
                 <button
                   type="button"
                   className="wiz-btn primary"
                   onClick={next}
-                  disabled={step === 4 && !(agreeRules && agreeInfo && agreeMedia)}
+                  disabled={current === "review" && !(agreeRules && agreeInfo && agreeMedia)}
                 >
-                  {step === 4 ? "Continue to payment" : "Continue"}
+                  {current === "review" ? "Continue to payment" : "Continue"}
                   <IconArrowRight size={14} />
                 </button>
               )}
-              {step === 5 && (
+              {current === "payment" && (
                 <button
                   type="button"
                   className="wiz-btn mint"
