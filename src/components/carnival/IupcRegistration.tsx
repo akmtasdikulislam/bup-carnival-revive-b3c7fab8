@@ -96,6 +96,11 @@ export function IupcRegistration() {
   );
   const [coach, setCoach] = useState<Coach>(() => emptyCoach());
 
+  // Agreements
+  const [agreeRules, setAgreeRules] = useState(false);
+  const [agreeInfo, setAgreeInfo] = useState(false);
+  const [agreeMedia, setAgreeMedia] = useState(false);
+
   // Payment
   const [payMethod, setPayMethod] = useState<"bkash" | "nagad" | "card">("bkash");
   const [submitting, setSubmitting] = useState(false);
