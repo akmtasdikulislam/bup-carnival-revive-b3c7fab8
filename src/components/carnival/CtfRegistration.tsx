@@ -707,51 +707,6 @@ function PhoneInput({
   );
 }
 
-function PhotoUploader__unused({
-  value,
-  onChange,
-  error,
-  onBlur,
-}: {
-  value: string;
-  onChange: (dataUrl: string) => void;
-  error?: string;
-  onBlur?: () => void;
-}) {
-  function handleFile(e: ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    if (file.size > 2 * 1024 * 1024) {
-      alert("Image must be under 2 MB.");
-      e.target.value = "";
-      return;
-    }
-    const reader = new FileReader();
-    reader.onload = () => onChange(reader.result as string);
-    reader.readAsDataURL(file);
-  }
-  return (
-    <div className={`wiz-field ${error ? "err" : ""}`}>
-      <span>Photo</span>
-      <div className="wiz-photo">
-        <div
-          className="wiz-photo-thumb"
-          style={value ? { backgroundImage: `url(${value})` } : undefined}
-        >
-          {!value && <IconCamera size={22} />}
-        </div>
-        <div className="wiz-photo-actions">
-          <label className="wiz-photo-btn">
-            {value ? "Change" : "Upload"}
-            <input type="file" accept="image/*" onChange={handleFile} onBlur={onBlur} />
-          </label>
-          <span className="wiz-photo-hint">JPG / PNG · square · max 2 MB · min 400×400 px</span>
-        </div>
-      </div>
-      {error && <span className="wiz-err-msg">{error}</span>}
-    </div>
-  );
-}
 
 /* ============================================================
  * Step 1 – Team
