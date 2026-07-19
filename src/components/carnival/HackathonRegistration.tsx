@@ -21,7 +21,8 @@ import { IdCardUploader } from "./IdCardUploader";
  * ============================================================ */
 
 type Member = {
-  photo: string;
+  idCard: string;
+  idNumber: string;
   fullName: string;
   email: string;
   phone: string;
