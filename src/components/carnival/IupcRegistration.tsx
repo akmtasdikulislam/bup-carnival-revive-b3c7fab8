@@ -309,6 +309,8 @@ export function IupcRegistration() {
                   setInstitution(v);
                   setInstSuggest([]);
                 }}
+                leaderName={leaderName}
+                setLeaderName={setLeaderName}
                 leaderEmail={leaderEmail}
                 setLeaderEmail={setLeaderEmail}
                 leaderPhone={leaderPhone}
