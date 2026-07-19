@@ -198,11 +198,29 @@ export function IupcRegistration() {
   const stepHasErrors = (s: number) => stepKeys(s).some((k) => errors[k]);
   const err = (k: string) => (touched[k] ? errors[k] : undefined);
 
+  function syncLeaderToFirstMember() {
+    setMembers((prev) => {
+      if (prev.length === 0) return prev;
+      const first = prev[0];
+      return [
+        {
+          ...first,
+          fullName: leaderName || first.fullName,
+          email: leaderEmail || first.email,
+          phone: leaderPhone || first.phone,
+          institution: institution || first.institution,
+        },
+        ...prev.slice(1),
+      ];
+    });
+  }
+
   function next() {
     if (stepHasErrors(step)) {
       touchAll(stepKeys(step));
       return;
     }
+    if (step === 1) syncLeaderToFirstMember();
     if (step === 4 && !(agreeRules && agreeInfo && agreeMedia)) return;
     setStep((s) => Math.min(5, s + 1));
   }
