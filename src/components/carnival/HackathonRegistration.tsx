@@ -193,13 +193,15 @@ export function HackathonRegistration() {
     if (!isSolo) {
       if (!teamName.trim()) e["teamName"] = "Team name is required";
       if (!institution.trim()) e["institution"] = "Institution is required";
+      if (!leaderName.trim()) e["leaderName"] = "Leader name is required";
       if (!emailRe.test(leaderEmail)) e["leaderEmail"] = "Enter a valid email";
       if (digits(leaderPhone).length < 10) e["leaderPhone"] = "Enter a valid phone";
     }
 
     members.forEach((m, i) => {
       const p = `m${i}.`;
-      if (!m.idCard) e[p + "idCard"] = "Photo required";
+      if (!m.idCard) e[p + "idCard"] = "ID card photo required";
+      if (!m.idNumber.trim()) e[p + "idNumber"] = "ID number required";
       if (!m.fullName.trim()) e[p + "fullName"] = "Full name required";
       if (!emailRe.test(m.email)) e[p + "email"] = "Valid email required";
       if (digits(m.phone).length < 10) e[p + "phone"] = "Valid phone required";
@@ -216,15 +218,15 @@ export function HackathonRegistration() {
     if (!project.stack.trim()) e["p.stack"] = "List your tech stack";
 
     return e;
-  }, [isSolo, teamName, institution, leaderEmail, leaderPhone, members, project]);
+  }, [isSolo, teamName, institution, leaderName, leaderEmail, leaderPhone, members, project]);
 
   const memberKeys = (i: number) =>
-    ["photo", "fullName", "email", "phone", "institution", "department", "year", "role", "tshirt"].map(
+    ["idCard", "idNumber", "fullName", "email", "phone", "institution", "department", "year", "role", "tshirt"].map(
       (k) => `m${i}.${k}`,
     );
 
   const stepKeys = (id: StepId): string[] => {
-    if (id === "team") return ["teamName", "institution", "leaderEmail", "leaderPhone"];
+    if (id === "team") return ["teamName", "institution", "leaderName", "leaderEmail", "leaderPhone"];
     if (id === "members") return members.flatMap((_, i) => memberKeys(i));
     if (id === "solo") return memberKeys(0);
     if (id === "project") return ["p.title", "p.pitch", "p.problem", "p.stack"];
