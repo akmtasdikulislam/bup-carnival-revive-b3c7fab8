@@ -349,7 +349,13 @@ export function IupcRegistration() {
               )}
             </div>
           )}
+          {payError && (
+            <p style={{ color: "var(--coral)", fontSize: 13, marginTop: 12 }}>
+              Payment error: {payError}
+            </p>
+          )}
         </div>
+
         <div className="wiz-side-notes">
           <div className="wiz-note-box">
             <h6>Secure checkout</h6>
