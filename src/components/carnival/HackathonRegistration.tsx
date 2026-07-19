@@ -501,9 +501,9 @@ function StepSolo({
       </div>
 
       <div className="wiz-grid cols-2" style={{ marginBottom: 14 }}>
-        <PhotoUploader
+        <IdCardUploader
           value={member.idCard}
-          onChange={(v) => setMember({ photo: v })}
+          onChange={(v) => setMember({ idCard: v })}
           onBlur={() => touch(p + "idCard")}
           error={err(p + "idCard")}
         />
@@ -774,7 +774,7 @@ function PhoneInput({
   );
 }
 
-function PhotoUploader({
+function PhotoUploader__unused({
   value,
   onChange,
   error,
@@ -1012,9 +1012,9 @@ function StepMembers({
             </div>
 
             <div className="wiz-grid cols-2" style={{ marginBottom: 14 }}>
-              <PhotoUploader
+              <IdCardUploader
                 value={m.idCard}
-                onChange={(v) => setMember(i, { photo: v })}
+                onChange={(v) => setMember(i, { idCard: v })}
                 onBlur={() => touch(p + "idCard")}
                 error={err(p + "idCard")}
               />
