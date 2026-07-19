@@ -74,7 +74,6 @@ export function SponsorShowcase() {
         <span className="sponsor-tier-badge">{title.tier}</span>
         <span className="title-sponsor-logo-panel">
           <img src={sponsorLogo(title.domain, 400)} alt={`${title.name} logo`} />
-          <span className="title-sponsor-wordmark">{title.name}</span>
         </span>
         <span className="title-sponsor-bottom">
           <span>
