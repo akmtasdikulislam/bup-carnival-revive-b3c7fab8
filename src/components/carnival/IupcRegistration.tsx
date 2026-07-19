@@ -708,7 +708,7 @@ function StepMembers({
             </div>
 
             <div className="wiz-grid cols-2" style={{ marginBottom: 14 }}>
-              <PhotoUploader
+              <IdCardUploader
                 value={m.idCard}
                 onChange={(v) => setMember(i, { idCard: v })}
                 onBlur={() => touch(p + "idCard")}
