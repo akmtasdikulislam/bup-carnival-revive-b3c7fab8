@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/carnival/SiteLayout";
-import { RegistrationForm } from "@/components/carnival/RegistrationForm";
+import { IupcRegistration } from "@/components/carnival/IupcRegistration";
 
 export const Route = createFileRoute("/iupc")({
   head: () => ({
