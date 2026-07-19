@@ -31,7 +31,7 @@ export function SiteLayout({ children }: { children: ReactNode }) {
         initial={{ y: -40, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
-        className={`nav ${scrolled ? "nav-scrolled nav-glass" : "nav-static-full"}`}
+        className={`nav nav-full ${scrolled ? "nav-glass" : ""}`}
       >
         <Link to="/" className="nav-logo">
           <span className="dot" />

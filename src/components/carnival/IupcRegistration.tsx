@@ -38,8 +38,10 @@ type Coach = {
 
 const TSHIRT_SIZES = ["S", "M", "L", "XL", "XXL"];
 const YEAR_OPTIONS = ["1st", "2nd", "3rd", "4th", "5th", "Graduate"];
-const FEE = 1500; // BDT
+const FEE_PER_PERSON = 500; // BDT
 const TEAM_SIZE = 3;
+const FEE = FEE_PER_PERSON * TEAM_SIZE;
+
 
 const emailRe = /^\S+@\S+\.\S+$/;
 const digits = (v: string) => v.replace(/\D/g, "");
@@ -95,6 +97,11 @@ export function IupcRegistration() {
     Array.from({ length: TEAM_SIZE }, () => emptyMember()),
   );
   const [coach, setCoach] = useState<Coach>(() => emptyCoach());
+
+  // Agreements
+  const [agreeRules, setAgreeRules] = useState(false);
+  const [agreeInfo, setAgreeInfo] = useState(false);
+  const [agreeMedia, setAgreeMedia] = useState(false);
 
   // Payment
   const [payMethod, setPayMethod] = useState<"bkash" | "nagad" | "card">("bkash");
@@ -169,6 +176,7 @@ export function IupcRegistration() {
       touchAll(stepKeys(step));
       return;
     }
+    if (step === 4 && !(agreeRules && agreeInfo && agreeMedia)) return;
     setStep((s) => Math.min(5, s + 1));
   }
   function back() {
@@ -252,6 +260,12 @@ export function IupcRegistration() {
                 leaderPhone={leaderPhone}
                 members={members}
                 coach={coach}
+                agreeRules={agreeRules}
+                setAgreeRules={setAgreeRules}
+                agreeInfo={agreeInfo}
+                setAgreeInfo={setAgreeInfo}
+                agreeMedia={agreeMedia}
+                setAgreeMedia={setAgreeMedia}
               />
             ) : (
               <StepPayment
@@ -275,7 +289,12 @@ export function IupcRegistration() {
                 <IconArrowLeft size={14} /> Back
               </button>
               {step < 5 && (
-                <button type="button" className="wiz-btn primary" onClick={next}>
+                <button
+                  type="button"
+                  className="wiz-btn primary"
+                  onClick={next}
+                  disabled={step === 4 && !(agreeRules && agreeInfo && agreeMedia)}
+                >
                   {step === 4 ? "Continue to payment" : "Continue"}
                   <IconArrowRight size={14} />
                 </button>
@@ -294,6 +313,22 @@ export function IupcRegistration() {
             </div>
           )}
         </div>
+        <div className="wiz-side-notes">
+          <div className="wiz-note-box">
+            <h6>Secure checkout</h6>
+            <p>
+              Payment gateway integrates on submit — bKash, Nagad, cards. No card data ever
+              touches our servers.
+            </p>
+          </div>
+          <div className="wiz-note-box">
+            <h6>Need help?</h6>
+            <p>
+              Email <a href="mailto:iupc@bupcsecarnival.dev">iupc@bupcsecarnival.dev</a> or reach
+              the ops desk on the segment page.
+            </p>
+          </div>
+        </div>
       </div>
 
       <SummaryAside
@@ -302,6 +337,7 @@ export function IupcRegistration() {
         members={members}
         coach={coach}
         fee={FEE}
+        feePerPerson={FEE_PER_PERSON}
       />
     </div>
   );
@@ -406,6 +442,11 @@ function PhotoUploader({
   function handleFile(e: ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
+    if (file.size > 2 * 1024 * 1024) {
+      alert("Image must be under 2 MB.");
+      e.target.value = "";
+      return;
+    }
     const reader = new FileReader();
     reader.onload = () => onChange(reader.result as string);
     reader.readAsDataURL(file);
@@ -425,7 +466,7 @@ function PhotoUploader({
             {value ? "Change" : "Upload"}
             <input type="file" accept="image/*" onChange={handleFile} onBlur={onBlur} />
           </label>
-          <span className="wiz-photo-hint">JPG or PNG · square recommended</span>
+          <span className="wiz-photo-hint">JPG / PNG · square · max 2 MB · min 400×400 px</span>
         </div>
       </div>
       {error && <span className="wiz-err-msg">{error}</span>}
@@ -763,6 +804,12 @@ function StepReview({
   leaderPhone,
   members,
   coach,
+  agreeRules,
+  setAgreeRules,
+  agreeInfo,
+  setAgreeInfo,
+  agreeMedia,
+  setAgreeMedia,
 }: {
   teamName: string;
   institution: string;
@@ -770,6 +817,12 @@ function StepReview({
   leaderPhone: string;
   members: Member[];
   coach: Coach;
+  agreeRules: boolean;
+  setAgreeRules: (v: boolean) => void;
+  agreeInfo: boolean;
+  setAgreeInfo: (v: boolean) => void;
+  agreeMedia: boolean;
+  setAgreeMedia: (v: boolean) => void;
 }) {
   return (
     <motion.div {...fadeMotion()}>
@@ -789,27 +842,81 @@ function StepReview({
       {members.map((m, i) => (
         <div key={i} className="wiz-review-block">
           <h5>// member {i + 1}{i === 0 ? " · leader" : ""}</h5>
-          <dl className="wiz-review-grid">
-            <dt>Full name</dt><dd>{m.fullName || "—"}</dd>
-            <dt>Email</dt><dd>{m.email || "—"}</dd>
-            <dt>Phone</dt><dd>{m.phone ? `+880 ${m.phone}` : "—"}</dd>
-            <dt>Institution</dt><dd>{m.institution || "—"}</dd>
-            <dt>Department</dt><dd>{m.department || "—"}</dd>
-            <dt>Year</dt><dd>{m.year || "—"}</dd>
-            <dt>T-shirt</dt><dd>{m.tshirt || "—"}</dd>
-          </dl>
+          <div className="wiz-review-photo-row">
+            <div
+              className="wiz-review-photo"
+              style={m.photo ? { backgroundImage: `url(${m.photo})` } : undefined}
+              aria-label={`${m.fullName || "member"} photo`}
+            >
+              {!m.photo && <IconCamera size={20} />}
+            </div>
+            <dl className="wiz-review-grid" style={{ flex: 1 }}>
+              <dt>Full name</dt><dd>{m.fullName || "—"}</dd>
+              <dt>Email</dt><dd>{m.email || "—"}</dd>
+              <dt>Phone</dt><dd>{m.phone ? `+880 ${m.phone}` : "—"}</dd>
+              <dt>Institution</dt><dd>{m.institution || "—"}</dd>
+              <dt>Department</dt><dd>{m.department || "—"}</dd>
+              <dt>Year</dt><dd>{m.year || "—"}</dd>
+              <dt>T-shirt</dt><dd>{m.tshirt || "—"}</dd>
+            </dl>
+          </div>
         </div>
       ))}
 
       <div className="wiz-review-block">
         <h5>// coach</h5>
-        <dl className="wiz-review-grid">
-          <dt>Full name</dt><dd>{coach.fullName || "—"}</dd>
-          <dt>Designation</dt><dd>{coach.designation || "—"}</dd>
-          <dt>Institution</dt><dd>{coach.institution || "—"}</dd>
-          <dt>Department</dt><dd>{coach.department || "—"}</dd>
-          <dt>T-shirt</dt><dd>{coach.tshirt || "—"}</dd>
-        </dl>
+        <div className="wiz-review-photo-row">
+          <div
+            className="wiz-review-photo"
+            style={coach.photo ? { backgroundImage: `url(${coach.photo})` } : undefined}
+            aria-label="coach photo"
+          >
+            {!coach.photo && <IconCamera size={20} />}
+          </div>
+          <dl className="wiz-review-grid" style={{ flex: 1 }}>
+            <dt>Full name</dt><dd>{coach.fullName || "—"}</dd>
+            <dt>Designation</dt><dd>{coach.designation || "—"}</dd>
+            <dt>Institution</dt><dd>{coach.institution || "—"}</dd>
+            <dt>Department</dt><dd>{coach.department || "—"}</dd>
+            <dt>T-shirt</dt><dd>{coach.tshirt || "—"}</dd>
+          </dl>
+        </div>
+      </div>
+
+      <div className="wiz-agreements">
+        <label className="wiz-agree">
+          <input
+            type="checkbox"
+            checked={agreeRules}
+            onChange={(e) => setAgreeRules(e.target.checked)}
+          />
+          <span>
+            I confirm all team members agree to the <strong>contest rules &amp; code of conduct</strong>,
+            including ACM-ICPC fair-play policies and organizer decisions being final.
+          </span>
+        </label>
+        <label className="wiz-agree">
+          <input
+            type="checkbox"
+            checked={agreeInfo}
+            onChange={(e) => setAgreeInfo(e.target.checked)}
+          />
+          <span>
+            All information provided is accurate. I understand false details may lead to
+            <strong> disqualification</strong> without refund.
+          </span>
+        </label>
+        <label className="wiz-agree">
+          <input
+            type="checkbox"
+            checked={agreeMedia}
+            onChange={(e) => setAgreeMedia(e.target.checked)}
+          />
+          <span>
+            I consent to photos/videos captured during the event being used for
+            <strong> promotional purposes</strong> by BUP CSE Society.
+          </span>
+        </label>
       </div>
     </motion.div>
   );
@@ -903,16 +1010,29 @@ function SummaryAside({
   members,
   coach,
   fee,
+  feePerPerson,
 }: {
   teamName: string;
   institution: string;
   members: Member[];
   coach: Coach;
   fee: number;
+  feePerPerson: number;
 }) {
   const filledMembers = members.filter((m) => m.fullName.trim()).length;
+  const [previewSize, setPreviewSize] = useState<string>("M");
   return (
     <aside className="wiz-aside">
+      <div className="wiz-fee-box">
+        <span className="wiz-fee-label">// registration fee</span>
+        <div className="wiz-fee-amount">
+          ৳{feePerPerson}<span>/person</span>
+        </div>
+        <span className="wiz-fee-sub">
+          Team of {TEAM_SIZE} · ৳{fee} total · paid at checkout
+        </span>
+      </div>
+
       <h4>// order summary</h4>
       <div className="wiz-aside-row"><span>Event</span><span>IUPC 2026</span></div>
       <div className="wiz-aside-row"><span>Team</span><span>{teamName || "—"}</span></div>
@@ -924,6 +1044,63 @@ function SummaryAside({
         <span>Total</span>
         <strong>৳{fee}</strong>
       </div>
+
+      <SizeChart size={previewSize} onSize={setPreviewSize} />
     </aside>
+  );
+}
+
+/* ============================================================
+ * Size chart (interactive preview)
+ * ============================================================ */
+
+const SIZE_SPECS: Record<string, { chest: string; length: string }> = {
+  S:   { chest: '38" / 96 cm',  length: '27" / 68 cm' },
+  M:   { chest: '40" / 102 cm', length: '28" / 71 cm' },
+  L:   { chest: '42" / 107 cm', length: '29" / 74 cm' },
+  XL:  { chest: '44" / 112 cm', length: '30" / 76 cm' },
+  XXL: { chest: '46" / 117 cm', length: '31" / 79 cm' },
+};
+
+function SizeChart({ size, onSize }: { size: string; onSize: (s: string) => void }) {
+  const spec = SIZE_SPECS[size] ?? SIZE_SPECS.M;
+  return (
+    <div className="wiz-size-chart">
+      <div className="wiz-size-head">
+        <span>// size chart</span>
+        <span className="wiz-size-tag">UNISEX · FLAT</span>
+      </div>
+      <div className="wiz-size-preview" aria-hidden>
+        <svg viewBox="0 0 180 160" width="100%" height="120" fill="none">
+          <path
+            d="M60 20 L45 30 L20 45 L30 65 L50 55 L50 140 L130 140 L130 55 L150 65 L160 45 L135 30 L120 20 C115 32 105 38 90 38 C75 38 65 32 60 20 Z"
+            stroke="var(--gold)"
+            strokeWidth="1.5"
+            fill="rgba(242,183,5,0.05)"
+          />
+        </svg>
+      </div>
+      <div className="wiz-size-pills" role="radiogroup" aria-label="Preview t-shirt size">
+        {TSHIRT_SIZES.map((s) => (
+          <button
+            key={s}
+            type="button"
+            role="radio"
+            aria-checked={size === s}
+            className={`wiz-size-pill ${size === s ? "active" : ""}`}
+            onClick={() => onSize(s)}
+          >
+            {s}
+          </button>
+        ))}
+      </div>
+      <div className="wiz-size-specs">
+        <div><span>Chest</span><strong>{spec.chest}</strong></div>
+        <div><span>Length</span><strong>{spec.length}</strong></div>
+      </div>
+      <p className="wiz-size-hint">
+        Tap a size to preview. Between two? Pick the larger for a relaxed fit. 180 GSM combed cotton.
+      </p>
+    </div>
   );
 }
