@@ -521,7 +521,7 @@
 /* ----- Review ----- */
 .wiz-review-block {
   background: var(--accent-bg);
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-strong);
   border-radius: 14px;
   padding: 18px 20px;
   margin-bottom: 14px;
@@ -584,7 +584,7 @@
 
 .wiz-pay-method {
   padding: 16px;
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-strong);
   border-radius: 14px;
   background: var(--accent-bg);
   cursor: pointer;
@@ -660,7 +660,7 @@
 }
 .wiz-note-box {
   background: var(--surface);
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-strong);
   border-radius: 14px;
   padding: 14px 16px;
 }
@@ -684,7 +684,7 @@
 /* ----- Fee box in aside ----- */
 .wiz-fee-box {
   background: var(--accent-bg);
-  border: 1px solid rgba(242, 183, 5, 0.35);
+  border: 1px solid var(--border-strong);
   border-radius: 14px;
   padding: 14px 16px;
   margin-bottom: 18px;
@@ -731,7 +731,7 @@
   height: 72px;
   border-radius: 12px;
   background: var(--surface-2) center/cover no-repeat;
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-strong);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -781,7 +781,7 @@
 }
 .wiz-size-preview {
   background: var(--accent-bg);
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-strong);
   border-radius: 10px;
   padding: 8px;
   display: flex;
@@ -796,7 +796,7 @@
   flex: 1;
   padding: 7px 4px;
   background: transparent;
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-strong);
   border-radius: 8px;
   color: var(--text);
   font-family: var(--fm);
@@ -817,7 +817,7 @@
   grid-template-columns: 1fr 1fr;
   gap: 8px;
   padding: 10px 12px;
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-strong);
   border-radius: 10px;
   background: var(--accent-bg);
 }
