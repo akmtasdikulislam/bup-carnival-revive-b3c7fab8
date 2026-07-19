@@ -2,6 +2,7 @@
 @source "../src";
 @import "tw-animate-css";
 @import "./styles/carnival.css";
+@import "./styles/carnival-wizard.css";
 
 @custom-variant dark (&:is(.dark *));
 
