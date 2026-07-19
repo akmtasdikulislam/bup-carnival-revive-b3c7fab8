@@ -105,84 +105,90 @@ function Home() {
           <p className="sec-sub">Three independent competitions, each with its own registration.</p>
         </div>
 
-        <div
-          className="track-card"
-          style={{ ["--tc-bg" as any]: "#123a8c", ["--tc-fg" as any]: "#eef2ff" }}
-        >
-          <div className="track-info">
-            <div className="track-tag">
-              <span className="tc-num">01</span>
-              <span className="tc-status">Registration Opens Soon</span>
+        <Reveal>
+          <div
+            className="track-card"
+            style={{ ["--tc-bg" as any]: "#123a8c", ["--tc-fg" as any]: "#eef2ff" }}
+          >
+            <div className="track-info">
+              <div className="track-tag">
+                <span className="tc-num">01</span>
+                <span className="tc-status">Registration Opens Soon</span>
+              </div>
+              <h3 className="track-title">IUPC</h3>
+              <p className="track-desc">
+                Inter-University Programming Contest — a 5-hour ICPC-style algorithmic battle. Teams of
+                three take on ranked problem sets under ACM rules.
+              </p>
+              <ul className="track-meta">
+                <li>Team size: 3</li>
+                <li>Duration: 5 hrs</li>
+                <li>Format: ACM-ICPC</li>
+              </ul>
+              <Link to="/iupc" className="track-link">
+                Explore &amp; register →
+              </Link>
             </div>
-            <h3 className="track-title">IUPC</h3>
-            <p className="track-desc">
-              Inter-University Programming Contest — a 5-hour ICPC-style algorithmic battle. Teams of
-              three take on ranked problem sets under ACM rules.
-            </p>
-            <ul className="track-meta">
-              <li>Team size: 3</li>
-              <li>Duration: 5 hrs</li>
-              <li>Format: ACM-ICPC</li>
-            </ul>
-            <Link to="/iupc" className="track-link">
-              Explore &amp; register →
-            </Link>
           </div>
-        </div>
+        </Reveal>
 
-        <div
-          className="track-card"
-          style={{ ["--tc-bg" as any]: "#f2b705", ["--tc-fg" as any]: "#092763" }}
-        >
-          <div className="track-info">
-            <div className="track-tag">
-              <span className="tc-num">02</span>
-              <span className="tc-status">Registration Opens Soon</span>
+        <Reveal delay={0.1}>
+          <div
+            className="track-card"
+            style={{ ["--tc-bg" as any]: "#f2b705", ["--tc-fg" as any]: "#092763" }}
+          >
+            <div className="track-info">
+              <div className="track-tag">
+                <span className="tc-num">02</span>
+                <span className="tc-status">Registration Opens Soon</span>
+              </div>
+              <h3 className="track-title">
+                CTF
+                <br />
+                Championship
+              </h3>
+              <p className="track-desc">
+                Capture the Flag across pwn, crypto, web, reversing and forensics. Break it, decode it,
+                prove it — every flag is a proof of exploit.
+              </p>
+              <ul className="track-meta">
+                <li>Team size: 1–4</li>
+                <li>Duration: 8 hrs</li>
+                <li>Format: Jeopardy-style</li>
+              </ul>
+              <Link to="/ctf" className="track-link">
+                Explore &amp; register →
+              </Link>
             </div>
-            <h3 className="track-title">
-              CTF
-              <br />
-              Championship
-            </h3>
-            <p className="track-desc">
-              Capture the Flag across pwn, crypto, web, reversing and forensics. Break it, decode it,
-              prove it — every flag is a proof of exploit.
-            </p>
-            <ul className="track-meta">
-              <li>Team size: 1–4</li>
-              <li>Duration: 8 hrs</li>
-              <li>Format: Jeopardy-style</li>
-            </ul>
-            <Link to="/ctf" className="track-link">
-              Explore &amp; register →
-            </Link>
           </div>
-        </div>
+        </Reveal>
 
-        <div
-          className="track-card"
-          style={{ ["--tc-bg" as any]: "#073a46", ["--tc-fg" as any]: "#eef2ff" }}
-        >
-          <div className="track-info">
-            <div className="track-tag">
-              <span className="tc-num">03</span>
-              <span className="tc-status">Registration Opens Soon</span>
+        <Reveal delay={0.2}>
+          <div
+            className="track-card"
+            style={{ ["--tc-bg" as any]: "#073a46", ["--tc-fg" as any]: "#eef2ff" }}
+          >
+            <div className="track-info">
+              <div className="track-tag">
+                <span className="tc-num">03</span>
+                <span className="tc-status">Registration Opens Soon</span>
+              </div>
+              <h3 className="track-title">Hackathon</h3>
+              <p className="track-desc">
+                24 hours to design, build and pitch something real. Teams of up to four ship a working
+                prototype and defend it in front of industry judges.
+              </p>
+              <ul className="track-meta">
+                <li>Team size: up to 4</li>
+                <li>Duration: 24 hrs</li>
+                <li>Format: Build &amp; pitch</li>
+              </ul>
+              <Link to="/hackathon" className="track-link">
+                Explore &amp; register →
+              </Link>
             </div>
-            <h3 className="track-title">Hackathon</h3>
-            <p className="track-desc">
-              24 hours to design, build and pitch something real. Teams of up to four ship a working
-              prototype and defend it in front of industry judges.
-            </p>
-            <ul className="track-meta">
-              <li>Team size: up to 4</li>
-              <li>Duration: 24 hrs</li>
-              <li>Format: Build &amp; pitch</li>
-            </ul>
-            <Link to="/hackathon" className="track-link">
-              Explore &amp; register →
-            </Link>
           </div>
-        </div>
+        </Reveal>
       </section>
 
       {/* EVENT TIMELINE */}
