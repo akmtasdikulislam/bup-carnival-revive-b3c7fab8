@@ -44,22 +44,39 @@ function Home() {
               <span className="prompt">&gt;</span> booting BUP_CSE_TECH_CARNIVAL.exe ...
               <span className="cursor">▍</span>
             </p>
-            <div className="hero-title-wrap">
-              <p className="eyebrow">
-                <span className="ping" />
-                Bangladesh University of Professionals — Dept. of CSE
-              </p>
-              <h1 className="title">
-                <span className="line1">BUP CSE</span>
-                <span className="line2" data-text="TECH CARNIVAL">
-                  TECH CARNIVAL
-                </span>
-                <span className="line3">2.0</span>
-              </h1>
-              <p className="tagline">
-                Three tracks. One weekend. <em>Compile your ambition.</em>
-              </p>
-            </div>
+            <motion.div
+              className="hero-title-wrap"
+              initial="hidden"
+              animate="visible"
+              variants={{ visible: { transition: { staggerChildren: 0.12, delayChildren: 0.2 } } }}
+            >
+              {[
+                <p key="eb" className="eyebrow">
+                  <span className="ping" />
+                  Bangladesh University of Professionals — Dept. of CSE
+                </p>,
+                <h1 key="t" className="title">
+                  <span className="line1">BUP CSE</span>
+                  <span className="line2" data-text="TECH CARNIVAL">
+                    TECH CARNIVAL
+                  </span>
+                  <span className="line3">2.0</span>
+                </h1>,
+                <p key="tg" className="tagline">
+                  Three tracks. One weekend. <em>Compile your ambition.</em>
+                </p>,
+              ].map((child, i) => (
+                <motion.div
+                  key={i}
+                  variants={{
+                    hidden: { opacity: 0, y: 24 },
+                    visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] } },
+                  }}
+                >
+                  {child}
+                </motion.div>
+              ))}
+            </motion.div>
             <div className="hero-bottom">
               <Countdown />
               <div className="hero-actions">
