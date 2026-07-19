@@ -1,4 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
+import { getRequest } from "@tanstack/react-start/server";
+
+
 
 type InitInput = {
   amount: number;
@@ -26,12 +29,18 @@ export const initSslczSession = createServerFn({ method: "POST" })
       "-" +
       Math.random().toString(36).slice(2, 8).toUpperCase();
 
-    const origin =
-      process.env.PUBLIC_SITE_URL ||
-      process.env.SITE_URL ||
-      "";
-
-    const base = origin || "";
+    let base = process.env.PUBLIC_SITE_URL || process.env.SITE_URL || "";
+    if (!base) {
+      try {
+        const req = getRequest();
+        const url = new URL(req.url);
+        const proto = req.headers.get("x-forwarded-proto") ?? url.protocol.replace(":", "");
+        const host = req.headers.get("x-forwarded-host") ?? req.headers.get("host") ?? url.host;
+        base = `${proto}://${host}`;
+      } catch {
+        base = "";
+      }
+    }
     const params: Record<string, string> = {
       store_id: storeId,
       store_passwd: storePassword,
