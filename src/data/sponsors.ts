@@ -10,10 +10,16 @@ export interface Sponsor {
   name: string;
   domain: string;
   tier?: string;
+  tagline?: string;
 }
 
 export const SPONSORS: Sponsor[] = [
-  { name: "Robi", domain: "robi.com.bd", tier: "Title Sponsor" },
+  {
+    name: "Robi",
+    domain: "robi.com.bd",
+    tier: "Title Sponsor",
+    tagline: "Presenting Partner · Telecom & Digital Services",
+  },
   { name: "Airtel", domain: "bd.airtel.com" },
   { name: "Banglalink", domain: "banglalink.net" },
   { name: "Teletalk", domain: "teletalk.com.bd" },
