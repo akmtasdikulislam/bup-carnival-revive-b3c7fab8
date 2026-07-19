@@ -1062,7 +1062,7 @@ function StepReview({
  * Step 5 – Payment
  * ============================================================ */
 
-function StepPayment({
+function StepPayment({ payMethod, setPayMethod, submitting, onPay, fee }: {
   payMethod,
   setPayMethod,
   submitting,
