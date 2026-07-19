@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { motion } from "framer-motion";
 import { SiteLayout } from "@/components/carnival/SiteLayout";
 import { Countdown } from "@/components/carnival/Countdown";
+import { Reveal } from "@/components/carnival/Reveal";
 import { SponsorMarquee, SponsorShowcase } from "@/components/carnival/Sponsors";
 
 export const Route = createFileRoute("/")({
