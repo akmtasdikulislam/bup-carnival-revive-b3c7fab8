@@ -9,8 +9,38 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as IupcRouteImport } from './routes/iupc'
+import { Route as HackathonRouteImport } from './routes/hackathon'
+import { Route as GalleryRouteImport } from './routes/gallery'
+import { Route as FaqRouteImport } from './routes/faq'
+import { Route as CtfRouteImport } from './routes/ctf'
 import { Route as IndexRouteImport } from './routes/index'
 
+const IupcRoute = IupcRouteImport.update({
+  id: '/iupc',
+  path: '/iupc',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HackathonRoute = HackathonRouteImport.update({
+  id: '/hackathon',
+  path: '/hackathon',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GalleryRoute = GalleryRouteImport.update({
+  id: '/gallery',
+  path: '/gallery',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FaqRoute = FaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CtfRoute = CtfRouteImport.update({
+  id: '/ctf',
+  path: '/ctf',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -19,28 +49,83 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/ctf': typeof CtfRoute
+  '/faq': typeof FaqRoute
+  '/gallery': typeof GalleryRoute
+  '/hackathon': typeof HackathonRoute
+  '/iupc': typeof IupcRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/ctf': typeof CtfRoute
+  '/faq': typeof FaqRoute
+  '/gallery': typeof GalleryRoute
+  '/hackathon': typeof HackathonRoute
+  '/iupc': typeof IupcRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/ctf': typeof CtfRoute
+  '/faq': typeof FaqRoute
+  '/gallery': typeof GalleryRoute
+  '/hackathon': typeof HackathonRoute
+  '/iupc': typeof IupcRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/ctf' | '/faq' | '/gallery' | '/hackathon' | '/iupc'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/ctf' | '/faq' | '/gallery' | '/hackathon' | '/iupc'
+  id: '__root__' | '/' | '/ctf' | '/faq' | '/gallery' | '/hackathon' | '/iupc'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CtfRoute: typeof CtfRoute
+  FaqRoute: typeof FaqRoute
+  GalleryRoute: typeof GalleryRoute
+  HackathonRoute: typeof HackathonRoute
+  IupcRoute: typeof IupcRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/iupc': {
+      id: '/iupc'
+      path: '/iupc'
+      fullPath: '/iupc'
+      preLoaderRoute: typeof IupcRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/hackathon': {
+      id: '/hackathon'
+      path: '/hackathon'
+      fullPath: '/hackathon'
+      preLoaderRoute: typeof HackathonRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/gallery': {
+      id: '/gallery'
+      path: '/gallery'
+      fullPath: '/gallery'
+      preLoaderRoute: typeof GalleryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/faq': {
+      id: '/faq'
+      path: '/faq'
+      fullPath: '/faq'
+      preLoaderRoute: typeof FaqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ctf': {
+      id: '/ctf'
+      path: '/ctf'
+      fullPath: '/ctf'
+      preLoaderRoute: typeof CtfRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -53,6 +138,11 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CtfRoute: CtfRoute,
+  FaqRoute: FaqRoute,
+  GalleryRoute: GalleryRoute,
+  HackathonRoute: HackathonRoute,
+  IupcRoute: IupcRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
