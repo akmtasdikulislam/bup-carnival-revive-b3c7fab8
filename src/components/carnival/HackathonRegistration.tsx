@@ -195,7 +195,7 @@ export function HackathonRegistration() {
 
     members.forEach((m, i) => {
       const p = `m${i}.`;
-      if (!m.photo) e[p + "photo"] = "Photo required";
+      if (!m.idCard) e[p + "idCard"] = "Photo required";
       if (!m.fullName.trim()) e[p + "fullName"] = "Full name required";
       if (!emailRe.test(m.email)) e[p + "email"] = "Valid email required";
       if (digits(m.phone).length < 10) e[p + "phone"] = "Valid phone required";
@@ -499,10 +499,10 @@ function StepSolo({
 
       <div className="wiz-grid cols-2" style={{ marginBottom: 14 }}>
         <PhotoUploader
-          value={member.photo}
+          value={member.idCard}
           onChange={(v) => setMember({ photo: v })}
-          onBlur={() => touch(p + "photo")}
-          error={err(p + "photo")}
+          onBlur={() => touch(p + "idCard")}
+          error={err(p + "idCard")}
         />
         <Field label="Full name" error={err(p + "fullName")}>
           <input
@@ -1010,10 +1010,10 @@ function StepMembers({
 
             <div className="wiz-grid cols-2" style={{ marginBottom: 14 }}>
               <PhotoUploader
-                value={m.photo}
+                value={m.idCard}
                 onChange={(v) => setMember(i, { photo: v })}
-                onBlur={() => touch(p + "photo")}
-                error={err(p + "photo")}
+                onBlur={() => touch(p + "idCard")}
+                error={err(p + "idCard")}
               />
               <Field label="Full name" error={err(p + "fullName")}>
                 <input
@@ -1240,10 +1240,10 @@ function StepReview({
           <div className="wiz-review-photo-row">
             <div
               className="wiz-review-photo"
-              style={m.photo ? { backgroundImage: `url(${m.photo})` } : undefined}
+              style={m.idCard ? { backgroundImage: `url(${m.idCard})` } : undefined}
               aria-label={`${m.fullName || "member"} photo`}
             >
-              {!m.photo && <IconCamera size={20} />}
+              {!m.idCard && <IconCamera size={20} />}
             </div>
             <dl className="wiz-review-grid" style={{ flex: 1 }}>
               <dt>Full name</dt><dd>{m.fullName || "—"}</dd>
