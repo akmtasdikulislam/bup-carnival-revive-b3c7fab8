@@ -80,7 +80,7 @@ function CTF() {
           </h2>
           <p className="sec-sub">At least 1 member required — add up to 4.</p>
         </div>
-        <CtfRegistration />)
+        <CtfRegistration />
       </section>
     </SiteLayout>
   );
