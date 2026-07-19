@@ -1074,31 +1074,17 @@ function SummaryAside({
   members,
   coach,
   fee,
-  feePerPerson,
 }: {
   teamName: string;
   institution: string;
   members: Member[];
   coach: Coach;
   fee: number;
-  feePerPerson: number;
 }) {
   const filledMembers = members.filter((m) => m.fullName.trim()).length;
   const [previewSize, setPreviewSize] = useState<string>("M");
   return (
     <div className="wiz-aside-col">
-      <aside className="wiz-aside wiz-aside-fee">
-        <div className="wiz-fee-box">
-          <span className="wiz-fee-label">// registration fee</span>
-          <div className="wiz-fee-amount">
-            ৳{feePerPerson}<span>/person</span>
-          </div>
-          <span className="wiz-fee-sub">
-            Team of {TEAM_SIZE} · ৳{fee} total · paid at checkout
-          </span>
-        </div>
-      </aside>
-
       <aside className="wiz-aside">
         <h4>// order summary</h4>
         <div className="wiz-aside-row"><span>Event</span><span>IUPC 2026</span></div>
