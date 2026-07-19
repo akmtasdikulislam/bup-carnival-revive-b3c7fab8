@@ -1062,16 +1062,18 @@ function StepReview({
  * Step 5 – Payment
  * ============================================================ */
 
-function StepPayment({ payMethod, setPayMethod, submitting, onPay, fee }: {
+function StepPayment({
   payMethod,
   setPayMethod,
   submitting,
   onPay,
+  fee,
 }: {
   payMethod: "bkash" | "nagad" | "card";
   setPayMethod: (v: "bkash" | "nagad" | "card") => void;
   submitting: boolean;
   onPay: () => void;
+  fee: number;
 }) {
   return (
     <motion.div {...fadeMotion()}>
