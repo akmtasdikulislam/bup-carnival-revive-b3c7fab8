@@ -265,9 +265,6 @@ export function HackathonRegistration() {
   function back() {
     setStep((s) => Math.max(0, s - 1));
   }
-  function back() {
-    setStep((s) => Math.max(0, s - 1));
-  }
 
   const [payError, setPayError] = useState<string | null>(null);
 
