@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/carnival/SiteLayout";
-import { RegistrationForm } from "@/components/carnival/RegistrationForm";
+import { CtfRegistration } from "@/components/carnival/CtfRegistration";
 
 export const Route = createFileRoute("/ctf")({
   head: () => ({
@@ -80,7 +80,7 @@ function CTF() {
           </h2>
           <p className="sec-sub">At least 1 member required — add up to 4.</p>
         </div>
-        <RegistrationForm event="ctf" minMembers={1} maxMembers={4} />
+        <CtfRegistration />
       </section>
     </SiteLayout>
   );
