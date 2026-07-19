@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/carnival/SiteLayout";
-import { RegistrationForm } from "@/components/carnival/RegistrationForm";
+import { HackathonRegistration } from "@/components/carnival/HackathonRegistration";
 
 export const Route = createFileRoute("/hackathon")({
   head: () => ({
