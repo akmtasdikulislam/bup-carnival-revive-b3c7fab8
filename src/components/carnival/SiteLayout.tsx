@@ -1,9 +1,7 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import type { ReactNode } from "react";
-import {
-  IconBrandGithub,
-  IconBell,
-} from "@tabler/icons-react";
+import { useEffect, useState, type ReactNode } from "react";
+import { IconBrandGithub, IconBell } from "@tabler/icons-react";
+import { motion } from "framer-motion";
 
 const NAV_ITEMS = [
   { to: "/iupc", label: "IUPC" },
@@ -15,11 +13,26 @@ const NAV_ITEMS = [
 
 export function SiteLayout({ children }: { children: ReactNode }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
     <>
       <div className="noise" aria-hidden="true" />
       <div className="scanlines" aria-hidden="true" />
-      <nav id="nav" className="nav nav-static-full">
+      <motion.nav
+        id="nav"
+        initial={{ y: -40, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
+        className={`nav ${scrolled ? "nav-scrolled nav-glass" : "nav-static-full"}`}
+      >
         <Link to="/" className="nav-logo">
           <span className="dot" />
           BUP<span className="dim">_</span>CSE<span className="dim">.</span>CARNIVAL
@@ -39,7 +52,7 @@ export function SiteLayout({ children }: { children: ReactNode }) {
         <Link to="/" hash="tracks" className="nav-cta">
           register →
         </Link>
-      </nav>
+      </motion.nav>
 
       {children}
 
