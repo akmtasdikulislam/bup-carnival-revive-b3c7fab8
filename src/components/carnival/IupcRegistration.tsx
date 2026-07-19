@@ -749,14 +749,25 @@ function StepMembers({
                 onBlur={() => touch(p + "idCard")}
                 error={err(p + "idCard")}
               />
-              <Field label="Full name" error={err(p + "fullName")}>
-                <input
-                  type="text"
-                  value={m.fullName}
-                  onChange={(e) => setMember(i, { fullName: e.target.value })}
-                  onBlur={() => touch(p + "fullName")}
-                />
-              </Field>
+              <div style={{ display: "grid", gap: 14 }}>
+                <Field label="Full name" error={err(p + "fullName")}>
+                  <input
+                    type="text"
+                    value={m.fullName}
+                    onChange={(e) => setMember(i, { fullName: e.target.value })}
+                    onBlur={() => touch(p + "fullName")}
+                  />
+                </Field>
+                <Field label="University ID number" error={err(p + "idNumber")}>
+                  <input
+                    type="text"
+                    placeholder="e.g. 20221001"
+                    value={m.idNumber}
+                    onChange={(e) => setMember(i, { idNumber: e.target.value })}
+                    onBlur={() => touch(p + "idNumber")}
+                  />
+                </Field>
+              </div>
             </div>
 
             <div className="wiz-grid cols-2">
