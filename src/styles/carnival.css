@@ -8437,14 +8437,23 @@ body.gallery-lightbox-open {
 /* ============================================================
    Overrides: glass nav on scroll + fixed sponsor logo sizes
    ============================================================ */
-.nav.nav-glass {
-  top            : 12px;
-  width          : min(1180px, 94%);
-  padding        : 12px 24px;
-  border-radius  : 100px;
-  background     : rgba(8, 21, 54, 0.45);
+.nav.nav-full {
+  top            : 0;
+  left           : 0;
+  right          : 0;
+  transform      : none;
+  width          : 100%;
+  border-radius  : 0;
+  padding        : 14px 32px;
+}
+
+.nav.nav-full.nav-glass {
+  background     : rgba(8, 21, 54, 0.55);
   backdrop-filter: blur(18px) saturate(160%);
   border         : 1px solid rgba(255, 255, 255, 0.08);
+  border-left    : 0;
+  border-right   : 0;
+  border-top     : 0;
   box-shadow     : 0 10px 40px -14px rgba(0, 0, 0, 0.55);
 }
 
