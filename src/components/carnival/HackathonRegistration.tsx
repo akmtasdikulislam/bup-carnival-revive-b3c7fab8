@@ -265,31 +265,33 @@ export function HackathonRegistration() {
     }
   }
 
+  if (teamSize === null && !done) {
+    return <TeamSizeChooser onPick={chooseTeamSize} />;
+  }
+
+  const size = teamSize ?? 1;
+
   return (
     <div className="wiz-wrap">
       <div>
         <StepBar step={step} />
         <div className="wiz-card">
-          <FeeBanner feePerPerson={FEE_PER_PERSON} teamSize={teamSize} total={fee} />
+          <FeeBanner feePerPerson={FEE_PER_PERSON} teamSize={size} total={fee} />
           <AnimatePresence mode="wait">
             {done ? (
               <SuccessPanel key="done" code={teamCodeRef.current} teamName={teamName} />
             ) : step === 1 ? (
               <StepTeam
                 key="s1"
+                teamSize={size}
+                onChangeTeamSize={() => setTeamSize(null)}
                 teamName={teamName}
                 setTeamName={setTeamName}
                 institution={institution}
                 onInstitutionInput={onInstitutionInput}
                 instSuggest={instSuggest}
                 setInstSuggest={setInstSuggest}
-                pickInstitution={(v) => {
-                  setInstitution(v);
-                  setInstSuggest([]);
-                  setMembers((prev) =>
-                    prev.map((m) => ({ ...m, institution: m.institution || v })),
-                  );
-                }}
+                pickInstitution={pickInstitution}
                 leaderEmail={leaderEmail}
                 setLeaderEmail={setLeaderEmail}
                 leaderPhone={leaderPhone}
