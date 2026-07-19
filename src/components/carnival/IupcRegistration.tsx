@@ -925,6 +925,7 @@ function StepCoach({
 function StepReview({
   teamName,
   institution,
+  leaderName,
   leaderEmail,
   leaderPhone,
   members,
@@ -938,6 +939,7 @@ function StepReview({
 }: {
   teamName: string;
   institution: string;
+  leaderName: string;
   leaderEmail: string;
   leaderPhone: string;
   members: Member[];
@@ -959,6 +961,7 @@ function StepReview({
         <dl className="wiz-review-grid">
           <dt>Team name</dt><dd>{teamName || "—"}</dd>
           <dt>Institution</dt><dd>{institution || "—"}</dd>
+          <dt>Leader name</dt><dd>{leaderName || "—"}</dd>
           <dt>Leader email</dt><dd>{leaderEmail || "—"}</dd>
           <dt>Leader phone</dt><dd>{leaderPhone ? `+880 ${leaderPhone}` : "—"}</dd>
         </dl>
@@ -970,13 +973,21 @@ function StepReview({
           <div className="wiz-review-photo-row">
             <div
               className="wiz-review-photo"
-              style={m.idCard ? { backgroundImage: `url(${m.idCard})` } : undefined}
-              aria-label={`${m.fullName || "member"} photo`}
+              style={{
+                width: 140,
+                height: 88,
+                borderRadius: 8,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                ...(m.idCard ? { backgroundImage: `url(${m.idCard})` } : {}),
+              }}
+              aria-label={`${m.fullName || "member"} university id card`}
             >
               {!m.idCard && <IconCamera size={20} />}
             </div>
             <dl className="wiz-review-grid" style={{ flex: 1 }}>
               <dt>Full name</dt><dd>{m.fullName || "—"}</dd>
+              <dt>ID number</dt><dd>{m.idNumber || "—"}</dd>
               <dt>Email</dt><dd>{m.email || "—"}</dd>
               <dt>Phone</dt><dd>{m.phone ? `+880 ${m.phone}` : "—"}</dd>
               <dt>Institution</dt><dd>{m.institution || "—"}</dd>
