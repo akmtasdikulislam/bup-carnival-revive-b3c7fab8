@@ -15,15 +15,14 @@ export interface Sponsor {
 
 export const SPONSORS: Sponsor[] = [
   {
-    name: "Robi",
-    domain: "robi.com.bd",
+    name: "Walton",
+    domain: "waltonbd.com",
     tier: "Title Sponsor",
-    tagline: "Presenting Partner · Telecom & Digital Services",
+    tagline: "Presenting Partner · Electronics & Hardware",
   },
   { name: "Airtel", domain: "bd.airtel.com", tier: "Co-Sponsor", tagline: "Connectivity Partner" },
   { name: "Banglalink", domain: "banglalink.net", tier: "Co-Sponsor", tagline: "Digital Partner" },
   { name: "Teletalk", domain: "teletalk.com.bd", tier: "Co-Sponsor", tagline: "Network Partner" },
-  { name: "Ryze", domain: "ryze.live", tier: "Community Partner", tagline: "Creator Partner" },
   { name: "Skitto", domain: "skitto.com", tier: "Community Partner", tagline: "Student Partner" },
   { name: "Grameenphone", domain: "grameenphone.com", tier: "Co-Sponsor", tagline: "Telecom Partner" },
   { name: "bKash", domain: "bkash.com", tier: "Payment Partner", tagline: "Fintech Partner" },
@@ -32,7 +31,6 @@ export const SPONSORS: Sponsor[] = [
   { name: "Trust Bank PLC", domain: "tblbd.com", tier: "Banking Partner", tagline: "Banking Partner" },
   { name: "UCB Bank PLC", domain: "ucb.com.bd", tier: "Banking Partner", tagline: "Banking Partner" },
   { name: "Jamuna Bank PLC", domain: "jamunabankbd.com", tier: "Banking Partner", tagline: "Banking Partner" },
-  { name: "Walton", domain: "waltonbd.com", tier: "Hardware Partner", tagline: "Electronics Partner" },
   { name: "Singer", domain: "singerbd.com", tier: "Hardware Partner", tagline: "Appliances Partner" },
   { name: "HP", domain: "hp.com", tier: "Compute Partner", tagline: "Workstation Partner" },
   { name: "GigaByte", domain: "gigabyte.com", tier: "Compute Partner", tagline: "Hardware Partner" },
