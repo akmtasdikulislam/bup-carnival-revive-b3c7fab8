@@ -176,6 +176,7 @@ export function IupcRegistration() {
       touchAll(stepKeys(step));
       return;
     }
+    if (step === 4 && !(agreeRules && agreeInfo && agreeMedia)) return;
     setStep((s) => Math.min(5, s + 1));
   }
   function back() {
