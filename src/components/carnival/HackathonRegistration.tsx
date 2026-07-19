@@ -93,12 +93,21 @@ export function HackathonRegistration() {
   const fee = FEE_PER_PERSON * (teamSize ?? 0);
 
   const [step, setStep] = useState(1);
+export function HackathonRegistration() {
+  const [teamSize, setTeamSize] = useState<number | null>(null);
+  const isSolo = teamSize === 1;
+  const flow = isSolo ? soloFlow : teamFlow;
+  const fee = FEE_PER_PERSON * (teamSize ?? 0);
+
+  const [step, setStep] = useState(0); // index into flow
+  const current: StepId = flow[step] ?? flow[0];
+
   const [touched, setTouched] = useState<Record<string, boolean>>({});
   const touch = (k: string) => setTouched((t) => ({ ...t, [k]: true }));
   const touchAll = (keys: string[]) =>
     setTouched((t) => keys.reduce((acc, k) => ({ ...acc, [k]: true }), t));
 
-  // Team
+  // Team (used in team mode; auto-derived from member[0] in solo mode)
   const [teamName, setTeamName] = useState("");
   const [institution, setInstitution] = useState("");
   const [leaderEmail, setLeaderEmail] = useState("");
@@ -128,7 +137,6 @@ export function HackathonRegistration() {
     if (status === "success") {
       teamCodeRef.current = p.get("tran_id") || "HACK-CONFIRMED";
       setDone(true);
-      setStep(5);
     }
     const url = window.location.pathname + window.location.hash;
     window.history.replaceState(null, "", url);
@@ -137,11 +145,23 @@ export function HackathonRegistration() {
   function chooseTeamSize(n: number) {
     setTeamSize(n);
     setMembers(Array.from({ length: n }, () => emptyMember()));
-    setStep(1);
+    setStep(0);
   }
 
   const setMember = (i: number, patch: Partial<Member>) =>
     setMembers((prev) => prev.map((m, idx) => (idx === i ? { ...m, ...patch } : m)));
+
+  // For solo mode, mirror member[0] into leader fields on every write
+  const setSoloMember = (patch: Partial<Member>) => {
+    setMembers((prev) => {
+      const next = [{ ...prev[0], ...patch }];
+      if (patch.email !== undefined) setLeaderEmail(patch.email);
+      if (patch.phone !== undefined) setLeaderPhone(patch.phone);
+      if (patch.institution !== undefined) setInstitution(patch.institution);
+      if (patch.fullName !== undefined && !teamName.trim()) setTeamName(patch.fullName);
+      return next;
+    });
+  };
 
   function onInstitutionInput(v: string) {
     const prevInst = institution;
@@ -171,10 +191,12 @@ export function HackathonRegistration() {
   const errors = useMemo(() => {
     const e: Record<string, string> = {};
 
-    if (!teamName.trim()) e["teamName"] = "Team name is required";
-    if (!institution.trim()) e["institution"] = "Institution is required";
-    if (!emailRe.test(leaderEmail)) e["leaderEmail"] = "Enter a valid email";
-    if (digits(leaderPhone).length < 10) e["leaderPhone"] = "Enter a valid phone";
+    if (!isSolo) {
+      if (!teamName.trim()) e["teamName"] = "Team name is required";
+      if (!institution.trim()) e["institution"] = "Institution is required";
+      if (!emailRe.test(leaderEmail)) e["leaderEmail"] = "Enter a valid email";
+      if (digits(leaderPhone).length < 10) e["leaderPhone"] = "Enter a valid phone";
+    }
 
     members.forEach((m, i) => {
       const p = `m${i}.`;
@@ -195,33 +217,34 @@ export function HackathonRegistration() {
     if (!project.stack.trim()) e["p.stack"] = "List your tech stack";
 
     return e;
-  }, [teamName, institution, leaderEmail, leaderPhone, members, project]);
+  }, [isSolo, teamName, institution, leaderEmail, leaderPhone, members, project]);
 
-  const stepKeys = (s: number): string[] => {
-    if (s === 1) return ["teamName", "institution", "leaderEmail", "leaderPhone"];
-    if (s === 2)
-      return members.flatMap((_, i) =>
-        ["photo", "fullName", "email", "phone", "institution", "department", "year", "role", "tshirt"].map(
-          (k) => `m${i}.${k}`,
-        ),
-      );
-    if (s === 3) return ["p.title", "p.pitch", "p.problem", "p.stack"];
+  const memberKeys = (i: number) =>
+    ["photo", "fullName", "email", "phone", "institution", "department", "year", "role", "tshirt"].map(
+      (k) => `m${i}.${k}`,
+    );
+
+  const stepKeys = (id: StepId): string[] => {
+    if (id === "team") return ["teamName", "institution", "leaderEmail", "leaderPhone"];
+    if (id === "members") return members.flatMap((_, i) => memberKeys(i));
+    if (id === "solo") return memberKeys(0);
+    if (id === "project") return ["p.title", "p.pitch", "p.problem", "p.stack"];
     return [];
   };
 
-  const stepHasErrors = (s: number) => stepKeys(s).some((k) => errors[k]);
+  const stepHasErrors = (id: StepId) => stepKeys(id).some((k) => errors[k]);
   const err = (k: string) => (touched[k] ? errors[k] : undefined);
 
   function next() {
-    if (stepHasErrors(step)) {
-      touchAll(stepKeys(step));
+    if (stepHasErrors(current)) {
+      touchAll(stepKeys(current));
       return;
     }
-    if (step === 4 && !(agreeRules && agreeInfo && agreeMedia)) return;
-    setStep((s) => Math.min(5, s + 1));
+    if (current === "review" && !(agreeRules && agreeInfo && agreeMedia)) return;
+    setStep((s) => Math.min(flow.length - 1, s + 1));
   }
   function back() {
-    setStep((s) => Math.max(1, s - 1));
+    setStep((s) => Math.max(0, s - 1));
   }
 
   const [payError, setPayError] = useState<string | null>(null);
