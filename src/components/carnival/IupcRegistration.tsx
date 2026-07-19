@@ -259,6 +259,12 @@ export function IupcRegistration() {
                 leaderPhone={leaderPhone}
                 members={members}
                 coach={coach}
+                agreeRules={agreeRules}
+                setAgreeRules={setAgreeRules}
+                agreeInfo={agreeInfo}
+                setAgreeInfo={setAgreeInfo}
+                agreeMedia={agreeMedia}
+                setAgreeMedia={setAgreeMedia}
               />
             ) : (
               <StepPayment
