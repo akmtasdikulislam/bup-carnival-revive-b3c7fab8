@@ -52,8 +52,8 @@ const ROLE_OPTIONS = [
   "Other",
 ];
 const FEE_PER_PERSON = 500;
-const TEAM_SIZE = 3;
-const FEE = FEE_PER_PERSON * TEAM_SIZE;
+const MIN_TEAM = 1;
+const MAX_TEAM = 4;
 
 const emailRe = /^\S+@\S+\.\S+$/;
 const digits = (v: string) => v.replace(/\D/g, "");
