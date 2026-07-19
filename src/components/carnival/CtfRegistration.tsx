@@ -20,7 +20,8 @@ import { IdCardUploader } from "./IdCardUploader";
  * ============================================================ */
 
 type Member = {
-  photo: string;
+  idCard: string;
+  idNumber: string;
   fullName: string;
   email: string;
   phone: string;
@@ -39,7 +40,8 @@ const emailRe = /^\S+@\S+\.\S+$/;
 const digits = (v: string) => v.replace(/\D/g, "");
 
 const emptyMember = (institution = ""): Member => ({
-  photo: "",
+  idCard: "",
+  idNumber: "",
   fullName: "",
   email: "",
   phone: "",
