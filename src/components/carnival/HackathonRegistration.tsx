@@ -745,10 +745,13 @@ function StepMembers({
   err: (k: string) => string | undefined;
   touch: (k: string) => void;
 }) {
+  const count = members.length;
   return (
     <motion.div {...fadeMotion()}>
-      <h3>Team members</h3>
-      <p className="wiz-card-sub">Fill in details for all {teamSize} builders.</p>
+      <h3>{count === 1 ? "Your details" : "Team members"}</h3>
+      <p className="wiz-card-sub">
+        {count === 1 ? "Fill in your builder profile." : `Fill in details for all ${count} builders.`}
+      </p>
 
       {members.map((m, i) => {
         const p = `m${i}.`;
