@@ -332,6 +332,7 @@ export function HackathonRegistration() {
                 setPayMethod={setPayMethod}
                 submitting={submitting}
                 onPay={handlePay}
+                fee={fee}
               />
             )}
           </AnimatePresence>
