@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/carnival/SiteLayout";
-import { RegistrationForm } from "@/components/carnival/RegistrationForm";
+import { IupcRegistration } from "@/components/carnival/IupcRegistration";
 
 export const Route = createFileRoute("/iupc")({
   head: () => ({
@@ -73,7 +73,7 @@ function IUPC() {
           </h2>
           <p className="sec-sub">All 3 members are required for IUPC.</p>
         </div>
-        <RegistrationForm event="iupc" minMembers={3} maxMembers={3} requireCoach />
+        <IupcRegistration />
       </section>
     </SiteLayout>
   );
