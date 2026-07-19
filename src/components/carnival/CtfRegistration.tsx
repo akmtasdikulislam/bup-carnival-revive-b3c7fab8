@@ -1334,59 +1334,199 @@ function SizeChart({ size, onSize }: { size: string; onSize: (s: string) => void
  * ============================================================ */
 
 function TeamSizeChooser({ onPick }: { onPick: (n: number) => void }) {
+  const [hover, setHover] = useState<number | null>(null);
   const options = [
-    { n: 1, title: "Solo hacker", desc: "Fly solo — one keyboard, every category.", tag: "Just me" },
-    { n: 2, title: "Duo", desc: "Two-person crew. Split web and pwn.", tag: "2 members" },
-    { n: 3, title: "Trio", desc: "Balanced squad across crypto, rev, forensics.", tag: "3 members" },
-    { n: 4, title: "Full squad", desc: "Maximum team size — cover every category.", tag: "4 members" },
+    {
+      n: 1,
+      title: "Solo hacker",
+      desc: "One keyboard. Every category. Full glory yours to keep.",
+      Icon: IconUser,
+    },
+    {
+      n: 2,
+      title: "Duo",
+      desc: "A trusted partner. Split web and pwn, cover more ground.",
+      Icon: IconUsers,
+    },
+    {
+      n: 3,
+      title: "Trio",
+      desc: "A balanced squad across crypto, rev and forensics.",
+      Icon: IconUsersGroup,
+    },
+    {
+      n: 4,
+      title: "Full squad",
+      desc: "Maximum roster. Every category has a specialist.",
+      Icon: IconCrown,
+    },
   ];
+
   return (
     <motion.div
-      initial={{ opacity: 0, y: 12 }}
+      initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
-      className="wiz-card"
-      style={{ maxWidth: 780, margin: "0 auto" }}
+      transition={{ duration: 0.35, ease: "easeOut" }}
+      className="mx-auto w-full max-w-5xl px-2"
     >
-      <h3>How are you playing?</h3>
-      <p className="wiz-card-sub">
-        CTF teams can be 1 to 4 hackers. Pick your setup — you can change this later.
-      </p>
-      <div
-        style={{
-          display: "grid",
-          gap: 12,
-          gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
-          marginTop: 8,
-        }}
-      >
-        {options.map((o) => (
-          <button
-            key={o.n}
-            type="button"
-            onClick={() => onPick(o.n)}
-            className="wiz-pay-method"
-            style={{ alignItems: "flex-start" }}
-          >
-            <span className="wiz-badge" style={{ marginBottom: 8 }}>{o.tag}</span>
-            <strong style={{ fontSize: 16 }}>{o.title}</strong>
-            <span style={{ marginTop: 4 }}>{o.desc}</span>
-            <span
+      {/* Header */}
+      <div className="mb-10 text-center">
+        <span
+          className="inline-block text-[11px] uppercase tracking-[0.28em]"
+          style={{ color: "var(--mint)", fontFamily: "var(--fm)" }}
+        >
+          // step 00 · choose your crew
+        </span>
+        <h3
+          className="mt-3 text-3xl md:text-4xl font-normal leading-tight"
+          style={{ color: "var(--ink)" }}
+        >
+          How are you <em style={{ color: "var(--gold)", fontStyle: "italic" }}>playing?</em>
+        </h3>
+        <p
+          className="mx-auto mt-3 max-w-xl text-sm md:text-[15px] leading-relaxed"
+          style={{ color: "color-mix(in oklab, var(--ink) 70%, transparent)" }}
+        >
+          CTF teams run from a lone hacker to a four-person crew.
+          Take a breath, pick a setup — you can change it later.
+        </p>
+      </div>
+
+      {/* Option grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 md:gap-6">
+        {options.map((o, i) => {
+          const isHover = hover === o.n;
+          return (
+            <motion.button
+              key={o.n}
+              type="button"
+              onClick={() => onPick(o.n)}
+              onMouseEnter={() => setHover(o.n)}
+              onMouseLeave={() => setHover(null)}
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.05 + i * 0.06, duration: 0.35, ease: "easeOut" }}
+              whileHover={{ y: -3 }}
+              whileTap={{ scale: 0.985 }}
+              className="group relative text-left overflow-hidden rounded-2xl p-6 md:p-7 transition-colors"
               style={{
-                marginTop: 10,
-                fontFamily: "var(--fm)",
-                color: "var(--gold)",
-                fontSize: 12,
-                fontWeight: 700,
+                background:
+                  "linear-gradient(180deg, color-mix(in oklab, var(--surface) 92%, transparent), color-mix(in oklab, var(--surface) 70%, transparent))",
+                border: `1px solid ${
+                  isHover
+                    ? "color-mix(in oklab, var(--gold) 55%, transparent)"
+                    : "color-mix(in oklab, var(--line) 80%, transparent)"
+                }`,
+                boxShadow: isHover
+                  ? "0 20px 50px -30px color-mix(in oklab, var(--gold) 55%, transparent)"
+                  : "0 10px 30px -25px rgba(0,0,0,0.6)",
               }}
             >
-              ৳{FEE_PER_PERSON * o.n} total
-            </span>
-          </button>
-        ))}
+              {/* Soft radial accent */}
+              <div
+                aria-hidden
+                className="pointer-events-none absolute -top-16 -right-16 h-40 w-40 rounded-full blur-3xl transition-opacity"
+                style={{
+                  background: "radial-gradient(circle, color-mix(in oklab, var(--gold) 35%, transparent), transparent 70%)",
+                  opacity: isHover ? 0.9 : 0.4,
+                }}
+              />
+
+              <div className="relative flex items-start gap-5">
+                {/* Icon well */}
+                <div
+                  className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl"
+                  style={{
+                    background: "color-mix(in oklab, var(--mint) 10%, transparent)",
+                    border: "1px solid color-mix(in oklab, var(--mint) 30%, transparent)",
+                    color: "var(--mint)",
+                  }}
+                >
+                  <o.Icon size={26} stroke={1.6} />
+                </div>
+
+                {/* Body */}
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-baseline gap-3">
+                    <span
+                      className="text-4xl md:text-5xl leading-none font-light tabular-nums"
+                      style={{ color: "var(--ink)" }}
+                    >
+                      {o.n}
+                    </span>
+                    <span
+                      className="text-[11px] uppercase tracking-[0.24em]"
+                      style={{ color: "color-mix(in oklab, var(--ink) 55%, transparent)", fontFamily: "var(--fm)" }}
+                    >
+                      {o.n === 1 ? "member" : "members"}
+                    </span>
+                  </div>
+
+                  <h4
+                    className="mt-3 text-lg font-medium"
+                    style={{ color: "var(--ink)" }}
+                  >
+                    {o.title}
+                  </h4>
+                  <p
+                    className="mt-1.5 text-[13.5px] leading-relaxed"
+                    style={{ color: "color-mix(in oklab, var(--ink) 68%, transparent)" }}
+                  >
+                    {o.desc}
+                  </p>
+
+                  {/* Divider */}
+                  <div
+                    className="my-4 h-px w-full"
+                    style={{ background: "color-mix(in oklab, var(--line) 70%, transparent)" }}
+                  />
+
+                  {/* Fee row */}
+                  <div className="flex items-center justify-between">
+                    <span
+                      className="text-[12px]"
+                      style={{ color: "color-mix(in oklab, var(--ink) 55%, transparent)" }}
+                    >
+                      ৳{FEE_PER_PERSON} × {o.n}
+                    </span>
+                    <span
+                      className="text-base font-semibold tabular-nums"
+                      style={{ color: "var(--gold)", fontFamily: "var(--fm)" }}
+                    >
+                      ৳{FEE_PER_PERSON * o.n}
+                    </span>
+                  </div>
+
+                  {/* CTA */}
+                  <div
+                    className="mt-5 inline-flex items-center gap-1.5 text-[12px] font-medium uppercase tracking-[0.2em] transition-all"
+                    style={{
+                      color: isHover ? "var(--gold)" : "color-mix(in oklab, var(--ink) 70%, transparent)",
+                      fontFamily: "var(--fm)",
+                    }}
+                  >
+                    Continue
+                    <motion.span
+                      animate={{ x: isHover ? 4 : 0 }}
+                      transition={{ duration: 0.2 }}
+                      aria-hidden
+                    >
+                      →
+                    </motion.span>
+                  </div>
+                </div>
+              </div>
+            </motion.button>
+          );
+        })}
       </div>
-      <p className="wiz-card-sub" style={{ marginTop: 18, marginBottom: 0, fontSize: 12 }}>
-        Registration fee is ৳{FEE_PER_PERSON} per person, paid at checkout.
+
+      {/* Footnote */}
+      <p
+        className="mt-8 text-center text-xs"
+        style={{ color: "color-mix(in oklab, var(--ink) 50%, transparent)" }}
+      >
+        Registration fee is ৳{FEE_PER_PERSON} per person, paid securely at checkout.
       </p>
     </motion.div>
   );
