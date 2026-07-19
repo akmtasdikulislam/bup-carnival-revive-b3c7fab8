@@ -1022,33 +1022,40 @@ function SummaryAside({
   const filledMembers = members.filter((m) => m.fullName.trim()).length;
   const [previewSize, setPreviewSize] = useState<string>("M");
   return (
-    <aside className="wiz-aside">
-      <div className="wiz-fee-box">
-        <span className="wiz-fee-label">// registration fee</span>
-        <div className="wiz-fee-amount">
-          ৳{feePerPerson}<span>/person</span>
+    <div className="wiz-aside-col">
+      <aside className="wiz-aside wiz-aside-fee">
+        <div className="wiz-fee-box">
+          <span className="wiz-fee-label">// registration fee</span>
+          <div className="wiz-fee-amount">
+            ৳{feePerPerson}<span>/person</span>
+          </div>
+          <span className="wiz-fee-sub">
+            Team of {TEAM_SIZE} · ৳{fee} total · paid at checkout
+          </span>
         </div>
-        <span className="wiz-fee-sub">
-          Team of {TEAM_SIZE} · ৳{fee} total · paid at checkout
-        </span>
-      </div>
+      </aside>
 
-      <h4>// order summary</h4>
-      <div className="wiz-aside-row"><span>Event</span><span>IUPC 2026</span></div>
-      <div className="wiz-aside-row"><span>Team</span><span>{teamName || "—"}</span></div>
-      <div className="wiz-aside-row"><span>Institution</span><span style={{ textAlign: "right", maxWidth: 180 }}>{institution || "—"}</span></div>
-      <div className="wiz-aside-row"><span>Members</span><span>{filledMembers}/{TEAM_SIZE}</span></div>
-      <div className="wiz-aside-row"><span>Coach</span><span>{coach.fullName ? "✓" : "—"}</span></div>
-      <div className="wiz-aside-row"><span>Format</span><span>ACM-ICPC</span></div>
-      <div className="wiz-aside-total">
-        <span>Total</span>
-        <strong>৳{fee}</strong>
-      </div>
+      <aside className="wiz-aside">
+        <h4>// order summary</h4>
+        <div className="wiz-aside-row"><span>Event</span><span>IUPC 2026</span></div>
+        <div className="wiz-aside-row"><span>Team</span><span>{teamName || "—"}</span></div>
+        <div className="wiz-aside-row"><span>Institution</span><span style={{ textAlign: "right", maxWidth: 180 }}>{institution || "—"}</span></div>
+        <div className="wiz-aside-row"><span>Members</span><span>{filledMembers}/{TEAM_SIZE}</span></div>
+        <div className="wiz-aside-row"><span>Coach</span><span>{coach.fullName ? "✓" : "—"}</span></div>
+        <div className="wiz-aside-row"><span>Format</span><span>ACM-ICPC</span></div>
+        <div className="wiz-aside-total">
+          <span>Total</span>
+          <strong>৳{fee}</strong>
+        </div>
+      </aside>
 
-      <SizeChart size={previewSize} onSize={setPreviewSize} />
-    </aside>
+      <aside className="wiz-aside wiz-aside-size">
+        <SizeChart size={previewSize} onSize={setPreviewSize} />
+      </aside>
+    </div>
   );
 }
+
 
 /* ============================================================
  * Size chart (interactive preview)
