@@ -413,6 +413,11 @@ function PhotoUploader({
   function handleFile(e: ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
+    if (file.size > 2 * 1024 * 1024) {
+      alert("Image must be under 2 MB.");
+      e.target.value = "";
+      return;
+    }
     const reader = new FileReader();
     reader.onload = () => onChange(reader.result as string);
     reader.readAsDataURL(file);
@@ -432,7 +437,7 @@ function PhotoUploader({
             {value ? "Change" : "Upload"}
             <input type="file" accept="image/*" onChange={handleFile} onBlur={onBlur} />
           </label>
-          <span className="wiz-photo-hint">JPG or PNG · square recommended</span>
+          <span className="wiz-photo-hint">JPG / PNG · square · max 2 MB · min 400×400 px</span>
         </div>
       </div>
       {error && <span className="wiz-err-msg">{error}</span>}
