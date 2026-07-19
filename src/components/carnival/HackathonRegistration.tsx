@@ -90,11 +90,6 @@ const teamFlow: StepId[] = ["team", "members", "project", "review", "payment"];
 
 export function HackathonRegistration() {
   const [teamSize, setTeamSize] = useState<number | null>(null);
-  const fee = FEE_PER_PERSON * (teamSize ?? 0);
-
-  const [step, setStep] = useState(1);
-export function HackathonRegistration() {
-  const [teamSize, setTeamSize] = useState<number | null>(null);
   const isSolo = teamSize === 1;
   const flow = isSolo ? soloFlow : teamFlow;
   const fee = FEE_PER_PERSON * (teamSize ?? 0);
