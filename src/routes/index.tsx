@@ -207,13 +207,15 @@ function Home() {
             ["T-minus 1w", "Eligible List Published", "Selected teams announced on each event page."],
             ["Day 01", "Opening Ceremony + Contest Day 1", "IUPC & CTF begin."],
             ["Day 02", "Hackathon Finale + Closing", "Demos, judging, prize distribution."],
-          ].map(([t, title, desc]) => (
-            <div className="log-row" key={t}>
-              <span className="log-time">{t}</span>
-              <span className="log-dash" />
-              <span className="log-title">{title}</span>
-              <span className="log-desc">{desc}</span>
-            </div>
+          ].map(([t, title, desc], i) => (
+            <Reveal key={t} delay={i * 0.08} y={16}>
+              <div className="log-row">
+                <span className="log-time">{t}</span>
+                <span className="log-dash" />
+                <span className="log-title">{title}</span>
+                <span className="log-desc">{desc}</span>
+              </div>
+            </Reveal>
           ))}
         </div>
       </section>
