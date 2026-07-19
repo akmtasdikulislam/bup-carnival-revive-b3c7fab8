@@ -70,13 +70,19 @@ const emptyMember = (institution = ""): Member => ({
 
 const emptyProject = (): Project => ({ title: "", pitch: "", problem: "", stack: "" });
 
-const STEPS = [
-  { id: 1, label: "Team", Icon: IconUsers },
-  { id: 2, label: "Members", Icon: IconUser },
-  { id: 3, label: "Project", Icon: IconBulb },
-  { id: 4, label: "Review", Icon: IconClipboardCheck },
-  { id: 5, label: "Payment", Icon: IconCreditCard },
-] as const;
+type StepId = "team" | "members" | "solo" | "project" | "review" | "payment";
+
+const STEP_META: Record<StepId, { label: string; Icon: typeof IconUsers }> = {
+  team: { label: "Team", Icon: IconUsers },
+  members: { label: "Members", Icon: IconUser },
+  solo: { label: "You", Icon: IconUser },
+  project: { label: "Project", Icon: IconBulb },
+  review: { label: "Review", Icon: IconClipboardCheck },
+  payment: { label: "Payment", Icon: IconCreditCard },
+};
+
+const soloFlow: StepId[] = ["solo", "project", "review", "payment"];
+const teamFlow: StepId[] = ["team", "members", "project", "review", "payment"];
 
 /* ============================================================
  * Component
